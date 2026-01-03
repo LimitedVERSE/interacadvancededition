@@ -2,8 +2,20 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { Building2, MapPin, CreditCard, Hash, ArrowRight, AlertCircle, Grid3x3, Layers, PenTool } from "lucide-react"
+import { useState, useEffect } from "react"
+import {
+  Building2,
+  MapPin,
+  CreditCard,
+  Hash,
+  ArrowRight,
+  AlertCircle,
+  Grid3x3,
+  Layers,
+  PenTool,
+  CheckCircle,
+  ExternalLink,
+} from "lucide-react"
 import Header from "@/components/Header"
 import DepositPanel from "@/components/DepositPanel"
 import BankSelectorGrid from "@/components/BankSelectorGrid"
@@ -11,15 +23,59 @@ import SearchBar from "@/components/SearchBar"
 import InstitutionMultiSelect from "@/components/InstitutionMultiSelect"
 import type { FinancialInstitution } from "@/types/financial-institution"
 import { useLanguage } from "@/lib/i18n/context"
+import { useSearchParams } from "next/navigation"
 
 type ConnectionMethod = "grid" | "multi-select" | "manual"
+
+interface TransferData {
+  transferId: string
+  amount: string
+  recipient: string
+  recipientName: string
+  bankName: string
+  message: string
+  timestamp: string
+}
 
 export default function DepositPortal() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedInstitutions, setSelectedInstitutions] = useState<FinancialInstitution[]>([])
   const { t } = useLanguage()
+  const searchParams = useSearchParams()
 
   const [connectionMethod, setConnectionMethod] = useState<ConnectionMethod>("grid")
+
+  const [transferData, setTransferData] = useState<TransferData | null>(null)
+
+  useEffect(() => {
+    const transferId = searchParams.get("transferId")
+    const amount = searchParams.get("amount")
+    const recipient = searchParams.get("recipient")
+    const recipientName = searchParams.get("recipientName")
+    const bankName = searchParams.get("bankName")
+    const message = searchParams.get("message")
+    const timestamp = searchParams.get("timestamp")
+
+    if (transferId) {
+      setTransferData({
+        transferId: transferId,
+        amount: amount || "0.00",
+        recipient: recipient || "",
+        recipientName: recipientName || "",
+        bankName: bankName || "Banking System",
+        message: message || "",
+        timestamp: timestamp || new Date().toISOString(),
+      })
+    }
+  }, [
+    searchParams.get("transferId"),
+    searchParams.get("amount"),
+    searchParams.get("recipient"),
+    searchParams.get("recipientName"),
+    searchParams.get("bankName"),
+    searchParams.get("message"),
+    searchParams.get("timestamp"),
+  ])
 
   const [manualForm, setManualForm] = useState({
     institution: "",
@@ -63,7 +119,77 @@ export default function DepositPortal() {
     <div className="min-h-screen bg-white">
       <Header />
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <DepositPanel />
+        {transferData && (
+          <div className="mb-8 space-y-6">
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                <h3 className="text-lg font-semibold text-white">Transaction Details</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                  Pending Deposit
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-1">
+                  <p className="text-sm text-zinc-500">Amount</p>
+                  <p className="text-xl font-bold text-white">
+                    ${Number.parseFloat(transferData.amount).toFixed(2)} CAD
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm text-zinc-500">Reference</p>
+                  <p className="text-base font-mono text-white">{transferData.transferId}</p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm text-zinc-500">Payee</p>
+                  <p className="text-base text-white">{transferData.recipientName}</p>
+                  <p className="text-sm text-zinc-400">{transferData.recipient}</p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm text-zinc-500">Bank</p>
+                  <p className="text-base text-white">{transferData.bankName}</p>
+                  <p className="text-sm text-zinc-400">Interac e-Transfer</p>
+                </div>
+
+                {transferData.message && (
+                  <div className="space-y-1 md:col-span-2">
+                    <p className="text-sm text-zinc-500">Memo</p>
+                    <p className="text-base text-white">{transferData.message}</p>
+                  </div>
+                )}
+
+                <div className="space-y-1 md:col-span-2">
+                  <p className="text-sm text-zinc-500">Transaction Time</p>
+                  <p className="text-sm font-mono text-zinc-400">{new Date(transferData.timestamp).toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Existing success banner */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-green-900 mb-2">Ready to Deposit!</h3>
+                  <p className="text-sm text-green-800 font-medium flex items-center gap-2">
+                    <ExternalLink className="w-4 h-4" />
+                    Connect your bank account below to complete the deposit of $
+                    {Number.parseFloat(transferData.amount).toFixed(2)} CAD
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <DepositPanel transferAmount={transferData?.amount} transferSender={transferData?.recipientName} />
 
         <section className="mt-12 mb-8" aria-labelledby="connection-method-heading">
           <div className="text-center mb-8">

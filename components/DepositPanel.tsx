@@ -6,6 +6,11 @@ import { getDepositDetails } from "@/services/depositService"
 import type { DepositInfo } from "@/types/bank"
 import { useLanguage } from "@/lib/i18n/context"
 
+interface DepositPanelProps {
+  transferAmount?: string
+  transferSender?: string
+}
+
 function getExpiryDate(): Date {
   const expiry = new Date()
   expiry.setMonth(expiry.getMonth() + 1)
@@ -46,7 +51,7 @@ function formatTimeRemaining(
   return `${remainingSeconds} ${remainingSeconds !== 1 ? timeLabels.seconds : timeLabels.second}`
 }
 
-export default function DepositPanel() {
+export default function DepositPanel({ transferAmount, transferSender }: DepositPanelProps) {
   const { t, language } = useLanguage()
 
   const [depositInfo, setDepositInfo] = useState<DepositInfo | null>(null)
@@ -54,12 +59,23 @@ export default function DepositPanel() {
   const [timeRemaining, setTimeRemaining] = useState<string>("")
   const [expiryDate] = useState<Date>(getExpiryDate())
 
+  const displayAmount = transferAmount || depositInfo?.amount || "0"
+
   useEffect(() => {
     const loadDepositInfo = async () => {
       setIsLoading(true)
       try {
-        const info = await getDepositDetails()
-        setDepositInfo(info)
+        if (transferAmount) {
+          setDepositInfo({
+            amount: transferAmount,
+            currency: "CAD",
+            sender: transferSender || "Banking System",
+            reference: `INTC-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
+          })
+        } else {
+          const info = await getDepositDetails()
+          setDepositInfo(info)
+        }
       } catch (error) {
         console.error("Failed to load deposit details:", error)
       } finally {
@@ -68,7 +84,7 @@ export default function DepositPanel() {
     }
 
     loadDepositInfo()
-  }, [])
+  }, [transferAmount, transferSender])
 
   useEffect(() => {
     const updateCountdown = () => {
@@ -132,15 +148,17 @@ export default function DepositPanel() {
 
           <div className="space-y-3 md:space-y-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground">${depositInfo.amount}</span>
+              <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground">
+                ${Number.parseFloat(displayAmount).toFixed(2)}
+              </span>
               <span className="text-lg md:text-xl lg:text-2xl font-semibold text-muted-foreground">
-                {depositInfo.currency}
+                {depositInfo?.currency || "CAD"}
               </span>
             </div>
 
             <div>
               <p className="text-base md:text-lg lg:text-xl text-foreground">
-                <span className="font-semibold">{t.depositPanel.from}</span> {depositInfo.sender}
+                <span className="font-semibold">{t.depositPanel.from}</span> {depositInfo?.sender}
               </p>
             </div>
           </div>

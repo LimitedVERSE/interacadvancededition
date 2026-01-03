@@ -1,7 +1,10 @@
 "use client"
 
+import { useAuth } from "@/lib/auth/context"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { ProtectedRoute } from "@/components/protected-route"
 import type React from "react"
-
 import { useState } from "react"
 import { Building2, MapPin, CreditCard, Hash, ArrowRight, AlertCircle, Grid3x3, Layers, PenTool } from "lucide-react"
 import Header from "@/components/Header"
@@ -14,7 +17,7 @@ import { useLanguage } from "@/lib/i18n/context"
 
 type ConnectionMethod = "grid" | "multi-select" | "manual"
 
-export default function Home() {
+function HomeContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedInstitutions, setSelectedInstitutions] = useState<FinancialInstitution[]>([])
   const { t } = useLanguage()
@@ -392,5 +395,27 @@ export default function Home() {
         )}
       </main>
     </div>
+  )
+}
+
+export default function Home() {
+  const { user, isLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!user) {
+        router.push("/login")
+      } else {
+        // Optionally redirect authenticated users to dashboard
+        router.push("/dashboard")
+      }
+    }
+  }, [user, isLoading, router])
+
+  return (
+    <ProtectedRoute>
+      <HomeContent />
+    </ProtectedRoute>
   )
 }

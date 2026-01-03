@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { InteracEmailLayout } from "@/components/email/interac-email-layout"
 import { TransferCard } from "@/components/email/transfer-card"
 import { MessageSection } from "@/components/email/message-section"
@@ -47,6 +47,7 @@ export default function AdminDashboard() {
 
   const [recentTransfers, setRecentTransfers] = useState<TransferStatus[]>([])
   const [previewTransfer, setPreviewTransfer] = useState<TransferStatus | null>(null)
+  const [showPendingTransfers, setShowPendingTransfers] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -146,18 +147,32 @@ export default function AdminDashboard() {
       {/* Header */}
       <header className="border-b bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 md:py-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-[#FDB913] rounded-lg flex items-center justify-center p-2">
-              <img
-                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                alt="Interac Logo"
-                className="w-full h-full object-contain"
-              />
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-[#FDB913] rounded-lg flex items-center justify-center p-2">
+                <img
+                  src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
+                  alt="Interac Logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Interac Partner Network</h1>
+                <p className="text-sm text-muted-foreground">e-Transfer Management Dashboard Portal</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Interac Partner Network</h1>
-              <p className="text-sm text-muted-foreground">e-Transfer Management Dashboard Portal</p>
-            </div>
+            <button
+              onClick={() => setShowPendingTransfers(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-[#FDB913] text-[#1a1a1a] rounded-lg font-semibold hover:bg-[#e5a811] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+            >
+              <Clock className="w-5 h-5" />
+              <span>Pending Transfers</span>
+              {recentTransfers.filter((t) => t.status === "pending").length > 0 && (
+                <span className="ml-1 px-2 py-0.5 bg-[#1a1a1a] text-[#FDB913] text-xs font-bold rounded-full">
+                  {recentTransfers.filter((t) => t.status === "pending").length}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -538,6 +553,58 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Pending Transfers Modal */}
+      <Dialog open={showPendingTransfers} onOpenChange={setShowPendingTransfers}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#FDB913]" />
+              Pending Transfers
+            </DialogTitle>
+            <DialogDescription>
+              {recentTransfers.filter((t) => t.status === "pending").length} pending transfer(s)
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 mt-4">
+            {recentTransfers.filter((t) => t.status === "pending").length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">No pending transfers</p>
+            ) : (
+              recentTransfers
+                .filter((t) => t.status === "pending")
+                .map((transfer) => (
+                  <div
+                    key={transfer.id}
+                    className="p-4 rounded-lg border-2 bg-card hover:bg-muted/50 transition-colors cursor-pointer group"
+                    onClick={() => {
+                      setPreviewTransfer(transfer)
+                      setShowPendingTransfers(false)
+                    }}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-sm truncate">{transfer.recipientName}</p>
+                        <p className="text-xs text-muted-foreground truncate">{transfer.recipient}</p>
+                        <p className="text-xs text-muted-foreground">{formatTimestamp(transfer.timestamp)}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Eye className="w-4 h-4 text-[#FDB913] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700">
+                          pending
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-[#FDB913]">${transfer.amount.toFixed(2)} CAD</span>
+                      <span className="text-xs text-muted-foreground font-mono">{transfer.id}</span>
+                    </div>
+                  </div>
+                ))
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

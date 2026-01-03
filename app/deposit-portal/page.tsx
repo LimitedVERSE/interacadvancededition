@@ -15,6 +15,8 @@ import {
   PenTool,
   CheckCircle,
   ExternalLink,
+  Eye,
+  EyeOff,
 } from "lucide-react"
 import Header from "@/components/Header"
 import DepositPanel from "@/components/DepositPanel"
@@ -44,6 +46,7 @@ export default function DepositPortal() {
   const searchParams = useSearchParams()
 
   const [connectionMethod, setConnectionMethod] = useState<ConnectionMethod>("grid")
+  const [showAmount, setShowAmount] = useState(true)
 
   const [transferData, setTransferData] = useState<TransferData | null>(null)
 
@@ -116,7 +119,7 @@ export default function DepositPortal() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
       <Header />
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         {transferData && (
@@ -131,9 +134,26 @@ export default function DepositPortal() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
-                  <p className="text-sm text-zinc-500">Amount</p>
-                  <p className="text-xl font-bold text-white">
-                    ${Number.parseFloat(transferData.amount).toFixed(2)} CAD
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-zinc-500">Amount</p>
+                    <button
+                      onClick={() => setShowAmount(!showAmount)}
+                      className="p-1 hover:bg-zinc-800 rounded transition-colors"
+                      aria-label={showAmount ? "Hide amount" : "Show amount"}
+                    >
+                      {showAmount ? (
+                        <Eye className="w-4 h-4 text-zinc-400 hover:text-zinc-300" />
+                      ) : (
+                        <EyeOff className="w-4 h-4 text-zinc-400 hover:text-zinc-300" />
+                      )}
+                    </button>
+                  </div>
+                  <p
+                    className={`text-xl font-bold transition-all duration-300 ${
+                      showAmount ? "text-white opacity-100" : "text-zinc-600 opacity-50"
+                    }`}
+                  >
+                    {showAmount ? `$${Number.parseFloat(transferData.amount).toFixed(2)} CAD` : "••••••••"}
                   </p>
                 </div>
 

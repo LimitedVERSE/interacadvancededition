@@ -5,8 +5,8 @@
 
 export const appConfig = {
   // Application metadata
-  name: "Interac Money Transfer Demo",
-  description: "Secure money transfer interface for Interac Developer Network",
+  name: "Interac Money Transfer",
+  description: "Secure money transfer via Interac Network",
   version: "1.0.0",
 
   // API simulation settings

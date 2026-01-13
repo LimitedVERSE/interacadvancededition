@@ -5,7 +5,21 @@ import { useRouter } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { SendIcon, DollarSign, CreditCard, History, Settings, LogOut, ArrowRight } from "lucide-react"
+import {
+  SendIcon,
+  DollarSign,
+  CreditCard,
+  History,
+  Settings,
+  LogOut,
+  ArrowRight,
+  Users,
+  FileText,
+  Bell,
+  ShieldCheck,
+  BarChart3,
+  Mail,
+} from "lucide-react"
 import { useState } from "react"
 
 const menuItems = [
@@ -38,17 +52,71 @@ const menuItems = [
   },
   {
     id: "history",
-    title: "Transaction History",
-    description: "View your recent transfers and deposits",
+    title: "Depository History",
+    description: "View your deposit history and pending transfers",
     icon: History,
-    href: "/admin",
+    href: "/history",
     color: "bg-orange-950/50",
     iconColor: "text-orange-400",
   },
   {
+    id: "recipients",
+    title: "Manage Recipients",
+    description: "Add, edit, and organize your frequent recipients",
+    icon: Users,
+    href: "/recipients",
+    color: "bg-cyan-950/50",
+    iconColor: "text-cyan-400",
+  },
+  {
+    id: "reports",
+    title: "Transaction Reports",
+    description: "Generate and download detailed transaction reports",
+    icon: FileText,
+    href: "/reports",
+    color: "bg-indigo-950/50",
+    iconColor: "text-indigo-400",
+  },
+  {
+    id: "notifications",
+    title: "Notifications",
+    description: "Manage email alerts and notification preferences",
+    icon: Bell,
+    href: "/notifications",
+    color: "bg-yellow-950/50",
+    iconColor: "text-yellow-400",
+  },
+  {
+    id: "security",
+    title: "Security Settings",
+    description: "Configure authentication and security options",
+    icon: ShieldCheck,
+    href: "/security",
+    color: "bg-red-950/50",
+    iconColor: "text-red-400",
+  },
+  {
+    id: "analytics",
+    title: "Analytics",
+    description: "View transfer statistics and spending insights",
+    icon: BarChart3,
+    href: "/analytics",
+    color: "bg-teal-950/50",
+    iconColor: "text-teal-400",
+  },
+  {
+    id: "email-preview",
+    title: "Email Templates",
+    description: "Preview and test email templates",
+    icon: Mail,
+    href: "/admin/email-preview",
+    color: "bg-pink-950/50",
+    iconColor: "text-pink-400",
+  },
+  {
     id: "admin",
     title: "Admin Dashboard",
-    description: "Manage transfers and email templates",
+    description: "Manage transfers and system configuration",
     icon: Settings,
     href: "/admin",
     color: "bg-slate-800/50",

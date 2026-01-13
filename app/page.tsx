@@ -3,7 +3,6 @@
 import { useAuth } from "@/lib/auth/context"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { ProtectedRoute } from "@/components/protected-route"
 import type React from "react"
 import { useState } from "react"
 import { Building2, MapPin, CreditCard, Hash, ArrowRight, AlertCircle, Grid3x3, Layers, PenTool } from "lucide-react"
@@ -407,15 +406,21 @@ export default function Home() {
       if (!user) {
         router.push("/login")
       } else {
-        // Optionally redirect authenticated users to dashboard
         router.push("/dashboard")
       }
     }
   }, [user, isLoading, router])
 
-  return (
-    <ProtectedRoute>
-      <HomeContent />
-    </ProtectedRoute>
-  )
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 border-4 border-[#FDB913] border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return null
 }

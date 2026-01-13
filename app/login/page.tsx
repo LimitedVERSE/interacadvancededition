@@ -58,7 +58,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -96,7 +96,9 @@ export default function LoginPage() {
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
 
-            <p className="text-center text-sm text-muted-foreground mt-4">QuantumYield Innovation Technology Holdings</p>
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              QuantumYield Innovation Technology Holdings
+            </p>
           </form>
         </CardContent>
       </Card>

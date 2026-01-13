@@ -33,16 +33,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
+      if (email !== "admin@quantumyield.exchange") {
+        throw new Error("Unauthorized email address")
+      }
+
       // Simulate login - in production, call your auth API
       const newUser: User = {
         id: Math.random().toString(36).substr(2, 9),
         email,
-        name: email.split("@")[0],
+        name: "Admin",
       }
       setUser(newUser)
       localStorage.setItem("interac-user", JSON.stringify(newUser))
     } catch (error) {
-      throw new Error("Login failed")
+      throw new Error(error instanceof Error ? error.message : "Login failed")
     } finally {
       setIsLoading(false)
     }

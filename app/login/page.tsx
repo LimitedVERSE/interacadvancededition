@@ -96,7 +96,7 @@ export default function LoginPage() {
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
 
-            <p className="text-center text-sm text-muted-foreground mt-4">Demo: Use any email and password to login</p>
+            <p className="text-center text-sm text-muted-foreground mt-4">QuantumYield Innovation Technology Holdings</p>
           </form>
         </CardContent>
       </Card>

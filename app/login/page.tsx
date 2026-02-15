@@ -34,11 +34,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center px-4">
+      <Card className="w-full max-w-md shadow-2xl bg-zinc-900/50 backdrop-blur-sm border-zinc-800">
         <CardHeader className="space-y-2 text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-[#FDB913] rounded-lg flex items-center justify-center p-3">
+            <div className="w-16 h-16 bg-[#FDB913] rounded-lg flex items-center justify-center p-3 shadow-lg">
               <img
                 src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
                 alt="Interac"
@@ -46,13 +46,13 @@ export default function LoginPage() {
               />
             </div>
           </div>
-          <CardTitle className="text-2xl">Interac Partner Network</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
+          <CardTitle className="text-2xl text-white">Interac Partner Network</CardTitle>
+          <CardDescription className="text-zinc-400">Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
+              <label htmlFor="email" className="text-sm font-medium text-white">
                 Email Address
               </label>
               <Input
@@ -67,7 +67,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
+              <label htmlFor="password" className="text-sm font-medium text-white">
                 Password
               </label>
               <Input
@@ -82,9 +82,9 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700">{error}</p>
+              <div className="p-3 bg-red-950/50 border border-red-800/50 rounded-lg flex items-start gap-2 backdrop-blur-sm">
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-300">{error}</p>
               </div>
             )}
 
@@ -96,9 +96,7 @@ export default function LoginPage() {
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
 
-            <p className="text-center text-sm text-muted-foreground mt-4">
-              QuantumYield Innovation Technology Holdings
-            </p>
+            <p className="text-center text-sm text-zinc-500 mt-4">QuantumYield Innovation Technology Holdings</p>
           </form>
         </CardContent>
       </Card>

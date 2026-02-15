@@ -47,7 +47,7 @@ interface TransferData {
 export default function DepositPortal() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedInstitutions, setSelectedInstitutions] = useState<FinancialInstitution[]>([])
-  const { t } = useLanguage()
+  const { t, language, setLanguage } = useLanguage()
   const searchParams = useSearchParams()
   const { user } = useAuth()
 
@@ -185,6 +185,13 @@ export default function DepositPortal() {
               <div className="flex items-center justify-between pb-4 border-b border-zinc-800 flex-wrap gap-3">
                 <h3 className="text-lg font-semibold text-white">Transaction Details</h3>
                 <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setLanguage(language === "en" ? "fr" : "en")}
+                    className="px-3 py-1 rounded-lg text-sm font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all border border-zinc-700"
+                    title={`Switch to ${language === "en" ? "French" : "English"}`}
+                  >
+                    {language === "en" ? "Français" : "English"}
+                  </button>
                   <span className="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
                     Awaiting Confirmation
                   </span>

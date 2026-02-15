@@ -119,6 +119,21 @@ export default function CountdownRedirectScreen({ data }: CountdownRedirectScree
                 <p className="text-sm text-zinc-500">Transaction ID</p>
                 <p className="text-sm font-mono text-zinc-400">{data.meta.id}</p>
               </div>
+
+              <div className="space-y-1 md:col-span-2">
+                <p className="text-sm text-zinc-500">Timestamp</p>
+                <p className="text-sm text-zinc-400">
+                  {new Date().toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    timeZoneName: "short",
+                  })}
+                </p>
+              </div>
             </div>
           </div>
 

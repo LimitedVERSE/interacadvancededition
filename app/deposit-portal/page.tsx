@@ -21,6 +21,9 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
+  XCircle,
+  Bell,
+  MoreVertical,
 } from "lucide-react"
 import Header from "@/components/Header"
 import DepositPanel from "@/components/DepositPanel"
@@ -56,6 +59,9 @@ export default function DepositPortal() {
   const [isSendingEmail, setIsSendingEmail] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
   const [showAdminDetails, setShowAdminDetails] = useState(true)
+  const [showStatusMenu, setShowStatusMenu] = useState(false)
+  const [transactionCancelled, setTransactionCancelled] = useState(false)
+  const [menuAction, setMenuAction] = useState<string | null>(null)
 
   const [transferData, setTransferData] = useState<TransferData | null>(null)
 
@@ -142,6 +148,35 @@ export default function DepositPortal() {
     }
   }
 
+  const handleAdminAction = async (actionType: "cancel" | "reminder" | "resend") => {
+    if (!transferData) return
+    setShowStatusMenu(false)
+    setMenuAction(actionType)
+
+    if (actionType === "resend") {
+      await handleSendPendingEmail()
+      setMenuAction(null)
+      return
+    }
+
+    try {
+      const response = await fetch("/api/send-cancellation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...transferData, type: actionType }),
+      })
+      if (response.ok) {
+        if (actionType === "cancel") setTransactionCancelled(true)
+      } else {
+        alert("Failed to send email. Please try again.")
+      }
+    } catch {
+      alert("An error occurred. Please try again.")
+    } finally {
+      setMenuAction(null)
+    }
+  }
+
   const [manualForm, setManualForm] = useState({
     institution: "",
     province: "",
@@ -192,9 +227,62 @@ export default function DepositPortal() {
                   >
                     {language === "en" ? "Français" : "English"}
                   </button>
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                    Awaiting Confirmation
-                  </span>
+                  <div className="relative">
+                    <button
+                      onClick={() => user && setShowStatusMenu((v) => !v)}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                        transactionCancelled
+                          ? "bg-red-500/10 text-red-400 border-red-500/20"
+                          : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                      } ${user ? "cursor-pointer hover:opacity-80" : "cursor-default"}`}
+                      title={user ? "Admin actions" : undefined}
+                    >
+                      {transactionCancelled ? "Cancelled" : "Awaiting Confirmation"}
+                      {user && <MoreVertical className="w-3 h-3 ml-0.5" />}
+                    </button>
+
+                    {user && showStatusMenu && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-30"
+                          onClick={() => setShowStatusMenu(false)}
+                        />
+                        <div className="absolute right-0 top-full mt-2 w-56 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl z-40 overflow-hidden">
+                          <div className="px-3 py-2 border-b border-zinc-800">
+                            <p className="text-xs font-bold text-[#FDB913] uppercase tracking-wider">Admin Actions</p>
+                            <p className="text-xs text-zinc-500 truncate mt-0.5">{transferData?.transferId}</p>
+                          </div>
+                          <div className="p-1">
+                            <button
+                              onClick={() => handleAdminAction("resend")}
+                              disabled={menuAction !== null}
+                              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-200 hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                            >
+                              <Mail className="w-4 h-4 text-[#FDB913]" />
+                              {menuAction === "resend" ? "Sending..." : "Resend Deposit Email"}
+                            </button>
+                            <button
+                              onClick={() => handleAdminAction("reminder")}
+                              disabled={menuAction !== null || transactionCancelled}
+                              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-200 hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                            >
+                              <Bell className="w-4 h-4 text-blue-400" />
+                              {menuAction === "reminder" ? "Sending..." : "Send Reminder"}
+                            </button>
+                            <div className="border-t border-zinc-800 my-1" />
+                            <button
+                              onClick={() => handleAdminAction("cancel")}
+                              disabled={menuAction !== null || transactionCancelled}
+                              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                            >
+                              <XCircle className="w-4 h-4" />
+                              {menuAction === "cancel" ? "Cancelling..." : "Cancel & Notify Payee"}
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                   <button
                     onClick={handleSendPendingEmail}
                     disabled={isSendingEmail || emailSent}

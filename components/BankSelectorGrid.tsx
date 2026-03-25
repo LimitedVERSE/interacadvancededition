@@ -6,11 +6,22 @@ import Image from "next/image"
 import type { Bank } from "@/types/bank"
 import { searchBanks } from "@/services/bankService"
 
-interface BankSelectorGridProps {
-  searchTerm?: string
+interface TransferData {
+  transferId: string
+  amount: string
+  recipient: string
+  recipientName: string
+  bankName: string
+  message: string
+  timestamp: string
 }
 
-export default function BankSelectorGrid({ searchTerm = "" }: BankSelectorGridProps) {
+interface BankSelectorGridProps {
+  searchTerm?: string
+  transferData?: TransferData | null
+}
+
+export default function BankSelectorGrid({ searchTerm = "", transferData }: BankSelectorGridProps) {
   const router = useRouter()
   const [selectedBank, setSelectedBank] = useState<string | null>(null)
   const [banks, setBanks] = useState<Bank[]>([])
@@ -34,9 +45,27 @@ export default function BankSelectorGrid({ searchTerm = "" }: BankSelectorGridPr
     loadBanks()
   }, [searchTerm])
 
-  const handleBankSelect = (bankId: string) => {
+  const handleBankSelect = (bankId: string, bankName: string) => {
     setSelectedBank(bankId)
-    router.push(`/bank/${bankId}`)
+    
+    // Build countdown URL with transfer data if available
+    const params = new URLSearchParams({
+      bankId,
+      bankName,
+      categoryId: "major-banks",
+    })
+    
+    if (transferData) {
+      params.set("transferId", transferData.transferId)
+      params.set("amount", transferData.amount)
+      params.set("recipient", transferData.recipient)
+      params.set("recipientName", transferData.recipientName)
+      params.set("senderBank", transferData.bankName)
+      params.set("message", transferData.message)
+      params.set("timestamp", transferData.timestamp)
+    }
+    
+    router.push(`/countdown?${params.toString()}`)
   }
 
   const handleImageError = (bankId: string) => {
@@ -71,7 +100,7 @@ export default function BankSelectorGrid({ searchTerm = "" }: BankSelectorGridPr
           {banks.map((bank) => (
             <button
               key={bank.id}
-              onClick={() => handleBankSelect(bank.id)}
+              onClick={() => handleBankSelect(bank.id, bank.name)}
               className={`
                 group relative bg-white p-5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300
                 flex items-center justify-center min-h-[120px]

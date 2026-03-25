@@ -436,7 +436,7 @@ export default function DepositPortal() {
               </h2>
               <SearchBar onSearch={setSearchTerm} />
             </div>
-            <BankSelectorGrid searchTerm={searchTerm} />
+            <BankSelectorGrid searchTerm={searchTerm} transferData={transferData} />
           </section>
         )}
 
@@ -452,6 +452,7 @@ export default function DepositPortal() {
               onSelectionChange={(selected) => {
                 setSelectedInstitutions(selected)
               }}
+              transferData={transferData}
             />
           </section>
         )}

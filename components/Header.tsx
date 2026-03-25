@@ -29,18 +29,22 @@ export default function Header() {
         </Link>
 
         <nav className="flex items-center gap-4 sm:gap-6 lg:gap-8" role="navigation" aria-label="Main navigation">
-          <Link
-            href="/contact"
+          <a
+            href="https://www.interac.ca/en/consumers/products/interac-e-transfer/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-white hover:text-[#FDB913] transition-colors font-medium text-xs sm:text-sm lg:text-base focus:outline-none focus:underline focus:underline-offset-4"
           >
             {t.header.contactUs}
-          </Link>
-          <Link
-            href="/about"
+          </a>
+          <a
+            href="https://www.interac.ca/en/consumers/products/interac-e-transfer/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-white hover:text-[#FDB913] transition-colors font-medium text-xs sm:text-sm lg:text-base focus:outline-none focus:underline focus:underline-offset-4"
           >
             {t.header.about}
-          </Link>
+          </a>
           <button
             onClick={toggleLanguage}
             className="flex items-center gap-2 text-white hover:text-[#FDB913] transition-colors font-medium text-xs sm:text-sm lg:text-base focus:outline-none focus:underline focus:underline-offset-4"

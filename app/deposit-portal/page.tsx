@@ -34,6 +34,12 @@ import { useAuth } from "@/lib/auth/context"
 
 type ConnectionMethod = "grid" | "multi-select" | "manual"
 
+// Format amount with commas (e.g., 1000.00 -> 1,000.00)
+function formatAmount(amount: string | number): string {
+  const num = typeof amount === "string" ? parseFloat(amount) : amount
+  return num.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
 interface TransferData {
   transferId: string
   amount: string
@@ -254,7 +260,7 @@ export default function DepositPortal() {
                             showAmount ? "text-white opacity-100" : "text-zinc-600 opacity-50"
                           }`}
                         >
-                          {showAmount ? `$${Number.parseFloat(transferData.amount).toFixed(2)} CAD` : "••••••••"}
+                          {showAmount ? `$${formatAmount(transferData.amount)} CAD` : "••••••••"}
                         </p>
                       </div>
 

@@ -10,6 +10,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
+    // Check for Resend API key
+    const resendApiKey = process.env.RESEND_API_KEY
+    if (!resendApiKey) {
+      console.error("[v0] RESEND_API_KEY is not set")
+      return NextResponse.json(
+        { error: "Email service not configured. Please add RESEND_API_KEY to environment variables." },
+        { status: 500 },
+      )
+    }
+
     const amountNumber = typeof amount === "string" ? Number.parseFloat(amount) : amount
 
     if (isNaN(amountNumber)) {
@@ -30,41 +40,35 @@ export async function POST(request: NextRequest) {
       institution: bankName || "Banking System",
     })
 
-    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+    console.log("[v0] Sending pending deposit email via Resend...")
+
+    // Send email via Resend API
+    const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${resendApiKey}`,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
       },
       body: JSON.stringify({
-        personalizations: [
-          {
-            to: [{ email: recipient, name: recipientName || recipient }],
-          },
-        ],
-        from: {
-          email: process.env.SENDGRID_FROM_EMAIL || "noreply@interac.ca",
-          name: "Interac e-Transfer",
-        },
+        from: process.env.RESEND_FROM_EMAIL || "Interac e-Transfer <onboarding@resend.dev>",
+        to: [recipient],
         subject: `Pending Deposit - ${transferId}`,
-        content: [
-          {
-            type: "text/html",
-            value: html,
-          },
-        ],
+        html: html,
       }),
     })
 
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error("SendGrid error:", errorText)
-      return NextResponse.json({ error: "Failed to send email", details: errorText }, { status: 500 })
+      const errorData = await response.json()
+      console.error("[v0] Resend error:", errorData)
+      return NextResponse.json({ error: "Failed to send email", details: errorData }, { status: 500 })
     }
+
+    const resendResult = await response.json()
+    console.log("[v0] Pending deposit email sent successfully:", resendResult)
 
     return NextResponse.json({ success: true, message: "Pending deposit email sent successfully" })
   } catch (error) {
-    console.error("Error sending pending deposit email:", error)
+    console.error("[v0] Error sending pending deposit email:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

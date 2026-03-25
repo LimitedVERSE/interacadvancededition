@@ -3,6 +3,7 @@ interface EmailData {
   amount: number
   message?: string
   securityQuestion: string
+  securityAnswer?: string
   transferId: string
   depositLink: string
   senderName?: string
@@ -15,11 +16,15 @@ export function generateInteracEmailHtml(data: EmailData): string {
     amount,
     message,
     securityQuestion,
+    securityAnswer,
     transferId,
     depositLink,
     senderName = "Your Institution",
     institution = "Banking System",
   } = data
+  
+  // Mask the security answer for display
+  const maskedAnswer = securityAnswer ? "●".repeat(Math.min(securityAnswer.length, 8)) : "●●●●●●●●"
 
   const formattedAmount = amount.toFixed(2)
   const currentDate = new Date().toLocaleDateString("en-US", {
@@ -92,38 +97,42 @@ export function generateInteracEmailHtml(data: EmailData): string {
     /* Interactive language toggle styling */
     .lang-toggle {
       display: flex;
-      gap: 8px;
+      gap: 4px;
       align-items: center;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 2px;
     }
     .lang-toggle span {
       color: #ffffff;
-      font-size: 13px;
-      opacity: 0.7;
+      font-size: 12px;
+      opacity: 0.6;
       cursor: pointer;
       user-select: none;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 3px;
       transition: background-color 0.2s, opacity 0.2s;
+      font-weight: 500;
     }
     .lang-toggle span:hover {
-      opacity: 1;
-      background-color: rgba(255, 255, 255, 0.1);
+      opacity: 0.9;
+      background-color: rgba(255, 255, 255, 0.15);
     }
     .lang-toggle span.active {
-      font-weight: bold;
-      text-decoration: underline;
+      font-weight: 600;
       opacity: 1;
-      background-color: #fdb913;
-      color: #000000;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
     }
-    /* </CHANGE> */
     .brand {
-      background-color: #FDB913;
-      color: #000000;
-      font-weight: bold;
-      font-size: 16px;
-      padding: 8px 12px;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 6px 12px;
       border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: transparent;
+      letter-spacing: 0.5px;
     }
     .content-wrapper {
       padding: 32px 24px;
@@ -223,32 +232,30 @@ export function generateInteracEmailHtml(data: EmailData): string {
       color: #333333;
       word-break: break-word;
     }
-    /* Interactive reveal button styling */
     .security-answer {
       background-color: #ffffff;
       border: 1px solid #dddddd;
       padding: 12px;
       border-radius: 4px;
       margin-top: 8px;
-      font-weight: 600;
       color: #000000;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s;
+      font-size: 14px;
     }
-    .security-answer:hover {
-      background-color: #f9f9f9;
+    .security-answer strong {
+      font-weight: 600;
     }
-    .security-answer.revealed {
-      background-color: #e8f5e8;
-      border-color: #4caf50;
-    }
-    /* </CHANGE> */
     .reveal-text {
-      color: #666666;
+      color: #555555;
       font-size: 13px;
-      font-style: italic;
-      margin-top: 4px;
+      margin-top: 12px;
+      line-height: 1.5;
+      background-color: #fff3cd;
+      padding: 10px 12px;
+      border-radius: 4px;
+      border-left: 3px solid #ffc107;
+    }
+    .reveal-text strong {
+      color: #333333;
     }
     .button-section {
       text-align: center;
@@ -387,11 +394,11 @@ export function generateInteracEmailHtml(data: EmailData): string {
             </h4>
             <div class="security-toggle">
               <p class="security-question-text">${securityQuestion}</p>
-              <div class="security-answer" data-revealed="false">
-                Answer: ****** (click to reveal example)
+              <div class="security-answer">
+                <strong>Answer:</strong> ${maskedAnswer}
               </div>
               <p class="reveal-text">
-                You'll need to answer this security question when depositing your funds through your financial institution.
+                <strong>Important:</strong> The sender must provide you with the security answer to complete this deposit. Contact the sender directly if you have not received the answer. This step is required for security verification and transaction validation.
               </p>
             </div>
           </div>
@@ -464,11 +471,11 @@ export function generateInteracEmailHtml(data: EmailData): string {
             </h4>
             <div class="security-toggle">
               <p class="security-question-text">${securityQuestion}</p>
-              <div class="security-answer" data-revealed="false">
-                Réponse : ****** (cliquez pour révéler l'exemple)
+              <div class="security-answer">
+                <strong>Réponse :</strong> ${maskedAnswer}
               </div>
               <p class="reveal-text">
-                Vous devrez répondre à cette question de sécurité lors du dépôt de vos fonds via votre institution financière.
+                <strong>Important :</strong> L'expéditeur doit vous fournir la réponse de sécurité pour compléter ce dépôt. Contactez l'expéditeur directement si vous n'avez pas reçu la réponse. Cette étape est requise pour la vérification de sécurité et la validation de la transaction.
               </p>
             </div>
           </div>
@@ -505,23 +512,22 @@ export function generateInteracEmailHtml(data: EmailData): string {
     </div>
   </div>
 
-  <!-- JavaScript for language toggle and security reveal -->
+  <!-- JavaScript for language toggle -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const langToggles = document.querySelectorAll('.lang-toggle span[data-lang]');
-      const langSections = document.querySelectorAll('.lang-section[data-lang]');
-      const html = document.documentElement;
+      var langToggles = document.querySelectorAll('.lang-toggle span[data-lang]');
+      var langSections = document.querySelectorAll('.lang-section[data-lang]');
 
-      langToggles.forEach(toggle => {
+      langToggles.forEach(function(toggle) {
         toggle.addEventListener('click', function() {
-          const selectedLang = this.getAttribute('data-lang');
+          var selectedLang = this.getAttribute('data-lang');
 
-          langToggles.forEach(t => t.classList.remove('active'));
+          langToggles.forEach(function(t) { t.classList.remove('active'); });
           this.classList.add('active');
 
-          html.setAttribute('lang', selectedLang);
+          document.documentElement.setAttribute('lang', selectedLang);
 
-          langSections.forEach(section => {
+          langSections.forEach(function(section) {
             if (section.getAttribute('data-lang') === selectedLang) {
               section.classList.add('active');
             } else {
@@ -529,7 +535,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
             }
           });
 
-          const dba = document.querySelector('.dba');
+          var dba = document.querySelector('.dba');
           if (selectedLang === 'fr') {
             dba.textContent = 'Partenaire de QuantumYield Holdings';
           } else {
@@ -537,25 +543,8 @@ export function generateInteracEmailHtml(data: EmailData): string {
           }
         });
       });
-
-      const securityAnswers = document.querySelectorAll('.security-answer');
-      securityAnswers.forEach(answer => {
-        answer.addEventListener('click', function() {
-          const lang = this.closest('.lang-section').getAttribute('data-lang');
-          if (this.getAttribute('data-revealed') === 'false') {
-            if (lang === 'fr') {
-              this.textContent = 'Réponse : ExempleMotDePasse (révélé)';
-            } else {
-              this.textContent = 'Answer: ExampleSecretPass (revealed)';
-            }
-            this.setAttribute('data-revealed', 'true');
-            this.classList.add('revealed');
-          }
-        });
-      });
     });
   </script>
-  <!-- </CHANGE> -->
 </body>
 </html>
 `

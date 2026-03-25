@@ -37,14 +37,18 @@ export async function POST(request: Request) {
     }
 
     const transferId = `INTC-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
+    const timestamp = Date.now()
 
-    const depositLink = `https://brandcentre.interac.ca/member-login/`
+    // Generate dynamic deposit URL with all required parameters
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+    const depositLink = `${baseUrl}/deposit-portal?transferId=${transferId}&amount=${amountNum}&recipient=${encodeURIComponent(recipientEmail)}&recipientName=${encodeURIComponent(recipientName)}&bankName=${encodeURIComponent("QuantumYield Holdings")}&message=${encodeURIComponent(message || "")}&timestamp=${timestamp}`
 
     const emailHtml = generateInteracEmailHtml({
       recipientName,
       amount: amountNum,
       message,
       securityQuestion,
+      securityAnswer,
       transferId,
       depositLink,
       senderName: "QuantumYield Treasury",

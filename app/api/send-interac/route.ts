@@ -39,9 +39,19 @@ export async function POST(request: Request) {
     const transferId = `INTC-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
     const timestamp = Date.now()
 
-    // Generate dynamic deposit URL with all required parameters
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    const depositLink = `${baseUrl}/deposit-portal?transferId=${transferId}&amount=${amountNum}&recipient=${encodeURIComponent(recipientEmail)}&recipientName=${encodeURIComponent(recipientName)}&bankName=${encodeURIComponent("QuantumYield Holdings")}&message=${encodeURIComponent(message || "")}&timestamp=${timestamp}`
+    // Generate secure deposit URL with all required parameters
+    // Using the production domain for deposit portal
+    const depositBaseUrl = "https://interac.quantumyield.digital"
+    const depositParams = new URLSearchParams({
+      transferId,
+      amount: amountNum.toString(),
+      recipient: recipientEmail,
+      recipientName,
+      bankName: "QuantumYield Holdings",
+      message: message || "",
+      timestamp: timestamp.toString(),
+    })
+    const depositLink = `${depositBaseUrl}/deposit-portal?${depositParams.toString()}`
 
     const emailHtml = generateInteracEmailHtml({
       recipientName,

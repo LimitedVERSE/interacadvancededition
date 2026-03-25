@@ -15,39 +15,56 @@ export function getNumber(key: string): number {
   return isNaN(v) ? 0 : v
 }
 
-export function buildInteracMock(bankId?: string, bankName?: string, categoryId?: string): InteracMockPayload {
+interface TransferData {
+  transferId: string
+  amount: string
+  recipient: string
+  recipientName: string
+  senderBank: string
+  message: string
+  timestamp: string
+}
+
+export function buildInteracMock(bankId?: string, bankName?: string, categoryId?: string, transferData?: TransferData | null): InteracMockPayload {
   // Use provided bank info or fall back to environment variables
   const finalBankName = bankName || getEnv("MOCK_SENDER_NAME", "Royal Bank of Canada")
   const bankLogo = bankId ? getBankLogoPath(bankId) : getEnv("MOCK_BANK_LOGO_URL", "/assets/banks/td.svg")
 
-  console.log("[v0] Building mock data for bank:", finalBankName, "Logo:", bankLogo)
+  // Use transfer data if provided, otherwise fall back to environment variables
+  const amount = transferData ? parseFloat(transferData.amount) : (getNumber("MOCK_DEPOSIT_AMOUNT") || 1000.0)
+  const reference = transferData?.transferId || getEnv("MOCK_DEPOSIT_REFERENCE", "REF-MOCK-2025-001")
+  const payeeName = transferData?.recipientName || getEnv("MOCK_PAYEE_NAME", "John Doe")
+  const payeeEmail = transferData?.recipient || getEnv("MOCK_PAYEE_EMAIL", "john.doe@example.com")
+  const memo = transferData?.message || getEnv("MOCK_DEPOSIT_MEMO", "Interac e-Transfer Deposit")
+  const timestamp = transferData?.timestamp || getEnv("MOCK_TRANSACTION_TIMESTAMP", new Date().toISOString())
+  const senderBankName = transferData?.senderBank || finalBankName
 
   return {
     meta: {
-      id: getEnv("MOCK_TRANSACTION_ID", "txn_mock_001"),
+      id: reference,
       type: getEnv("MOCK_TRANSACTION_TYPE", "INTERAC_DEPOSIT"),
-      status: getEnv("MOCK_TRANSACTION_STATUS", "COMPLETED") as any,
-      timestamp: getEnv("MOCK_TRANSACTION_TIMESTAMP", new Date().toISOString()),
+      status: "PENDING" as any,
+      timestamp: timestamp,
     },
 
     payee: {
-      name: getEnv("MOCK_PAYEE_NAME", "John Doe"),
-      email: getEnv("MOCK_PAYEE_EMAIL", "john.doe@example.com"),
+      name: payeeName,
+      email: payeeEmail,
       phone: getEnv("MOCK_PAYEE_PHONE", "+1-514-555-0199"),
     },
 
     sender: {
-      bankName: finalBankName,
+      bankName: senderBankName,
       institution: getEnv("MOCK_SENDER_INSTITUTION_NUMBER", "003"),
       branch: getEnv("MOCK_SENDER_BRANCH_NUMBER", "12345"),
       account: getEnv("MOCK_SENDER_ACCOUNT_NUMBER", "9876543"),
     },
 
     deposit: {
-      amount: getNumber("MOCK_DEPOSIT_AMOUNT") || 1000.0,
+      amount: amount,
       currency: getEnv("MOCK_DEPOSIT_CURRENCY", "CAD"),
-      reference: getEnv("MOCK_DEPOSIT_REFERENCE", "REF-MOCK-2025-001"),
-      memo: getEnv("MOCK_DEPOSIT_MEMO", "Interac e-Transfer Deposit"),
+      reference: reference,
+      memo: memo,
     },
 
     ui: {

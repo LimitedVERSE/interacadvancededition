@@ -42,6 +42,17 @@ import {
   Mail,
   Sparkles,
   LayoutGrid,
+  Receipt,
+  CalendarClock,
+  PauseCircle,
+  ScanLine,
+  PartyPopper,
+  Ban,
+  Gift,
+  ScanFace,
+  ShieldAlert,
+  ReceiptText,
+  ClipboardCheck,
 } from "lucide-react"
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -67,6 +78,17 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HandCoins,
   ThumbsUp,
   ThumbsDown,
+  Receipt,
+  CalendarClock,
+  PauseCircle,
+  ScanLine,
+  PartyPopper,
+  Ban,
+  Gift,
+  ScanFace,
+  ShieldAlert,
+  ReceiptText,
+  ClipboardCheck,
 }
 
 function InteracLoader({ onComplete }: { onComplete: () => void }) {
@@ -101,7 +123,7 @@ function InteracLoader({ onComplete }: { onComplete: () => void }) {
         </div>
         <div className="text-center">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Email Studio</h2>
-          <p className="text-zinc-400 text-sm">Loading 22 templates...</p>
+          <p className="text-zinc-400 text-sm">Loading 33 templates...</p>
         </div>
         <div className="w-48 sm:w-64 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
           <div
@@ -124,6 +146,7 @@ function EmailStudioContent() {
   const [sending, setSending] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
+  const [language, setLanguage] = useState<"en" | "fr">("en")
 
   const [formData, setFormData] = useState({
     recipientEmail: "",
@@ -142,8 +165,14 @@ function EmailStudioContent() {
 
   const currentTemplate = emailTemplates.find((t) => t.id === selectedTemplate)
 
-  const previewHtml = selectedTemplate
-    ? generateEmailByTemplateId(selectedTemplate, {
+  const activeTemplateId = selectedTemplate
+    ? language === "fr"
+      ? `${selectedTemplate}-fr`
+      : selectedTemplate
+    : null
+
+  const previewHtml = activeTemplateId
+    ? generateEmailByTemplateId(activeTemplateId, {
         recipientName: formData.recipientName,
         amount: parseFloat(formData.amount.replace(/,/g, "")) || 0,
         message: formData.message || undefined,
@@ -219,7 +248,7 @@ function EmailStudioContent() {
             </div>
             <div>
               <h1 className="text-lg font-bold text-white">Email Studio</h1>
-              <p className="text-xs text-zinc-500">22 Professional Templates</p>
+              <p className="text-xs text-zinc-500">33 Professional Templates</p>
             </div>
           </div>
         </div>
@@ -236,7 +265,7 @@ function EmailStudioContent() {
           </div>
           <div className="flex items-center gap-2 px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-xl">
             <Sparkles className="w-4 h-4 text-[#FDB913]" />
-            <span className="text-sm font-medium text-white">22</span>
+            <span className="text-sm font-medium text-white">33</span>
             <span className="text-xs text-zinc-500 hidden sm:inline">templates</span>
           </div>
         </div>
@@ -385,10 +414,34 @@ function EmailStudioContent() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {/* Configuration form */}
               <Card className="bg-zinc-800/50 border-zinc-700 p-4">
-                <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                  <Send className="w-4 h-4 text-[#FDB913]" />
-                  Email Configuration
-                </h4>
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-semibold text-white flex items-center gap-2">
+                    <Send className="w-4 h-4 text-[#FDB913]" />
+                    Email Configuration
+                  </h4>
+                  <div className="flex items-center gap-1 bg-zinc-900/60 border border-zinc-700 rounded-lg p-1">
+                    <button
+                      onClick={() => setLanguage("en")}
+                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                        language === "en"
+                          ? "bg-[#FDB913] text-black"
+                          : "text-zinc-400 hover:text-white"
+                      }`}
+                    >
+                      EN
+                    </button>
+                    <button
+                      onClick={() => setLanguage("fr")}
+                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                        language === "fr"
+                          ? "bg-[#FDB913] text-black"
+                          : "text-zinc-400 hover:text-white"
+                      }`}
+                    >
+                      FR
+                    </button>
+                  </div>
+                </div>
                 <div className="space-y-3">
                   <div>
                     <label className="text-xs font-medium text-zinc-400 mb-1 block">Recipient Email</label>

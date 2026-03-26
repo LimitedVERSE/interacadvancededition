@@ -469,6 +469,8 @@ export function generateDepositInstructions(data: BaseEmailData): string {
 
 // 10. Auto-Deposit Enabled
 export function generateAutoDepositEnabled(data: BaseEmailData): string {
+  const activationDate = "Thursday, March 26, 2026 at 10:31 a.m."
+  const receiver = data.recipientName || "NICK ST-PIERRE"
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -479,24 +481,40 @@ export function generateAutoDepositEnabled(data: BaseEmailData): string {
         <div class="content">
           <h1 class="greeting">Auto-Deposit Activated!</h1>
           <p class="subtitle">Future e-Transfers will be deposited automatically.</p>
-          
+
           <div class="alert-box alert-success">
-            <strong>Enabled:</strong> Interac e-Transfer Auto-Deposit is now active for your account.
+            <strong>Enablement:</strong> Interac e-Transfer Auto-Deposit has been activated for your account when receiving from QuantumYield Holdings.
           </div>
-          
+
           <div class="details-card">
             <h3 class="details-title">Auto-Deposit Settings</h3>
-            <div class="detail-row"><span class="detail-label">Account:</span><span class="detail-value">${data.bankName || "Primary Chequing"}</span></div>
-            <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">${data.recipientName}</span></div>
-            <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #28a745;">Active</span></div>
-            <div class="detail-row"><span class="detail-label">Activated:</span><span class="detail-value">${formatDate()}</span></div>
+            <div class="detail-row">
+              <span class="detail-label">Verified Sender:</span>
+              <span class="detail-value">QuantumYield Innovation Technology</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Receiver:</span>
+              <span class="detail-value">${receiver}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Status:</span>
+              <span class="detail-value" style="color: #28a745; font-weight: 600;">Active</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Activation Date:</span>
+              <span class="detail-value">${activationDate}</span>
+            </div>
           </div>
-          
+
           <div class="security-section">
             <h4 class="security-title">What This Means</h4>
-            <p style="color: #666666; font-size: 14px; line-height: 1.6;">
-              All future Interac e-Transfers sent to your registered email will be automatically deposited into your selected account. No action required on your part.
+            <p style="color: #555555; font-size: 14px; line-height: 1.7; margin: 0;">
+              All future Interac e-Transfers sent from this verified sender will be automatically deposited into the recipient&apos;s account, requiring no action on their part. Note that wait times may vary, and an email confirmation will follow each transaction.
             </p>
+          </div>
+
+          <div class="alert-box alert-info" style="margin-top: 24px;">
+            <strong>Note:</strong> If you did not request Auto-Deposit activation or do not recognize this sender, please contact your financial institution immediately to review your account settings.
           </div>
         </div>
         ${getFooter()}

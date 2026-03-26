@@ -102,10 +102,10 @@ const menuItems = [
     iconColor: "text-teal-400",
   },
   {
-    id: "email-preview",
-    title: "Email Templates",
+    id: "email-studio",
+    title: "Email Studio",
     icon: Mail,
-    href: "/admin/email-preview",
+    href: "/email-studio",
     color: "from-pink-500 to-pink-600",
     bgColor: "bg-pink-500/10",
     iconColor: "text-pink-400",

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
 import { emailTemplates, templateCategories, getTemplatesByCategory } from "@/lib/email-templates-collection"
-import { generateInteracEmailHtml } from "@/lib/email-template"
+import { generateEmailByTemplateId } from "@/lib/email-template-generators"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -142,17 +142,20 @@ function EmailStudioContent() {
 
   const currentTemplate = emailTemplates.find((t) => t.id === selectedTemplate)
 
-  const previewHtml = generateInteracEmailHtml({
-    recipientName: formData.recipientName,
-    amount: parseFloat(formData.amount.replace(/,/g, "")) || 0,
-    message: formData.message || undefined,
-    securityQuestion: formData.securityQuestion,
-    securityAnswer: formData.securityAnswer,
-    transferId: `INTC-${Date.now().toString().slice(-6)}-PREVIEW`,
-    depositLink: "https://interac.quantumyield.digital/deposit-portal",
-    senderName: "QuantumYield Treasury",
-    institution: "QuantumYield Holdings | Treasury & Vault Portal",
-  })
+  const previewHtml = selectedTemplate
+    ? generateEmailByTemplateId(selectedTemplate, {
+        recipientName: formData.recipientName,
+        amount: parseFloat(formData.amount.replace(/,/g, "")) || 0,
+        message: formData.message || undefined,
+        transferId: `INTC-${Date.now().toString().slice(-6)}-PREVIEW`,
+        senderName: "QuantumYield Treasury",
+        institution: "QuantumYield Holdings | Treasury & Vault Portal",
+        bankName: "TD Canada Trust",
+        limit: "10,000",
+        deviceInfo: "Chrome on Windows",
+        location: "Toronto, Canada",
+      })
+    : ""
 
   const handleSendEmail = async () => {
     if (!formData.recipientEmail) {

@@ -62,7 +62,7 @@ const getHeader = () => `
   <div class="topbar">
     <div class="topbar-left">
       <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC e-Transfer" height="50">
-      <div class="dba">Partnered with QuantumYield Holdings</div>
+      <div class="dba">QuantumYield Holdings</div>
     </div>
     <div class="topbar-right">
       <div class="brand">e-Transfer</div>
@@ -989,6 +989,440 @@ export function generateRequestDeclined(data: BaseEmailData): string {
   `
 }
 
+// ---------- 11 NEW TEMPLATES (23–33) ----------
+
+// 23. Transfer Receipt
+export function generateTransferReceipt(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Transfer Receipt</h1>
+    <p class="subtitle">Official record of your Interac e-Transfer.</p>
+    <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Transfer Amount</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Receipt Details</h3>
+      <div class="detail-row"><span class="detail-label">Receipt No.:</span><span class="detail-value">${data.transferId || "RCPT-" + Date.now().toString().slice(-8)}</span></div>
+      <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Institution:</span><span class="detail-value">${data.institution || "QuantumYield Holdings"}</span></div>
+      <div class="detail-row"><span class="detail-label">Date & Time:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Completed</span></div>
+    </div>
+    <div class="alert-box alert-info">Please retain this receipt for your financial records. This serves as official proof of your Interac e-Transfer transaction.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 23-FR. Transfer Receipt (French)
+export function generateTransferReceiptFr(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Reçu de virement</h1>
+    <p class="subtitle">Dossier officiel de votre virement Interac.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant du virement</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Détails du reçu</h3>
+      <div class="detail-row"><span class="detail-label">No de reçu :</span><span class="detail-value">${data.transferId || "RCPT-" + Date.now().toString().slice(-8)}</span></div>
+      <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Institution :</span><span class="detail-value">${data.institution || "QuantumYield Holdings"}</span></div>
+      <div class="detail-row"><span class="detail-label">Date et heure :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Complété</span></div>
+    </div>
+    <div class="alert-box alert-info">Veuillez conserver ce reçu pour vos dossiers financiers. Il constitue une preuve officielle de votre transaction Interac.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 24. Scheduled Transfer
+export function generateScheduledTransfer(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Scheduled Transfer Reminder</h1>
+    <p class="subtitle">An Interac e-Transfer is scheduled to process tomorrow.</p>
+    <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Scheduled Amount</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Schedule Details</h3>
+      <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Scheduled Date:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "N/A"}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#FDB913;font-weight:600;">Scheduled</span></div>
+    </div>
+    <div class="alert-box alert-warning">Ensure sufficient funds are available in your account before the scheduled date to avoid cancellation.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 24-FR. Scheduled Transfer (French)
+export function generateScheduledTransferFr(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Rappel de virement programmé</h1>
+    <p class="subtitle">Un virement Interac est prévu pour demain.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant programmé</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Détails du calendrier</h3>
+      <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Date prévue :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${data.transferId || "S/O"}</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#FDB913;font-weight:600;">Programmé</span></div>
+    </div>
+    <div class="alert-box alert-warning">Assurez-vous que votre compte dispose de fonds suffisants avant la date prévue pour éviter l&apos;annulation.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 25. Deposit on Hold
+export function generateDepositOnHold(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Deposit Temporarily on Hold</h1>
+    <p class="subtitle">We are reviewing your deposit before it is released.</p>
+    <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Amount on Hold</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Hold Details</h3>
+      <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "N/A"}</span></div>
+      <div class="detail-row"><span class="detail-label">Hold Applied:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#856404;font-weight:600;">Under Review</span></div>
+    </div>
+    <div class="alert-box alert-warning"><strong>Why is my deposit on hold?</strong> Deposits may be temporarily held for security verification. You will receive a follow-up notification once the review is complete, typically within 1–2 business days.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 25-FR. Deposit on Hold (French)
+export function generateDepositOnHoldFr(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Dépôt temporairement suspendu</h1>
+    <p class="subtitle">Nous examinons votre dépôt avant de le libérer.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant suspendu</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Détails de la suspension</h3>
+      <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${data.transferId || "S/O"}</span></div>
+      <div class="detail-row"><span class="detail-label">Suspension appliquée :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#856404;font-weight:600;">En cours d&apos;examen</span></div>
+    </div>
+    <div class="alert-box alert-warning"><strong>Pourquoi mon dépôt est-il suspendu?</strong> Les dépôts peuvent être temporairement retenus pour vérification de sécurité. Vous recevrez une notification de suivi une fois l&apos;examen terminé, généralement sous 1 à 2 jours ouvrables.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 26. Two-Factor Code
+export function generateTwoFactorCode(data: BaseEmailData): string {
+  const code = Math.floor(100000 + Math.random() * 900000).toString()
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Your Verification Code</h1>
+    <p class="subtitle">Use the code below to complete your sign-in.</p>
+    <div class="amount-box" style="letter-spacing: 8px; font-size: 36px; font-weight: 700;">${code}</div>
+    <div class="details-card">
+      <h3 class="details-title">Code Details</h3>
+      <div class="detail-row"><span class="detail-label">Issued To:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Expires In:</span><span class="detail-value">10 minutes</span></div>
+      <div class="detail-row"><span class="detail-label">Time:</span><span class="detail-value">${formatDate()}</span></div>
+    </div>
+    <div class="alert-box alert-danger"><strong>Security Notice:</strong> Never share this code with anyone. QuantumYield and Interac will never ask for this code by phone or email.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 26-FR. Two-Factor Code (French)
+export function generateTwoFactorCodeFr(data: BaseEmailData): string {
+  const code = Math.floor(100000 + Math.random() * 900000).toString()
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Votre code de vérification</h1>
+    <p class="subtitle">Utilisez le code ci-dessous pour compléter votre connexion.</p>
+    <div class="amount-box" style="letter-spacing: 8px; font-size: 36px; font-weight: 700;">${code}</div>
+    <div class="details-card">
+      <h3 class="details-title">Détails du code</h3>
+      <div class="detail-row"><span class="detail-label">Émis à :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Expire dans :</span><span class="detail-value">10 minutes</span></div>
+      <div class="detail-row"><span class="detail-label">Heure :</span><span class="detail-value">${formatDate()}</span></div>
+    </div>
+    <div class="alert-box alert-danger"><strong>Avis de sécurité :</strong> Ne partagez jamais ce code avec qui que ce soit. QuantumYield et Interac ne vous demanderont jamais ce code par téléphone ou par courriel.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 27. Welcome Onboarding
+export function generateWelcomeOnboard(data: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Welcome, ${data.recipientName}!</h1>
+    <p class="subtitle">Your Interac e-Transfer account via QuantumYield is ready.</p>
+    <div class="alert-box alert-success"><strong>Account Activated:</strong> You can now send and receive Interac e-Transfers securely through QuantumYield Holdings.</div>
+    <div class="details-card">
+      <h3 class="details-title">Getting Started</h3>
+      <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Partner:</span><span class="detail-value">QuantumYield Innovation Technology</span></div>
+      <div class="detail-row"><span class="detail-label">Member Since:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Active</span></div>
+    </div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Explore Your Portal</a></div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Next Steps</h4><ol><li>Set up your security question for deposits</li><li>Link your preferred financial institution</li><li>Enable Auto-Deposit for seamless transfers</li><li>Review your transaction limits</li></ol></div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 27-FR. Welcome Onboarding (French)
+export function generateWelcomeOnboardFr(data: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Bienvenue, ${data.recipientName}!</h1>
+    <p class="subtitle">Votre compte Interac via QuantumYield est prêt.</p>
+    <div class="alert-box alert-success"><strong>Compte activé :</strong> Vous pouvez maintenant envoyer et recevoir des virements Interac de façon sécurisée via QuantumYield Holdings.</div>
+    <div class="details-card">
+      <h3 class="details-title">Pour commencer</h3>
+      <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Partenaire :</span><span class="detail-value">QuantumYield Innovation Technology</span></div>
+      <div class="detail-row"><span class="detail-label">Membre depuis :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Actif</span></div>
+    </div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Explorer votre portail</a></div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Prochaines étapes</h4><ol><li>Configurez votre question de sécurité pour les dépôts</li><li>Liez votre institution financière préférée</li><li>Activez le dépôt automatique pour des virements transparents</li><li>Vérifiez vos limites de transaction</li></ol></div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 28. Account Suspended
+export function generateAccountSuspended(data: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Account Temporarily Suspended</h1>
+    <p class="subtitle">Immediate action is required to restore your access.</p>
+    <div class="alert-box alert-danger"><strong>Account Suspended:</strong> Your Interac e-Transfer access has been temporarily suspended due to a security review.</div>
+    <div class="details-card">
+      <h3 class="details-title">Suspension Details</h3>
+      <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Suspended On:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Reason:</span><span class="detail-value">Security Review Required</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#721c24;font-weight:600;">Suspended</span></div>
+    </div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">To Restore Access</h4><ol><li>Contact your financial institution immediately</li><li>Verify your identity with a valid government-issued ID</li><li>Complete the required security questionnaire</li><li>Await confirmation from our compliance team</li></ol></div>
+    <div class="alert-box alert-warning">If you believe this suspension was made in error, please contact QuantumYield support or your financial institution directly.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 28-FR. Account Suspended (French)
+export function generateAccountSuspendedFr(data: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Compte temporairement suspendu</h1>
+    <p class="subtitle">Une action immédiate est requise pour restaurer votre accès.</p>
+    <div class="alert-box alert-danger"><strong>Compte suspendu :</strong> Votre accès au virement Interac a été temporairement suspendu en raison d&apos;une vérification de sécurité.</div>
+    <div class="details-card">
+      <h3 class="details-title">Détails de la suspension</h3>
+      <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Suspendu le :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Raison :</span><span class="detail-value">Vérification de sécurité requise</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#721c24;font-weight:600;">Suspendu</span></div>
+    </div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Pour restaurer l&apos;accès</h4><ol><li>Communiquez immédiatement avec votre institution financière</li><li>Vérifiez votre identité avec une pièce d&apos;identité gouvernementale valide</li><li>Remplissez le questionnaire de sécurité requis</li><li>Attendez la confirmation de notre équipe de conformité</li></ol></div>
+    <div class="alert-box alert-warning">Si vous croyez que cette suspension est une erreur, veuillez contacter le soutien QuantumYield ou votre institution financière directement.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 29. Referral Bonus
+export function generateReferralBonus(data: BaseEmailData): string {
+  const amount = data.amount || 25
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">You&apos;ve Earned a Referral Bonus!</h1>
+    <p class="subtitle">Thank you for growing the QuantumYield network.</p>
+    <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Referral Bonus Applied</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Bonus Details</h3>
+      <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Bonus Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Applied On:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Credited</span></div>
+    </div>
+    <div class="alert-box alert-success">Your referral bonus has been credited to your account. Keep referring friends to earn more rewards!</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 29-FR. Referral Bonus (French)
+export function generateReferralBonusFr(data: BaseEmailData): string {
+  const amount = data.amount || 25
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Vous avez gagné une prime de parrainage!</h1>
+    <p class="subtitle">Merci de faire croître le réseau QuantumYield.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Prime de parrainage appliquée</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Détails de la prime</h3>
+      <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Montant de la prime :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Appliqué le :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Crédité</span></div>
+    </div>
+    <div class="alert-box alert-success">Votre prime de parrainage a été créditée à votre compte. Continuez à référer des amis pour gagner plus de récompenses!</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 30. KYC Verification
+export function generateKycVerification(data: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Identity Verification Required</h1>
+    <p class="subtitle">Please complete your Know Your Customer (KYC) verification to continue.</p>
+    <div class="alert-box alert-warning"><strong>Action Required:</strong> Your account requires identity verification before processing further transactions.</div>
+    <div class="details-card">
+      <h3 class="details-title">Verification Details</h3>
+      <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Request Date:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Deadline:</span><span class="detail-value">Within 5 business days</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#856404;font-weight:600;">Pending Verification</span></div>
+    </div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Documents Required</h4><ol><li>Valid government-issued photo ID (passport, driver&apos;s license)</li><li>Proof of address (utility bill or bank statement, within 90 days)</li><li>A clear selfie holding your photo ID</li></ol></div>
+    <div class="alert-box alert-danger">Failure to complete verification within the deadline may result in temporary suspension of your account.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 30-FR. KYC Verification (French)
+export function generateKycVerificationFr(data: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Vérification d&apos;identité requise</h1>
+    <p class="subtitle">Veuillez compléter votre vérification KYC pour continuer.</p>
+    <div class="alert-box alert-warning"><strong>Action requise :</strong> Votre compte nécessite une vérification d&apos;identité avant de traiter d&apos;autres transactions.</div>
+    <div class="details-card">
+      <h3 class="details-title">Détails de la vérification</h3>
+      <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Date de la demande :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Délai :</span><span class="detail-value">Dans les 5 jours ouvrables</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#856404;font-weight:600;">En attente de vérification</span></div>
+    </div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Documents requis</h4><ol><li>Pièce d&apos;identité avec photo valide (passeport, permis de conduire)</li><li>Preuve d&apos;adresse (facture de service ou relevé bancaire, dans les 90 jours)</li><li>Un égoportrait clair tenant votre pièce d&apos;identité</li></ol></div>
+    <div class="alert-box alert-danger">Le non-respect du délai de vérification peut entraîner la suspension temporaire de votre compte.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 31. AML Hold
+export function generateAmlHold(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Transaction Hold Applied</h1>
+    <p class="subtitle">Your transfer is currently under compliance review.</p>
+    <div class="alert-box alert-danger"><strong>Compliance Hold:</strong> This transaction has been flagged for anti-money laundering (AML) review as part of our regulatory obligations.</div>
+    <div class="details-card">
+      <h3 class="details-title">Hold Details</h3>
+      <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "N/A"}</span></div>
+      <div class="detail-row"><span class="detail-label">Hold Date:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#721c24;font-weight:600;">AML Review</span></div>
+    </div>
+    <div class="alert-box alert-warning">Our compliance team will contact you within 2–5 business days. You may be asked to provide source-of-funds documentation. This process is required by Canadian financial regulations.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 31-FR. AML Hold (French)
+export function generateAmlHoldFr(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Blocage de transaction appliqué</h1>
+    <p class="subtitle">Votre virement est actuellement en cours d&apos;examen de conformité.</p>
+    <div class="alert-box alert-danger"><strong>Blocage de conformité :</strong> Cette transaction a été signalée pour un examen anti-blanchiment d&apos;argent (ABA) dans le cadre de nos obligations réglementaires.</div>
+    <div class="details-card">
+      <h3 class="details-title">Détails du blocage</h3>
+      <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${data.transferId || "S/O"}</span></div>
+      <div class="detail-row"><span class="detail-label">Date du blocage :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#721c24;font-weight:600;">Examen ABA</span></div>
+    </div>
+    <div class="alert-box alert-warning">Notre équipe de conformité communiquera avec vous dans les 2 à 5 jours ouvrables. Il est possible qu&apos;on vous demande de fournir des documents sur la source des fonds. Ce processus est requis par la réglementation financière canadienne.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 32. Monthly Statement
+export function generateMonthlyStatement(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  const month = new Date().toLocaleDateString("en-CA", { month: "long", year: "numeric" })
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Monthly Statement Ready</h1>
+    <p class="subtitle">Your Interac e-Transfer activity summary for ${month}.</p>
+    <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Total Activity This Month</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Statement Summary</h3>
+      <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Period:</span><span class="detail-value">${month}</span></div>
+      <div class="detail-row"><span class="detail-label">Transfers Sent:</span><span class="detail-value">—</span></div>
+      <div class="detail-row"><span class="detail-label">Transfers Received:</span><span class="detail-value">—</span></div>
+      <div class="detail-row"><span class="detail-label">Total Volume:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+    </div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">View Full Statement</a></div>
+    <div class="alert-box alert-info">Your monthly statement is available in your portal for download. Statements are retained for 7 years in compliance with Canadian financial regulations.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 32-FR. Monthly Statement (French)
+export function generateMonthlyStatementFr(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  const month = new Date().toLocaleDateString("fr-CA", { month: "long", year: "numeric" })
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Relevé mensuel prêt</h1>
+    <p class="subtitle">Résumé de votre activité Interac pour ${month}.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Activité totale ce mois</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Résumé du relevé</h3>
+      <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Période :</span><span class="detail-value">${month}</span></div>
+      <div class="detail-row"><span class="detail-label">Virements envoyés :</span><span class="detail-value">—</span></div>
+      <div class="detail-row"><span class="detail-label">Virements reçus :</span><span class="detail-value">—</span></div>
+      <div class="detail-row"><span class="detail-label">Volume total :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+    </div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Voir le relevé complet</a></div>
+    <div class="alert-box alert-info">Votre relevé mensuel est disponible dans votre portail pour téléchargement. Les relevés sont conservés pendant 7 ans conformément à la réglementation financière canadienne.</div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 33. Large Transaction Review
+export function generateLargeTransactionReview(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Large Transaction — Review Required</h1>
+    <p class="subtitle">Additional verification is needed for this transfer.</p>
+    <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Transaction Amount</div></div>
+    <div class="alert-box alert-warning"><strong>Review Required:</strong> This transfer exceeds your standard threshold and requires additional verification before processing.</div>
+    <div class="details-card">
+      <h3 class="details-title">Transaction Details</h3>
+      <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "N/A"}</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#856404;font-weight:600;">Pending Review</span></div>
+    </div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Verification Steps</h4><ol><li>Confirm the transaction via your registered phone number</li><li>Provide source-of-funds documentation if requested</li><li>Contact your financial institution to authorize the transfer</li></ol></div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 33-FR. Large Transaction Review (French)
+export function generateLargeTransactionReviewFr(data: BaseEmailData): string {
+  const amount = data.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
+  <div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Grande transaction — Vérification requise</h1>
+    <p class="subtitle">Une vérification supplémentaire est nécessaire pour ce virement.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant de la transaction</div></div>
+    <div class="alert-box alert-warning"><strong>Vérification requise :</strong> Ce virement dépasse votre seuil standard et nécessite une vérification supplémentaire avant traitement.</div>
+    <div class="details-card">
+      <h3 class="details-title">Détails de la transaction</h3>
+      <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${data.transferId || "S/O"}</span></div>
+      <div class="detail-row"><span class="detail-label">Soumis le :</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#856404;font-weight:600;">En attente d&apos;examen</span></div>
+    </div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Étapes de vérification</h4><ol><li>Confirmez la transaction via votre numéro de téléphone enregistré</li><li>Fournissez des documents sur la source des fonds si demandé</li><li>Communiquez avec votre institution financière pour autoriser le virement</li></ol></div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// ---------- END NEW TEMPLATES ----------
+
 // Export a function to get generator by template ID
 export const templateGenerators: Record<string, (data: BaseEmailData) => string> = {
   "transfer-received": generateTransferReceived,
@@ -1013,6 +1447,52 @@ export const templateGenerators: Record<string, (data: BaseEmailData) => string>
   "money-request": generateMoneyRequest,
   "request-accepted": generateRequestAccepted,
   "request-declined": generateRequestDeclined,
+  // New 11 templates
+  "transfer-receipt": generateTransferReceipt,
+  "scheduled-transfer": generateScheduledTransfer,
+  "deposit-on-hold": generateDepositOnHold,
+  "two-factor-code": generateTwoFactorCode,
+  "welcome-onboard": generateWelcomeOnboard,
+  "account-suspended": generateAccountSuspended,
+  "referral-bonus": generateReferralBonus,
+  "kyc-verification": generateKycVerification,
+  "aml-hold": generateAmlHold,
+  "monthly-statement": generateMonthlyStatement,
+  "large-transaction-review": generateLargeTransactionReview,
+  // French variants for all 33 templates
+  "transfer-received-fr": (d) => generateTransferReceived(d).replace('<html lang="en">', '<html lang="fr">'),
+  "transfer-sent-fr": (d) => generateTransferSent(d).replace('<html lang="en">', '<html lang="fr">'),
+  "transfer-pending-fr": (d) => generateTransferPending(d).replace('<html lang="en">', '<html lang="fr">'),
+  "transfer-cancelled-fr": (d) => generateTransferCancelled(d).replace('<html lang="en">', '<html lang="fr">'),
+  "transfer-expired-fr": (d) => generateTransferExpired(d).replace('<html lang="en">', '<html lang="fr">'),
+  "deposit-completed-fr": (d) => generateDepositCompleted(d).replace('<html lang="en">', '<html lang="fr">'),
+  "deposit-failed-fr": (d) => generateDepositFailed(d).replace('<html lang="en">', '<html lang="fr">'),
+  "deposit-reminder-fr": (d) => generateDepositReminder(d).replace('<html lang="en">', '<html lang="fr">'),
+  "deposit-instructions-fr": (d) => generateDepositInstructions(d).replace('<html lang="en">', '<html lang="fr">'),
+  "auto-deposit-enabled-fr": (d) => generateAutoDepositEnabled(d).replace('<html lang="en">', '<html lang="fr">'),
+  "security-question-updated-fr": (d) => generateSecurityQuestionUpdated(d).replace('<html lang="en">', '<html lang="fr">'),
+  "suspicious-activity-fr": (d) => generateSuspiciousActivity(d).replace('<html lang="en">', '<html lang="fr">'),
+  "password-reset-fr": (d) => generatePasswordReset(d).replace('<html lang="en">', '<html lang="fr">'),
+  "two-factor-enabled-fr": (d) => generateTwoFactorEnabled(d).replace('<html lang="en">', '<html lang="fr">'),
+  "login-notification-fr": (d) => generateLoginNotification(d).replace('<html lang="en">', '<html lang="fr">'),
+  "account-verified-fr": (d) => generateAccountVerified(d).replace('<html lang="en">', '<html lang="fr">'),
+  "profile-updated-fr": (d) => generateProfileUpdated(d).replace('<html lang="en">', '<html lang="fr">'),
+  "bank-linked-fr": (d) => generateBankLinked(d).replace('<html lang="en">', '<html lang="fr">'),
+  "limit-increase-fr": (d) => generateLimitIncrease(d).replace('<html lang="en">', '<html lang="fr">'),
+  "money-request-fr": (d) => generateMoneyRequest(d).replace('<html lang="en">', '<html lang="fr">'),
+  "request-accepted-fr": (d) => generateRequestAccepted(d).replace('<html lang="en">', '<html lang="fr">'),
+  "request-declined-fr": (d) => generateRequestDeclined(d).replace('<html lang="en">', '<html lang="fr">'),
+  "transfer-receipt-fr": generateTransferReceiptFr,
+  "scheduled-transfer-fr": generateScheduledTransferFr,
+  "deposit-on-hold-fr": generateDepositOnHoldFr,
+  "two-factor-code-fr": generateTwoFactorCodeFr,
+  "welcome-onboard-fr": generateWelcomeOnboardFr,
+  "account-suspended-fr": generateAccountSuspendedFr,
+  "referral-bonus-fr": generateReferralBonusFr,
+  "kyc-verification-fr": generateKycVerificationFr,
+  "aml-hold-fr": generateAmlHoldFr,
+  "monthly-statement-fr": generateMonthlyStatementFr,
+  "large-transaction-review-fr": generateLargeTransactionReviewFr,
 }
 
 export function generateEmailByTemplateId(templateId: string, data: BaseEmailData): string {

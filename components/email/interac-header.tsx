@@ -13,10 +13,10 @@ export function InteracHeader({
         <img src={logoUrl || "/placeholder.svg"} alt="INTERAC e-Transfer" className="h-8 sm:h-10 md:h-[50px] block" />
         <div className="bg-black text-[rgba(250,250,250,0.4)] font-bold text-[10px] sm:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded flex items-center">
           <span className="hidden sm:inline">
-            {language === "en" ? "QuantumYield Holdings" : "QuantumYield Holdings"}
+            {language === "en" ? "QuantumYield" : "QuantumYield"}
           </span>
           <span className="inline sm:hidden">
-            {language === "en" ? "QuantumYield Holdings" : "QuantumYield Holdings"}
+            {language === "en" ? "QuantumYield" : "QuantumYield"}
           </span>
         </div>
       </div>

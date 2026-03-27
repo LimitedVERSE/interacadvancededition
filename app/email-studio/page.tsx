@@ -186,7 +186,7 @@ function EmailStudioContent() {
         depositLink: "https://interac.quantumyield.digital/deposit-portal",
         transferId: previewTransferId,
         senderName: "QuantumYield Treasury",
-        institution: "QuantumYield Holdings | Treasury & Vault Portal",
+        institution: "QuantumYield | Treasury & Vault Portal",
         bankName: "TD Canada Trust",
         limit: "10,000",
         deviceInfo: "Chrome on Windows",

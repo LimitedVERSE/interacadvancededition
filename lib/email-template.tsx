@@ -297,7 +297,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
     <div class="topbar">
       <div class="topbar-left">
         <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC e-Transfer" height="50">
-        <div class="dba">Partnered with QuantumYield Holdings</div>
+        <div class="dba">Partnered with QuantumYield</div>
       </div>
       <div class="topbar-right">
         <div class="brand">e-Transfer</div>

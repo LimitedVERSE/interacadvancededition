@@ -3,7 +3,6 @@ import { generateEmailByTemplateId } from "@/lib/email-template-generators"
 
 export async function POST(request: Request) {
   try {
-    console.log("[v0] Received request to send Interac e-Transfer")
     const body = await request.json()
     const {
       recipientEmail,
@@ -15,8 +14,6 @@ export async function POST(request: Request) {
       templateId,
       language,
     } = body
-
-    console.log("[v0] Request data:", { recipientEmail, recipientName, amount, templateId, language })
 
     // Validate required fields
     if (!recipientEmail || !recipientName || !amount) {
@@ -65,7 +62,7 @@ export async function POST(request: Request) {
     const resolvedBase = templateId || "transfer-received"
     const resolvedId = language === "fr" ? `${resolvedBase}-fr` : resolvedBase
 
-    console.log("[v0] Generating template:", resolvedId)
+
 
     // Generate email HTML using the 33-template system
     const emailHtml = generateEmailByTemplateId(resolvedId, {
@@ -130,8 +127,6 @@ export async function POST(request: Request) {
     // Prefix subject with [FR] indicator when French
     const finalSubject = language === "fr" ? `[FR] ${subject}` : subject
 
-    console.log("[v0] Sending email via Resend — subject:", finalSubject)
-
     // Send via Resend
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -153,8 +148,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Failed to send email: ${JSON.stringify(errorData)}` }, { status: 500 })
     }
 
-    const resendResult = await resendResponse.json()
-    console.log("[v0] Email sent successfully:", transferId, resendResult)
+    await resendResponse.json()
 
     return NextResponse.json({
       success: true,

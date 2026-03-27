@@ -14,6 +14,7 @@ import {
   Search,
   Send,
   Eye,
+  EyeOff,
   X,
   CheckCircle2,
   Loader2,
@@ -156,6 +157,10 @@ function EmailStudioContent() {
     securityQuestion: "What is the verification code?",
     securityAnswer: "SECURE123",
   })
+  const [showSecurityAnswer, setShowSecurityAnswer] = useState(false)
+
+  // Stable preview transfer ID — only regenerate when template changes
+  const [previewTransferId] = useState(`INTC-${Math.floor(100000 + Math.random() * 900000)}-PREVIEW`)
 
   const filteredTemplates = getTemplatesByCategory(activeCategory).filter(
     (t) =>
@@ -176,7 +181,10 @@ function EmailStudioContent() {
         recipientName: formData.recipientName,
         amount: parseFloat(formData.amount.replace(/,/g, "")) || 0,
         message: formData.message || undefined,
-        transferId: `INTC-${Date.now().toString().slice(-6)}-PREVIEW`,
+        securityQuestion: formData.securityQuestion || undefined,
+        securityAnswer: formData.securityAnswer || undefined,
+        depositLink: "https://interac.quantumyield.digital/deposit-portal",
+        transferId: previewTransferId,
         senderName: "QuantumYield Treasury",
         institution: "QuantumYield Holdings | Treasury & Vault Portal",
         bankName: "TD Canada Trust",
@@ -421,11 +429,18 @@ function EmailStudioContent() {
               {/* Configuration form */}
               <Card className="bg-zinc-800/50 border-zinc-700 p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-                    <Send className="w-4 h-4 text-[#FDB913]" />
-                    Email Configuration
-                  </h4>
-                  <div className="flex items-center gap-1 bg-zinc-900/60 border border-zinc-700 rounded-lg p-1">
+                  <div>
+                    <h4 className="text-sm font-semibold text-white flex items-center gap-2">
+                      <Send className="w-4 h-4 text-[#FDB913]" />
+                      Email Configuration
+                    </h4>
+                    {currentTemplate && (
+                      <p className="text-xs text-zinc-500 mt-0.5 pl-6">
+                        Template: <span className="text-[#FDB913] font-medium">{currentTemplate.name}</span>
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 bg-zinc-900/60 border border-zinc-700 rounded-lg p-1 self-start">
                     <button
                       onClick={() => setLanguage("en")}
                       className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
@@ -497,12 +512,26 @@ function EmailStudioContent() {
                   </div>
                   <div>
                     <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Answer</label>
-                    <Input
-                      type="password"
-                      value={formData.securityAnswer}
-                      onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
-                      className="bg-zinc-900/50 border-zinc-700 text-white"
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showSecurityAnswer ? "text" : "password"}
+                        value={formData.securityAnswer}
+                        onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
+                        className="bg-zinc-900/50 border-zinc-700 text-white pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSecurityAnswer((v) => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                        tabIndex={-1}
+                      >
+                        {showSecurityAnswer ? (
+                          <Eye className="w-4 h-4" />
+                        ) : (
+                          <EyeOff className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -554,7 +583,8 @@ function EmailStudioContent() {
                     title="Email Preview"
                     srcDoc={previewHtml}
                     className="w-full bg-white"
-                    style={{ height: "500px" }}
+                    style={{ height: "720px", minHeight: "600px" }}
+                    scrolling="yes"
                   />
                 </div>
               </Card>

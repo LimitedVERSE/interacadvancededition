@@ -127,6 +127,15 @@ export async function POST(request: Request) {
     // Prefix subject with [FR] indicator when French
     const finalSubject = language === "fr" ? `[FR] ${subject}` : subject
 
+    const fromAddress = process.env.RESEND_FROM_EMAIL || "Interac e-Transfer <onboarding@resend.dev>"
+
+    // Warn if using the default onboarding@resend.dev sender — it only delivers to the Resend account owner
+    if (fromAddress.includes("onboarding@resend.dev")) {
+      console.warn("[v0] WARNING: Using onboarding@resend.dev — Resend only delivers to the verified account owner's email. Set RESEND_FROM_EMAIL to a verified domain sender.")
+    }
+
+    console.log("[v0] Sending email — from:", fromAddress, "to:", recipientEmail, "subject:", finalSubject, "templateId:", resolvedId)
+
     // Send via Resend
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -135,24 +144,31 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: process.env.RESEND_FROM_EMAIL || "Interac e-Transfer <onboarding@resend.dev>",
+        from: fromAddress,
         to: [recipientEmail],
         subject: finalSubject,
         html: emailHtml,
       }),
     })
 
-    if (!resendResponse.ok) {
-      const errorData = await resendResponse.json()
-      console.error("[v0] Resend error:", errorData)
-      return NextResponse.json({ error: `Failed to send email: ${JSON.stringify(errorData)}` }, { status: 500 })
-    }
+    const resendData = await resendResponse.json()
+    console.log("[v0] Resend response status:", resendResponse.status, "body:", JSON.stringify(resendData))
 
-    await resendResponse.json()
+    if (!resendResponse.ok) {
+      const errorMsg = resendData?.message || resendData?.name || JSON.stringify(resendData)
+      const hint = fromAddress.includes("onboarding@resend.dev")
+        ? " — NOTE: onboarding@resend.dev can only send to the Resend account owner. Set RESEND_FROM_EMAIL to a verified domain."
+        : ""
+      return NextResponse.json(
+        { error: `Resend error (${resendResponse.status}): ${errorMsg}${hint}` },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
       success: true,
       transferId,
+      emailId: resendData?.id,
       message: "Interac e-Transfer sent successfully",
     })
   } catch (error) {

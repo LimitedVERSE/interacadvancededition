@@ -322,6 +322,8 @@ export default function SendTransferPage() {
           message:          formData.message,
           securityQuestion: formData.securityQuestion,
           securityAnswer:   formData.securityAnswer,
+          templateId:       "transfer-received",
+          language:         "en",
         }),
       })
 

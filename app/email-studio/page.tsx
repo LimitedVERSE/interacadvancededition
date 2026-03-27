@@ -201,8 +201,14 @@ function EmailStudioContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...formData,
-          amount: formData.amount.replace(/,/g, ""),
+          recipientEmail:   formData.recipientEmail,
+          recipientName:    formData.recipientName,
+          amount:           formData.amount.replace(/,/g, ""),
+          message:          formData.message,
+          securityQuestion: formData.securityQuestion,
+          securityAnswer:   formData.securityAnswer,
+          templateId:       selectedTemplate || "transfer-received",
+          language,
         }),
       })
 

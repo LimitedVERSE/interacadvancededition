@@ -23,12 +23,18 @@ const getEmailStyles = () => `
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; }
     .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-    .topbar { background-color: #000000; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .topbar-left { display: flex; align-items: center; gap: 16px; }
-    .topbar img { height: 50px; display: block; }
-    .dba { display: flex; align-items: center; color: rgba(255, 255, 255, 0.7); font-weight: 500; font-size: 13px; line-height: 50px; }
+    .header-wrap { background-color: #0a0a0a; border-bottom: 1px solid #1a1a1a; }
+    .header-accent { height: 3px; background-color: #FDB913; }
+    .topbar { background-color: #0a0a0a; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .topbar-left { display: flex; align-items: center; gap: 0; }
+    .topbar img { height: 44px; display: block; }
+    .divider { width: 1px; height: 28px; background-color: rgba(255,255,255,0.15); margin: 0 16px; }
+    .dba { display: flex; flex-direction: column; justify-content: center; }
+    .dba-name { color: #ffffff; font-weight: 700; font-size: 13px; letter-spacing: 0.04em; line-height: 1.2; }
+    .dba-sub { color: rgba(255,255,255,0.4); font-weight: 400; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
     .topbar-right { display: flex; align-items: center; }
-    .brand { color: rgba(255, 255, 255, 0.7); font-weight: 500; font-size: 13px; }
+    .brand { display: inline-flex; align-items: center; gap: 7px; background-color: #FDB913; color: #000000; font-weight: 700; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; padding: 7px 13px; border-radius: 4px; }
+    .brand-dot { width: 6px; height: 6px; background-color: #000000; border-radius: 50%; opacity: 0.5; }
     .content { padding: 32px 24px; }
     .greeting { font-size: 24px; font-weight: 700; color: #000000; margin-bottom: 8px; }
     .subtitle { font-size: 16px; color: #666666; margin-bottom: 24px; }
@@ -62,13 +68,23 @@ const getEmailStyles = () => `
 `
 
 const getHeader = () => `
-  <div class="topbar">
-    <div class="topbar-left">
-      <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC e-Transfer" height="50">
-      <div class="dba">QuantumYield</div>
-    </div>
-    <div class="topbar-right">
-      <div class="brand">e-Transfer</div>
+  <div class="header-wrap">
+    <div class="header-accent"></div>
+    <div class="topbar">
+      <div class="topbar-left">
+        <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC" height="44">
+        <div class="divider"></div>
+        <div class="dba">
+          <span class="dba-name">QuantumYield</span>
+          <span class="dba-sub">Secure Payments</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="brand">
+          <span class="brand-dot"></span>
+          e&#8209;Transfer
+        </div>
+      </div>
     </div>
   </div>
 `

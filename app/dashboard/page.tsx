@@ -33,7 +33,7 @@ const menuItems = [
     id: "deposit",
     title: "Deposit Money",
     icon: DollarSign,
-    href: "/deposit-portal",
+    href: "/deposit-portal/admin",
     color: "from-green-500 to-green-600",
     bgColor: "bg-green-500/10",
     iconColor: "text-green-400",

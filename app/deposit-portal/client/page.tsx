@@ -276,7 +276,7 @@ function ClientDepositContent() {
                   <ArrowDown className="w-4 h-4 text-[#FDB913]" />
                   {c.selectBank}
                 </h2>
-                <SearchBar onSearch={setSearchTerm} />
+                <SearchBar onSearch={setSearchTerm} clientMode />
               </div>
               <BankSelectorGrid searchTerm={searchTerm} transferData={transferData} clientMode />
             </section>

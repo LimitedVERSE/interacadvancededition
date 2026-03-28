@@ -32,7 +32,7 @@ function DepositPortalRouter() {
   }, [user, isLoading, router, searchParams])
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+    <div className="min-h-screen bg-white flex items-center justify-center">
       <Loader2 className="w-8 h-8 animate-spin text-[#FDB913]" />
     </div>
   )
@@ -41,7 +41,7 @@ function DepositPortalRouter() {
 export default function DepositPortalPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-[#FDB913]" />
       </div>
     }>

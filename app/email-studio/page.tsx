@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
 import { emailTemplates, templateCategories, getTemplatesByCategory } from "@/lib/email-templates-collection"
@@ -149,6 +149,22 @@ function EmailStudioContent() {
   const [error, setError] = useState("")
   const [language, setLanguage] = useState<"en" | "fr">("en")
   const [mobileTab, setMobileTab] = useState<"config" | "preview">("config")
+  const [previewScale, setPreviewScale] = useState(1)
+  const previewContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = previewContainerRef.current
+    if (!el) return
+    const obs = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width
+      if (width && width > 0) setPreviewScale(width / 600)
+    })
+    obs.observe(el)
+    // Fire once immediately in case element already has size
+    const width = el.offsetWidth
+    if (width > 0) setPreviewScale(width / 600)
+    return () => obs.disconnect()
+  }, [showPreview, mobileTab])
 
   const [formData, setFormData] = useState({
     recipientEmail: "",
@@ -596,34 +612,33 @@ function EmailStudioContent() {
                     <span className="text-xs text-zinc-500 font-medium">{language.toUpperCase()}</span>
                   </div>
 
-                  {/* Scaled iframe wrapper — fits 600px email into any screen width */}
-                  <div className="border border-zinc-700 rounded-lg overflow-hidden bg-white">
+                  {/* Scaled iframe wrapper — shrinks 600px email to fit any screen width */}
+                  <div
+                    ref={previewContainerRef}
+                    className="border border-zinc-700 rounded-lg overflow-hidden bg-white w-full"
+                  >
                     <div
-                      className="relative w-full"
-                      style={{ paddingBottom: `${(720 / 600) * 100}%` }}
+                      style={{
+                        width: "100%",
+                        height: `${720 * previewScale}px`,
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
                     >
                       <iframe
                         key={activeTemplateId}
                         title="Email Preview"
                         srcDoc={previewHtml}
-                        className="absolute inset-0 bg-white"
                         style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
                           width: "600px",
                           height: "720px",
                           border: "none",
                           transformOrigin: "top left",
-                          transform: "scale(var(--preview-scale, 1))",
-                        }}
-                        ref={(el) => {
-                          if (!el) return
-                          const containerWidth = el.parentElement?.offsetWidth ?? 600
-                          const scale = containerWidth / 600
-                          el.style.setProperty("--preview-scale", String(scale))
-                          el.style.transform = `scale(${scale})`
-                          if (el.parentElement) {
-                            el.parentElement.style.paddingBottom = `${720 * scale}px`
-                            el.parentElement.style.height = "auto"
-                          }
+                          transform: `scale(${previewScale})`,
+                          background: "white",
                         }}
                         scrolling="no"
                       />

@@ -67,7 +67,6 @@ function AdminConnectBankInner() {
 
       <ConnectBankFlow
         onBack={() => router.push("/dashboard")}
-        backLabel="Back to Dashboard"
         showManualEntry
       />
     </div>

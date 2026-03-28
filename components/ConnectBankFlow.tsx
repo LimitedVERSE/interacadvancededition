@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Image from "next/image"
 import {
   Shield,
@@ -16,6 +15,7 @@ import {
   ChevronRight,
   X,
 } from "lucide-react"
+import { useLanguage } from "@/lib/i18n/context"
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -48,35 +48,40 @@ export const BANKS: BankEntry[] = [
 
 export const CATEGORIES: BankCategory[] = ["Big Six", "Online Banks", "Credit Unions", "Regional Banks"]
 
-const TRUST = [
-  { icon: Lock,         label: "256-bit SSL",        sub: "Encrypted connection" },
-  { icon: Shield,       label: "Bank-level security", sub: "Your data stays safe" },
-  { icon: CheckCircle2, label: "CDIC Member",         sub: "Government insured" },
-]
-
 type Step = "select" | "confirm" | "connecting" | "redirecting"
 
 interface Props {
-  /** Back button handler — label and behaviour differ between admin and client */
   onBack: () => void
-  backLabel: string
-  /** Whether to show the manual entry fallback at the bottom */
+  backLabel?: string
   showManualEntry?: boolean
 }
 
 // ─── Shared flow ─────────────────────────────────────────────────────────────
 
-export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = true }: Props) {
-  const [search, setSearch]               = useState("")
-  const [activeCategory, setActiveCategory] = useState<BankCategory | "All">("All")
-  const [selected, setSelected]           = useState<BankEntry | null>(null)
-  const [step, setStep]                   = useState<Step>("select")
-  const [countdown, setCountdown]         = useState(5)
-  const [brokenLogos, setBrokenLogos]     = useState<Set<string>>(new Set())
+export default function ConnectBankFlow({ onBack, showManualEntry = true }: Props) {
+  const { t } = useLanguage()
+  const cb = t.connectBank
+
+  const [search, setSearch]                     = useState("")
+  const [activeCategory, setActiveCategory]     = useState<BankCategory | "all">("all")
+  const [selected, setSelected]                 = useState<BankEntry | null>(null)
+  const [step, setStep]                         = useState<Step>("select")
+  const [countdown, setCountdown]               = useState(5)
+  const [countdownStarted, setCountdownStarted] = useState(false)
+  const [brokenLogos, setBrokenLogos]           = useState<Set<string>>(new Set())
+
+  // Map i18n category labels back to BankCategory keys
+  const categoryLabels: Record<BankCategory | "all", string> = {
+    all:              cb.allCategory,
+    "Big Six":        cb.catBigSix,
+    "Online Banks":   cb.catOnline,
+    "Credit Unions":  cb.catCreditUnions,
+    "Regional Banks": cb.catRegional,
+  }
 
   const filtered = BANKS.filter((b) => {
     const matchSearch = b.name.toLowerCase().includes(search.toLowerCase())
-    const matchCat    = activeCategory === "All" || b.category === activeCategory
+    const matchCat    = activeCategory === "all" || b.category === activeCategory
     return matchSearch && matchCat
   })
 
@@ -85,16 +90,12 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
     return acc
   }, {} as Record<BankCategory, BankEntry[]>)
 
-  // Countdown effect
-  const [countdownStarted, setCountdownStarted] = useState(false)
+  // Countdown — start once when step becomes "redirecting"
   if (step === "redirecting" && !countdownStarted) {
     setCountdownStarted(true)
     const tick = () => {
       setCountdown((c) => {
-        if (c <= 1) {
-          doRedirect()
-          return 0
-        }
+        if (c <= 1) { doRedirect(); return 0 }
         setTimeout(tick, 1000)
         return c - 1
       })
@@ -133,16 +134,22 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
     }
   }
 
+  const trust = [
+    { icon: Lock,         label: cb.trustSsl,      sub: cb.trustSslSub },
+    { icon: Shield,       label: cb.trustSecurity,  sub: cb.trustSecuritySub },
+    { icon: CheckCircle2, label: cb.trustCdic,      sub: cb.trustCdicSub },
+  ]
+
   return (
     <main className="max-w-5xl mx-auto px-4 py-8 pb-16">
 
       {/* Back nav */}
       <button
         onClick={handleBack}
-        className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors mb-6 group"
+        className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors mb-6 group min-h-[44px]"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-        {step === "select" ? backLabel : "Choose a different bank"}
+        {step === "select" ? t.institutionSelect.back : cb.chooseDifferent}
       </button>
 
       {/* ── SELECT ── */}
@@ -154,19 +161,21 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
               <div className="w-10 h-10 rounded-xl bg-[#FDB913] flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-black" />
               </div>
-              <span className="text-xs font-semibold tracking-widest text-zinc-400 uppercase">Interac e-Transfer</span>
+              <span className="text-xs font-semibold tracking-widest text-zinc-400 uppercase">
+                {cb.badge}
+              </span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-3 text-balance">
-              Connect your bank account
+              {cb.title}
             </h1>
             <p className="text-zinc-500 text-base md:text-lg leading-relaxed max-w-xl">
-              Select your financial institution to securely link your account and receive your e-Transfer deposit.
+              {cb.subtitle}
             </p>
           </div>
 
           {/* Trust strip */}
           <div className="grid grid-cols-3 gap-3 mb-10">
-            {TRUST.map(({ icon: Icon, label, sub }) => (
+            {trust.map(({ icon: Icon, label, sub }) => (
               <div
                 key={label}
                 className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 bg-zinc-50 border border-zinc-200 rounded-xl p-3 sm:p-4"
@@ -188,16 +197,18 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
               <input
                 type="search"
-                placeholder="Search your bank..."
+                placeholder={cb.searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent transition-all"
                 style={{ fontSize: "16px" }}
+                aria-label={cb.searchPlaceholder}
               />
               {search && (
                 <button
                   onClick={() => setSearch("")}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                  aria-label="Clear search"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -205,7 +216,7 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
             </div>
 
             <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0 shrink-0">
-              {(["All", ...CATEGORIES] as const).map((cat) => (
+              {(["all", ...CATEGORIES] as const).map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
@@ -215,7 +226,7 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
                       : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
                   }`}
                 >
-                  {cat}
+                  {categoryLabels[cat]}
                 </button>
               ))}
             </div>
@@ -225,25 +236,27 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
           {filtered.length === 0 ? (
             <div className="text-center py-16 text-zinc-400">
               <Building2 className="w-10 h-10 mx-auto mb-3 opacity-40" />
-              <p className="font-medium">No banks match &quot;{search}&quot;</p>
-              <p className="text-sm mt-1">Try a different search term</p>
+              <p className="font-medium">{cb.noResultsTitle(search)}</p>
+              <p className="text-sm mt-1">{cb.noResultsTip}</p>
             </div>
           ) : (
             <div className="space-y-8">
               {CATEGORIES.map((cat) => {
                 const banks = grouped[cat]
                 if (!banks.length) return null
-                if (activeCategory !== "All" && activeCategory !== cat) return null
+                if (activeCategory !== "all" && activeCategory !== cat) return null
                 return (
                   <section key={cat}>
-                    <h2 className="text-xs font-semibold tracking-widest text-zinc-400 uppercase mb-3">{cat}</h2>
+                    <h2 className="text-xs font-semibold tracking-widest text-zinc-400 uppercase mb-3">
+                      {categoryLabels[cat]}
+                    </h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                       {banks.map((bank) => (
                         <button
                           key={bank.id}
                           onClick={() => handleSelect(bank)}
                           className="group relative bg-white border-2 border-zinc-100 hover:border-[#FDB913] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-all hover:shadow-lg hover:shadow-[#FDB913]/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
-                          aria-label={`Connect ${bank.name}`}
+                          aria-label={cb.connectTo(bank.name)}
                         >
                           {!brokenLogos.has(bank.id) ? (
                             <Image
@@ -276,7 +289,7 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
           {/* Manual entry fallback */}
           {showManualEntry && (
             <div className="mt-12 border-t border-zinc-100 pt-8">
-              <p className="text-sm text-zinc-400 mb-3">{"Don't see your bank?"}</p>
+              <p className="text-sm text-zinc-400 mb-3">{cb.manualPrompt}</p>
               <ManualEntryForm />
             </div>
           )}
@@ -305,7 +318,9 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
               )}
             </div>
             <div>
-              <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider mb-0.5">{selected.category}</p>
+              <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider mb-0.5">
+                {categoryLabels[selected.category]}
+              </p>
               <h2 className="text-xl font-bold text-zinc-900">{selected.name}</h2>
             </div>
           </div>
@@ -314,23 +329,17 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
           <div className="flex items-start gap-3 bg-[#FDB913]/8 border border-[#FDB913]/30 rounded-xl p-4 mb-6">
             <Shield className="w-5 h-5 text-[#FDB913] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-zinc-800 mb-0.5">Secure connection</p>
-              <p className="text-sm text-zinc-500 leading-relaxed">
-                {"You'll be securely redirected to"} {selected.name}{"'s official website. Never share your banking credentials with anyone."}
-              </p>
+              <p className="text-sm font-semibold text-zinc-800 mb-0.5">{t.institutionSelect.secureConnection}</p>
+              <p className="text-sm text-zinc-500 leading-relaxed">{t.institutionSelect.secureNotice}</p>
             </div>
           </div>
 
-          {/* What happens next */}
+          {/* Confirm step */}
           {step === "confirm" && (
             <>
-              <h3 className="text-sm font-semibold text-zinc-700 mb-3">What happens next</h3>
+              <h3 className="text-sm font-semibold text-zinc-700 mb-3">{t.institutionSelect.whatHappensNext}</h3>
               <ul className="space-y-3 mb-8">
-                {[
-                  "You'll be redirected to your bank's secure login page",
-                  "Log in with your existing banking credentials",
-                  "Authorize the connection to complete your deposit",
-                ].map((text, i) => (
+                {[t.institutionSelect.step1, t.institutionSelect.step2, t.institutionSelect.step3].map((text, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-zinc-600">
                     <span className="w-5 h-5 rounded-full bg-[#FDB913]/15 text-[#FDB913] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
@@ -343,7 +352,7 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
                 onClick={handleConnect}
                 className="w-full flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold py-4 rounded-xl transition-colors text-base focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 min-h-[56px]"
               >
-                Connect to {selected.name}
+                {cb.connectTo(selected.name)}
                 <ArrowRight className="w-5 h-5" />
               </button>
             </>
@@ -353,8 +362,8 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
           {step === "connecting" && (
             <div className="text-center py-10">
               <Loader2 className="w-12 h-12 text-[#FDB913] animate-spin mx-auto mb-4" />
-              <p className="font-semibold text-zinc-800 text-lg">Establishing secure connection...</p>
-              <p className="text-zinc-400 text-sm mt-1">Preparing your bank redirect</p>
+              <p className="font-semibold text-zinc-800 text-lg">{cb.connectingTitle}</p>
+              <p className="text-zinc-400 text-sm mt-1">{cb.connectingSubtitle}</p>
             </div>
           )}
 
@@ -379,13 +388,13 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
                   {countdown}
                 </span>
               </div>
-              <p className="font-semibold text-zinc-800 text-lg">Redirecting to {selected.name}</p>
-              <p className="text-zinc-400 text-sm mt-1 mb-6">Opening secure bank portal in {countdown}s</p>
+              <p className="font-semibold text-zinc-800 text-lg">{cb.redirectingTo(selected.name)}</p>
+              <p className="text-zinc-400 text-sm mt-1 mb-6">{cb.openingIn(countdown)}</p>
               <button
                 onClick={doRedirect}
                 className="inline-flex items-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold px-6 py-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 min-h-[44px]"
               >
-                Continue now
+                {cb.continueNow}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -399,9 +408,12 @@ export default function ConnectBankFlow({ onBack, backLabel, showManualEntry = t
 // ─── Manual entry fallback ────────────────────────────────────────────────────
 
 function ManualEntryForm() {
-  const [form, setForm]         = useState({ institution: "", accountType: "", branch: "" })
+  const { t } = useLanguage()
+  const cb = t.connectBank
+
+  const [form, setForm]             = useState({ institution: "", accountType: "", branch: "" })
   const [submitting, setSubmitting] = useState(false)
-  const [done, setDone]         = useState(false)
+  const [done, setDone]             = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -414,7 +426,7 @@ function ManualEntryForm() {
     return (
       <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
         <CheckCircle2 className="w-5 h-5 shrink-0" />
-        <span>Your bank details have been submitted. Our team will verify and connect your account.</span>
+        <span>{cb.manualSuccess}</span>
       </div>
     )
   }
@@ -423,18 +435,18 @@ function ManualEntryForm() {
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-semibold text-zinc-600 block mb-1">Institution name</label>
+          <label className="text-xs font-semibold text-zinc-600 block mb-1">{cb.manualInstitutionLabel}</label>
           <input
             required
             value={form.institution}
             onChange={(e) => setForm({ ...form, institution: e.target.value })}
-            placeholder="e.g. TD Bank"
+            placeholder={cb.manualInstitutionPlaceholder}
             className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
             style={{ fontSize: "16px" }}
           />
         </div>
         <div>
-          <label className="text-xs font-semibold text-zinc-600 block mb-1">Account type</label>
+          <label className="text-xs font-semibold text-zinc-600 block mb-1">{cb.manualAccountTypeLabel}</label>
           <select
             required
             value={form.accountType}
@@ -442,19 +454,19 @@ function ManualEntryForm() {
             className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent bg-white"
             style={{ fontSize: "16px" }}
           >
-            <option value="">Select type</option>
-            <option value="chequing">Chequing</option>
-            <option value="savings">Savings</option>
-            <option value="business">Business</option>
+            <option value="">{cb.manualAccountTypeDefault}</option>
+            <option value="chequing">{cb.manualChequing}</option>
+            <option value="savings">{cb.manualSavings}</option>
+            <option value="business">{cb.manualBusiness}</option>
           </select>
         </div>
       </div>
       <div>
-        <label className="text-xs font-semibold text-zinc-600 block mb-1">Branch / transit number (optional)</label>
+        <label className="text-xs font-semibold text-zinc-600 block mb-1">{cb.manualBranchLabel}</label>
         <input
           value={form.branch}
           onChange={(e) => setForm({ ...form, branch: e.target.value })}
-          placeholder="e.g. 00123"
+          placeholder={cb.manualBranchPlaceholder}
           className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
           style={{ fontSize: "16px" }}
         />
@@ -465,7 +477,7 @@ function ManualEntryForm() {
         className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-700 text-white font-semibold px-5 py-3 rounded-xl text-sm transition-colors disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 min-h-[44px]"
       >
         {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-        {submitting ? "Submitting..." : "Submit manually"}
+        {submitting ? cb.manualSubmitting : cb.manualSubmit}
       </button>
     </form>
   )

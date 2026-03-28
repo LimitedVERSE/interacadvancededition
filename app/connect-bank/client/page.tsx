@@ -1,10 +1,13 @@
 "use client"
 
 import Image from "next/image"
+import { Languages } from "lucide-react"
 import ConnectBankFlow from "@/components/ConnectBankFlow"
+import { useLanguage } from "@/lib/i18n/context"
 
 export default function ClientConnectBankPage() {
-  // No auth, no Header, no dashboard access — public URL sent to clients
+  const { language, setLanguage } = useLanguage()
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
 
@@ -26,21 +29,30 @@ export default function ClientConnectBankPage() {
             <span className="text-sm font-bold text-zinc-900 tracking-tight">QuantumYield</span>
           </div>
 
-          {/* Right: secure badge */}
-          <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-medium">
-            <svg className="w-3.5 h-3.5 text-[#FDB913]" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clipRule="evenodd" />
-            </svg>
-            Secured by Interac
+          {/* Right: language toggle + secure badge */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setLanguage(language === "en" ? "fr" : "en")}
+              className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors min-h-[44px]"
+              aria-label={language === "en" ? "Passer au français" : "Switch to English"}
+            >
+              <Languages className="w-4 h-4" />
+              <span>{language === "en" ? "Français" : "English"}</span>
+            </button>
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-400 font-medium">
+              <svg className="w-3.5 h-3.5 text-[#FDB913]" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clipRule="evenodd" />
+              </svg>
+              Secured by Interac
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Flow — no manual entry for clients, back button just resets to bank select */}
+      {/* Flow — no manual entry for clients, back resets to bank select internally */}
       <div className="flex-1">
         <ConnectBankFlow
-          onBack={() => {/* client has nowhere to go back to — no-op, flow resets internally */}}
-          backLabel="Start over"
+          onBack={() => {/* no-op — client has no back destination; flow resets to bank select internally */}}
           showManualEntry={false}
         />
       </div>

@@ -153,17 +153,24 @@ function EmailStudioContent() {
   const previewContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const el = previewContainerRef.current
-    if (!el) return
-    const obs = new ResizeObserver((entries) => {
-      const width = entries[0]?.contentRect.width
-      if (width && width > 0) setPreviewScale(width / 600)
+    let obs: ResizeObserver | null = null
+    // Use rAF so the browser has painted the new layout before we measure
+    const raf = requestAnimationFrame(() => {
+      const el = previewContainerRef.current
+      if (!el) return
+      obs = new ResizeObserver((entries) => {
+        const width = entries[0]?.contentRect.width
+        if (width && width > 0) setPreviewScale(width / 600)
+      })
+      obs.observe(el)
+      // Seed immediately with current size
+      const width = el.offsetWidth
+      if (width > 0) setPreviewScale(width / 600)
     })
-    obs.observe(el)
-    // Fire once immediately in case element already has size
-    const width = el.offsetWidth
-    if (width > 0) setPreviewScale(width / 600)
-    return () => obs.disconnect()
+    return () => {
+      cancelAnimationFrame(raf)
+      obs?.disconnect()
+    }
   }, [showPreview, mobileTab])
 
   const [formData, setFormData] = useState({
@@ -471,8 +478,8 @@ function EmailStudioContent() {
             {/* Scrollable body */}
             <div className="flex-1 overflow-y-auto">
 
-              {/* CONFIG section — hidden on mobile when preview tab active */}
-              <div className={`p-4 space-y-4 ${mobileTab === "preview" ? "hidden md:block" : ""}`}>
+              {/* CONFIG section — collapsed (not display:none) on mobile when preview tab active */}
+              <div className={`space-y-4 ${mobileTab === "preview" ? "h-0 overflow-hidden p-0 md:h-auto md:overflow-visible md:p-4" : "p-4"}`}>
                 <Card className="bg-zinc-800/50 border-zinc-700 p-4">
                   <div className="flex items-center justify-between mb-4">
                     <div>
@@ -601,8 +608,8 @@ function EmailStudioContent() {
                 </Card>
               </div>
 
-              {/* PREVIEW section — hidden on mobile when config tab active */}
-              <div className={`p-4 ${mobileTab === "config" ? "hidden md:block" : ""}`}>
+              {/* PREVIEW section — visually hidden (not display:none) on mobile when config tab active so ResizeObserver can measure */}
+              <div className={`p-4 ${mobileTab === "config" ? "h-0 overflow-hidden p-0 md:h-auto md:overflow-visible md:p-4" : ""}`}>
                 <Card className="bg-zinc-800/50 border-zinc-700 p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-sm font-semibold text-white flex items-center gap-2">

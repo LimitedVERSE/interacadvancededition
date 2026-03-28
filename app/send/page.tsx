@@ -424,7 +424,7 @@ export default function SendTransferPage() {
       {/* ── Header ── */}
       <header className="border-b border-zinc-900 bg-zinc-950/90 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/dashboard" className="flex items-center gap-3">
             <div className="w-9 h-9 bg-[#FDB913] rounded-lg flex items-center justify-center">
               <img
                 src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
@@ -438,10 +438,10 @@ export default function SendTransferPage() {
             </div>
           </Link>
           <Link
-            href="/"
+            href="/dashboard"
             className="text-xs text-zinc-500 hover:text-white transition-colors flex items-center gap-1"
           >
-            <ChevronLeft className="w-3 h-3" /> Back
+            <ChevronLeft className="w-3 h-3" /> Dashboard
           </Link>
         </div>
       </header>
@@ -833,6 +833,63 @@ export default function SendTransferPage() {
           </div>
         </div>
       </main>
+
+      {/* ── Mobile sticky bottom bar ── */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-20 bg-zinc-950/95 backdrop-blur-sm border-t border-zinc-800 px-4 py-3 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Sending</p>
+          <p className={`text-lg font-bold leading-none mt-0.5 ${parseFloat(formData.amount) > 0 ? "text-[#FDB913]" : "text-zinc-600"}`}>
+            {parseFloat(formData.amount) > 0 ? formatCurrency(formData.amount) : "$0.00"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {step > 1 && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={back}
+              disabled={isLoading}
+              className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 bg-transparent h-10"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+          )}
+          {step < 4 ? (
+            <Button
+              type="button"
+              size="sm"
+              onClick={next}
+              className="bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold h-10 px-5"
+            >
+              Continue <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="bg-[#FDB913] hover:bg-[#e5a811] text-black font-bold h-10 px-5"
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  Sending…
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <Send className="w-3.5 h-3.5" />
+                  Send
+                </span>
+              )}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Spacer so content isn't hidden behind mobile bar */}
+      <div className="lg:hidden h-20" />
     </div>
   )
 }

@@ -1591,6 +1591,237 @@ export const templateGenerators: Record<string, (data: BaseEmailData) => string>
   "aml-hold": generateAmlHold,
   "monthly-statement": generateMonthlyStatement,
   "large-transaction-review": generateLargeTransactionReview,
+// ─── SETTLEMENT & COMPLIANCE GENERATORS ───────────────────────────────────────
+
+// 34. Settlement Confirmation
+export function generateSettlementConfirmation(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Settlement Confirmed</h1>
+    <p class="subtitle">Your funds have been successfully settled, ${d.recipientName}.</p>
+    <div class="amount-box"><div class="amount-value">$${formatAmount(a)} CAD</div><div class="amount-label">Settled Amount</div></div>
+    <div class="details-card">
+      <h3 class="details-title">Settlement Details</h3>
+      <div class="detail-row"><span class="detail-label">Settlement ID:</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div>
+      <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${d.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Institution:</span><span class="detail-value">${d.bankName || d.institution || "Your financial institution"}</span></div>
+      <div class="detail-row"><span class="detail-label">Settled On:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Completed</span></div>
+    </div>
+    <div class="alert-box alert-success"><strong>Funds Available:</strong> The settled amount is now available in your designated account. Please allow up to 2 business hours for your balance to reflect.</div>
+    ${d.message ? `<div class="details-card"><h3 class="details-title">Settlement Notes</h3><p style="color:#555555;font-size:14px;line-height:1.7;">${d.message}</p></div>` : ""}
+    <div class="security-section">
+      <h4 class="security-title">Compliance Notice</h4>
+      <p style="color:#666666;font-size:14px;line-height:1.7;">This settlement was processed in accordance with FINTRAC regulations and Canadian payment clearing standards. Retain this confirmation for your records. Transactions are subject to the Proceeds of Crime (Money Laundering) and Terrorist Financing Act.</p>
+    </div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">View Settlement Report</a></div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 35. Settlement Delayed
+export function generateSettlementDelayed(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting" style="color:#856404;">Settlement Delay Notice</h1>
+    <p class="subtitle">Your pending settlement requires additional processing time.</p>
+    <div class="amount-box" style="background:linear-gradient(135deg,#ffc107 0%,#e0a800 100%);"><div class="amount-value">$${formatAmount(a)} CAD</div><div class="amount-label">Pending Settlement</div></div>
+    <div class="alert-box alert-warning"><strong>Delay Notice:</strong> Your settlement of $${formatAmount(a)} CAD has been delayed due to additional verification requirements. No action is required from you at this time.</div>
+    <div class="details-card">
+      <h3 class="details-title">Settlement Details</h3>
+      <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div>
+      <div class="detail-row"><span class="detail-label">Original Date:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Estimated Release:</span><span class="detail-value">1–3 Business Days</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#856404;font-weight:600;">Under Review</span></div>
+    </div>
+    <div class="security-section">
+      <h4 class="security-title">Reason for Delay</h4>
+      <p style="color:#666666;font-size:14px;line-height:1.7;">${d.message || "Your transaction has been flagged for routine compliance review. This may include identity verification, source-of-funds confirmation, or standard AML screening. Our compliance team will process your settlement as quickly as possible."}</p>
+    </div>
+    <div class="security-section">
+      <h4 class="security-title">What Happens Next</h4>
+      <ol style="color:#666666;padding-left:20px;line-height:2;">
+        <li>Our compliance team reviews your transaction</li>
+        <li>You will receive an email once the review is complete</li>
+        <li>Funds will be released or you will be contacted for documents</li>
+      </ol>
+    </div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 36. Regulatory Hold
+export function generateRegulatoryHold(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting" style="color:#dc3545;">Regulatory Hold Notice</h1>
+    <p class="subtitle">A regulatory hold has been placed on your transaction.</p>
+    <div class="alert-box alert-danger"><strong>Hold Applied:</strong> A mandatory regulatory hold has been placed on a transaction of $${formatAmount(a)} CAD associated with your account. This action is required under applicable Canadian financial legislation.</div>
+    <div class="details-card">
+      <h3 class="details-title">Hold Details</h3>
+      <div class="detail-row"><span class="detail-label">Reference ID:</span><span class="detail-value">${d.transferId || "REG-000000"}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount Held:</span><span class="detail-value">$${formatAmount(a)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Applied On:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Regulatory Body:</span><span class="detail-value">FINTRAC / Financial Intelligence</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#dc3545;font-weight:600;">Hold Active</span></div>
+    </div>
+    <div class="security-section">
+      <h4 class="security-title">Legal Basis</h4>
+      <p style="color:#666666;font-size:14px;line-height:1.7;">This hold is applied pursuant to the <em>Proceeds of Crime (Money Laundering) and Terrorist Financing Act (PCMLTFA)</em> and associated FINTRAC directives. QuantumYield is required by law to cooperate fully with regulatory review processes.</p>
+    </div>
+    <div class="security-section">
+      <h4 class="security-title">Required Actions</h4>
+      <ol style="color:#666666;padding-left:20px;line-height:2;">
+        <li>Do not attempt to reverse or dispute this hold</li>
+        <li>Gather supporting documentation (source of funds, contracts, invoices)</li>
+        <li>Contact our compliance team at compliance@quantumyield.digital</li>
+        <li>Cooperate fully with any information requests within 5 business days</li>
+      </ol>
+    </div>
+    <p style="color:#dc3545;font-size:13px;font-weight:500;text-align:center;margin-top:16px;">Failure to respond may result in permanent forfeiture of the held funds as required by law.</p>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 37. Compliance Document Request
+export function generateComplianceDocumentRequest(d: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Document Submission Required</h1>
+    <p class="subtitle">We need supporting documents to process your transaction, ${d.recipientName}.</p>
+    <div class="alert-box alert-warning"><strong>Action Required:</strong> To comply with Canadian anti-money laundering regulations, we require supporting documentation before releasing your funds. Please submit the requested documents within <strong>5 business days</strong>.</div>
+    <div class="details-card">
+      <h3 class="details-title">Required Documents</h3>
+      <div class="detail-row"><span class="detail-label">1. Source of Funds:</span><span class="detail-value">Bank statement or income proof</span></div>
+      <div class="detail-row"><span class="detail-label">2. Identity:</span><span class="detail-value">Government-issued photo ID</span></div>
+      <div class="detail-row"><span class="detail-label">3. Transaction Purpose:</span><span class="detail-value">Invoice, contract, or agreement</span></div>
+      <div class="detail-row"><span class="detail-label">4. Address Proof:</span><span class="detail-value">Utility bill or bank statement</span></div>
+    </div>
+    <div class="details-card">
+      <h3 class="details-title">Case Reference</h3>
+      <div class="detail-row"><span class="detail-label">Case ID:</span><span class="detail-value">${d.transferId || "COMP-000000"}</span></div>
+      <div class="detail-row"><span class="detail-label">Assigned To:</span><span class="detail-value">QuantumYield Compliance Team</span></div>
+      <div class="detail-row"><span class="detail-label">Deadline:</span><span class="detail-value">5 Business Days from ${formatDate()}</span></div>
+    </div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/compliance/upload" class="action-button">Submit Documents</a></div>
+    <div class="security-section">
+      <h4 class="security-title">Submission Guidelines</h4>
+      <ul style="color:#666666;padding-left:20px;line-height:2;">
+        <li>Documents must be clear, legible scans or photos</li>
+        <li>Accepted formats: PDF, JPG, PNG (max 10MB each)</li>
+        <li>All documents must be current and not expired</li>
+        <li>Documents in French or English are accepted</li>
+      </ul>
+    </div>
+    <p style="color:#666666;font-size:13px;text-align:center;margin-top:16px;">Questions? Contact us at <a href="mailto:compliance@quantumyield.digital" style="color:#FDB913;">compliance@quantumyield.digital</a></p>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 38. Settlement Summary
+export function generateSettlementSummary(d: BaseEmailData): string {
+  const a = d.amount || 0
+  const period = (d as BaseEmailData & { period?: string }).period || new Date().toLocaleDateString("en-CA", { month: "long", year: "numeric" })
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Settlement Summary</h1>
+    <p class="subtitle">Your settlement activity report for ${period}.</p>
+    <div class="amount-box" style="background:linear-gradient(135deg,#495057 0%,#343a40 100%);color:#ffffff;">
+      <div class="amount-value">$${formatAmount(a)} CAD</div>
+      <div class="amount-label">Total Settled This Period</div>
+    </div>
+    <div class="details-card">
+      <h3 class="details-title">Period Summary</h3>
+      <div class="detail-row"><span class="detail-label">Period:</span><span class="detail-value">${period}</span></div>
+      <div class="detail-row"><span class="detail-label">Total Transactions:</span><span class="detail-value">${d.transferId || "—"}</span></div>
+      <div class="detail-row"><span class="detail-label">Total Settled:</span><span class="detail-value">$${formatAmount(a)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Held / Pending:</span><span class="detail-value">$0.00 CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Account:</span><span class="detail-value">${d.recipientName}</span></div>
+      <div class="detail-row"><span class="detail-label">Institution:</span><span class="detail-value">${d.bankName || d.institution || "On file"}</span></div>
+    </div>
+    <div class="security-section">
+      <h4 class="security-title">Compliance Statement</h4>
+      <p style="color:#666666;font-size:14px;line-height:1.7;">All transactions in this report have been processed in compliance with FINTRAC reporting requirements and the Proceeds of Crime (Money Laundering) and Terrorist Financing Act. This statement is generated for record-keeping purposes and may be required for tax reporting.</p>
+    </div>
+    <div class="alert-box alert-info"><strong>Record Keeping:</strong> Please retain this summary for a minimum of 5 years as required by CRA and FINTRAC regulations.</div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">View Full Report</a></div>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// 39. Dispute Resolution
+export function generateDisputeResolution(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content">
+    <h1 class="greeting">Dispute Case Update</h1>
+    <p class="subtitle">An update is available for your dispute case, ${d.recipientName}.</p>
+    <div class="details-card">
+      <h3 class="details-title">Case Details</h3>
+      <div class="detail-row"><span class="detail-label">Case ID:</span><span class="detail-value">${d.transferId || "DISP-000000"}</span></div>
+      <div class="detail-row"><span class="detail-label">Disputed Amount:</span><span class="detail-value">$${formatAmount(a)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Filed On:</span><span class="detail-value">${formatDate()}</span></div>
+      <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#17a2b8;font-weight:600;">${d.message || "Under Investigation"}</span></div>
+    </div>
+    <div class="alert-box alert-info"><strong>Case Update:</strong> Our dispute resolution team has reviewed your case and is progressing toward a determination. You will receive a final resolution notice within 10 business days.</div>
+    <div class="security-section">
+      <h4 class="security-title">Investigation Steps Completed</h4>
+      <ol style="color:#666666;padding-left:20px;line-height:2;">
+        <li style="color:#28a745;">Initial case review and documentation collection</li>
+        <li style="color:#28a745;">Transaction history analysis</li>
+        <li style="color:#ffc107;">Communication with involved financial institutions</li>
+        <li>Final determination and fund release or recovery</li>
+      </ol>
+    </div>
+    <div class="security-section">
+      <h4 class="security-title">Possible Outcomes</h4>
+      <p style="color:#666666;font-size:14px;line-height:1.7;"><strong>Resolution in your favour:</strong> Funds will be credited to your account within 2 business days of the final decision.<br><br><strong>Resolution against your claim:</strong> You will receive a detailed written explanation and information about the appeals process.</p>
+    </div>
+    <div class="button-section"><a href="https://interac.quantumyield.digital/compliance/dispute" class="action-button">View Case Status</a></div>
+    <p style="color:#666666;font-size:13px;text-align:center;margin-top:16px;">Case managed by QuantumYield Dispute Resolution — <a href="mailto:disputes@quantumyield.digital" style="color:#FDB913;">disputes@quantumyield.digital</a></p>
+  </div>${getFooter()}</div></body></html>`
+}
+
+// ─── FRENCH VARIANTS — SETTLEMENT ────────────────────────────────────────────
+
+export function generateSettlementConfirmationFr(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Règlement confirmé</h1><p class="subtitle">Vos fonds ont été réglés avec succès, ${d.recipientName}.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant réglé</div></div><div class="details-card"><h3 class="details-title">Détails du règlement</h3><div class="detail-row"><span class="detail-label">ID de règlement :</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Institution :</span><span class="detail-value">${d.bankName || d.institution || "Votre institution financière"}</span></div><div class="detail-row"><span class="detail-label">Réglé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Complété</span></div></div><div class="alert-box alert-success"><strong>Fonds disponibles :</strong> Le montant réglé est maintenant disponible dans votre compte désigné. Veuillez prévoir jusqu&apos;à 2 heures ouvrables pour que votre solde soit mis à jour.</div><div class="security-section"><h4 class="security-title">Avis de conformité</h4><p style="color:#666666;font-size:14px;line-height:1.7;">Ce règlement a été traité conformément aux règlements du CANAFE et aux normes canadiennes de compensation des paiements. Conservez cette confirmation pour vos dossiers.</p></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">Voir le rapport</a></div></div>${getFooter()}</div></body></html>`
+}
+
+export function generateSettlementDelayedFr(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting" style="color:#856404;">Avis de retard de règlement</h1><p class="subtitle">Votre règlement en attente nécessite un délai de traitement supplémentaire.</p><div class="amount-box" style="background:linear-gradient(135deg,#ffc107 0%,#e0a800 100%);"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Règlement en attente</div></div><div class="alert-box alert-warning"><strong>Avis de retard :</strong> Votre règlement de ${formatAmount(a)} $ CAD a été retardé en raison d&apos;exigences de vérification supplémentaires.</div><div class="details-card"><h3 class="details-title">Détails du règlement</h3><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div><div class="detail-row"><span class="detail-label">Date estimée :</span><span class="detail-value">1 à 3 jours ouvrables</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#856404;font-weight:600;">En révision</span></div></div><div class="security-section"><h4 class="security-title">Prochaines étapes</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li>Notre équipe de conformité examine votre transaction</li><li>Vous recevrez un courriel une fois la révision terminée</li><li>Les fonds seront libérés ou vous serez contacté pour des documents</li></ol></div></div>${getFooter()}</div></body></html>`
+}
+
+export function generateRegulatoryHoldFr(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting" style="color:#dc3545;">Avis de blocage réglementaire</h1><p class="subtitle">Un blocage réglementaire a été appliqué à votre transaction.</p><div class="alert-box alert-danger"><strong>Blocage appliqué :</strong> Un blocage réglementaire obligatoire a été appliqué à une transaction de ${formatAmount(a)} $ CAD associée à votre compte.</div><div class="details-card"><h3 class="details-title">Détails du blocage</h3><div class="detail-row"><span class="detail-label">ID de référence :</span><span class="detail-value">${d.transferId || "REG-000000"}</span></div><div class="detail-row"><span class="detail-label">Montant bloqué :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Appliqué le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Organisme réglementaire :</span><span class="detail-value">CANAFE / Renseignement financier</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#dc3545;font-weight:600;">Blocage actif</span></div></div><div class="security-section"><h4 class="security-title">Actions requises</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li>Ne tentez pas d&apos;annuler ce blocage</li><li>Rassemblez les documents justificatifs</li><li>Contactez notre équipe de conformité</li><li>Coopérez pleinement dans les 5 jours ouvrables</li></ol></div></div>${getFooter()}</div></body></html>`
+}
+
+export function generateComplianceDocumentRequestFr(d: BaseEmailData): string {
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Soumission de documents requise</h1><p class="subtitle">Nous avons besoin de documents justificatifs pour traiter votre transaction, ${d.recipientName}.</p><div class="alert-box alert-warning"><strong>Action requise :</strong> Pour respecter les règlements canadiens contre le blanchiment d&apos;argent, nous avons besoin de documentation avant de libérer vos fonds. Veuillez soumettre les documents dans un délai de <strong>5 jours ouvrables</strong>.</div><div class="details-card"><h3 class="details-title">Documents requis</h3><div class="detail-row"><span class="detail-label">1. Source des fonds :</span><span class="detail-value">Relevé bancaire ou preuve de revenus</span></div><div class="detail-row"><span class="detail-label">2. Identité :</span><span class="detail-value">Pièce d&apos;identité gouvernementale avec photo</span></div><div class="detail-row"><span class="detail-label">3. Objet de la transaction :</span><span class="detail-value">Facture, contrat ou accord</span></div><div class="detail-row"><span class="detail-label">4. Preuve d&apos;adresse :</span><span class="detail-value">Facture de services ou relevé bancaire</span></div></div><div class="button-section"><a href="https://interac.quantumyield.digital/compliance/upload" class="action-button">Soumettre les documents</a></div><p style="color:#666666;font-size:13px;text-align:center;margin-top:16px;">Questions? <a href="mailto:compliance@quantumyield.digital" style="color:#FDB913;">compliance@quantumyield.digital</a></p></div>${getFooter()}</div></body></html>`
+}
+
+export function generateSettlementSummaryFr(d: BaseEmailData): string {
+  const a = d.amount || 0
+  const period = new Date().toLocaleDateString("fr-CA", { month: "long", year: "numeric" })
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Sommaire de règlement</h1><p class="subtitle">Votre rapport d&apos;activité de règlement pour ${period}.</p><div class="amount-box" style="background:linear-gradient(135deg,#495057 0%,#343a40 100%);color:#ffffff;"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Total réglé cette période</div></div><div class="details-card"><h3 class="details-title">Sommaire de la période</h3><div class="detail-row"><span class="detail-label">Période :</span><span class="detail-value">${period}</span></div><div class="detail-row"><span class="detail-label">Total réglé :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">En attente :</span><span class="detail-value">0,00 $ CAD</span></div><div class="detail-row"><span class="detail-label">Compte :</span><span class="detail-value">${d.recipientName}</span></div></div><div class="security-section"><h4 class="security-title">Déclaration de conformité</h4><p style="color:#666666;font-size:14px;line-height:1.7;">Toutes les transactions de ce rapport ont été traitées conformément aux exigences de déclaration du CANAFE. Ce relevé est généré à des fins d&apos;archivage et peut être requis pour la déclaration fiscale.</p></div><div class="alert-box alert-info"><strong>Conservation des dossiers :</strong> Veuillez conserver ce sommaire pendant un minimum de 5 ans tel que l&apos;exigent l&apos;ARC et le CANAFE.</div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">Voir le rapport complet</a></div></div>${getFooter()}</div></body></html>`
+}
+
+export function generateDisputeResolutionFr(d: BaseEmailData): string {
+  const a = d.amount || 0
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Mise à jour du dossier de litige</h1><p class="subtitle">Une mise à jour est disponible pour votre dossier de litige, ${d.recipientName}.</p><div class="details-card"><h3 class="details-title">Détails du dossier</h3><div class="detail-row"><span class="detail-label">ID du dossier :</span><span class="detail-value">${d.transferId || "DISP-000000"}</span></div><div class="detail-row"><span class="detail-label">Montant contesté :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Déposé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#17a2b8;font-weight:600;">${d.message || "En cours d&apos;enquête"}</span></div></div><div class="alert-box alert-info"><strong>Mise à jour :</strong> Notre équipe de résolution des litiges a examiné votre dossier. Vous recevrez une décision finale dans les 10 jours ouvrables.</div><div class="security-section"><h4 class="security-title">Étapes d&apos;enquête</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li style="color:#28a745;">Révision initiale du dossier</li><li style="color:#28a745;">Analyse de l&apos;historique des transactions</li><li style="color:#ffc107;">Communication avec les institutions financières</li><li>Décision finale et libération ou récupération des fonds</li></ol></div><div class="button-section"><a href="https://interac.quantumyield.digital/compliance/dispute" class="action-button">Voir le statut du dossier</a></div></div>${getFooter()}</div></body></html>`
+}
+
+// ─── END SETTLEMENT & COMPLIANCE ──────────────────────────────────────────────
+
+  // Settlement & Compliance (34-39)
+  "settlement-confirmation": generateSettlementConfirmation,
+  "settlement-delayed": generateSettlementDelayed,
+  "regulatory-hold": generateRegulatoryHold,
+  "compliance-document-request": generateComplianceDocumentRequest,
+  "settlement-summary": generateSettlementSummary,
+  "dispute-resolution": generateDisputeResolution,
+  // French variants — settlement
+  "settlement-confirmation-fr": generateSettlementConfirmationFr,
+  "settlement-delayed-fr": generateSettlementDelayedFr,
+  "regulatory-hold-fr": generateRegulatoryHoldFr,
+  "compliance-document-request-fr": generateComplianceDocumentRequestFr,
+  "settlement-summary-fr": generateSettlementSummaryFr,
+  "dispute-resolution-fr": generateDisputeResolutionFr,
   // French variants for all 33 templates
   "transfer-received-fr": generateTransferReceivedFr,
   "transfer-sent-fr": generateTransferSentFr,

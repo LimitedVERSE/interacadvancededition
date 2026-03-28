@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import {
   Shield,
@@ -66,9 +66,8 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
   const [activeCategory, setActiveCategory]     = useState<BankCategory | "all">("all")
   const [selected, setSelected]                 = useState<BankEntry | null>(null)
   const [step, setStep]                         = useState<Step>("select")
-  const [countdown, setCountdown]               = useState(5)
-  const [countdownStarted, setCountdownStarted] = useState(false)
-  const [brokenLogos, setBrokenLogos]           = useState<Set<string>>(new Set())
+  const [countdown, setCountdown]     = useState(5)
+  const [brokenLogos, setBrokenLogos] = useState<Set<string>>(new Set())
 
   // Map i18n category labels back to BankCategory keys
   const categoryLabels: Record<BankCategory | "all", string> = {
@@ -90,19 +89,6 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
     return acc
   }, {} as Record<BankCategory, BankEntry[]>)
 
-  // Countdown — start once when step becomes "redirecting"
-  if (step === "redirecting" && !countdownStarted) {
-    setCountdownStarted(true)
-    const tick = () => {
-      setCountdown((c) => {
-        if (c <= 1) { doRedirect(); return 0 }
-        setTimeout(tick, 1000)
-        return c - 1
-      })
-    }
-    setTimeout(tick, 1000)
-  }
-
   const doRedirect = () => {
     if (!selected) return
     const params = new URLSearchParams({
@@ -112,6 +98,24 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
     })
     window.location.href = `https://interac.quantumyield.digital/countdown?${params.toString()}`
   }
+
+  // Countdown — runs only when step is "redirecting"
+  useEffect(() => {
+    if (step !== "redirecting") return
+    setCountdown(5)
+    const interval = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(interval)
+          doRedirect()
+          return 0
+        }
+        return c - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step])
 
   const handleSelect = (bank: BankEntry) => {
     setSelected(bank)
@@ -128,7 +132,6 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
       setSelected(null)
       setStep("select")
       setCountdown(5)
-      setCountdownStarted(false)
     } else {
       onBack()
     }

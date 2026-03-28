@@ -42,7 +42,7 @@ const menuItems = [
     id: "bank-connect",
     title: "Connect Bank",
     icon: CreditCard,
-    href: "/",
+    href: "/connect-bank",
     color: "from-purple-500 to-purple-600",
     bgColor: "bg-purple-500/10",
     iconColor: "text-purple-400",

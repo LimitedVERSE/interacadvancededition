@@ -154,24 +154,24 @@ function EmailStudioContent() {
 
   useEffect(() => {
     let obs: ResizeObserver | null = null
-    // Use rAF so the browser has painted the new layout before we measure
+    const CARD_PADDING = 64 // 32px left + 32px right (p-4 * 2 + card p-4 * 2)
     const raf = requestAnimationFrame(() => {
       const el = previewContainerRef.current
       if (!el) return
+      const calc = (w: number) => {
+        if (w > 0) setPreviewScale(Math.min(1, (w - CARD_PADDING) / 600))
+      }
       obs = new ResizeObserver((entries) => {
-        const width = entries[0]?.contentRect.width
-        if (width && width > 0) setPreviewScale(width / 600)
+        calc(entries[0]?.contentRect.width ?? 0)
       })
       obs.observe(el)
-      // Seed immediately with current size
-      const width = el.offsetWidth
-      if (width > 0) setPreviewScale(width / 600)
+      calc(el.offsetWidth)
     })
     return () => {
       cancelAnimationFrame(raf)
       obs?.disconnect()
     }
-  }, [showPreview, mobileTab])
+  }, [showPreview])
 
   const [formData, setFormData] = useState({
     recipientEmail: "",
@@ -423,7 +423,7 @@ function EmailStudioContent() {
 
         {/* Preview Panel */}
         {showPreview && currentTemplate && (
-          <aside className="w-full md:w-[500px] lg:w-[600px] border-l border-zinc-800/50 bg-zinc-900/80 backdrop-blur-sm flex flex-col fixed md:relative inset-0 z-20 md:inset-auto">
+          <aside ref={previewContainerRef} className="w-full md:w-[500px] lg:w-[600px] border-l border-zinc-800/50 bg-zinc-900/80 backdrop-blur-sm flex flex-col fixed md:relative inset-0 z-20 md:inset-auto">
 
             {/* Panel header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 shrink-0">
@@ -620,10 +620,7 @@ function EmailStudioContent() {
                   </div>
 
                   {/* Scaled iframe wrapper — shrinks 600px email to fit any screen width */}
-                  <div
-                    ref={previewContainerRef}
-                    className="border border-zinc-700 rounded-lg overflow-hidden bg-white w-full"
-                  >
+                  <div className="border border-zinc-700 rounded-lg overflow-hidden bg-white w-full">
                     <div
                       style={{
                         width: "100%",

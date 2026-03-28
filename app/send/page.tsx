@@ -52,10 +52,10 @@ interface RecentContact {
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const RECENT_CONTACTS: RecentContact[] = [
-  { name: "Sarah Mitchell", email: "sarah.mitchell@gmail.com", initials: "SM", color: "bg-violet-500", lastAmount: "$250" },
-  { name: "James Okafor",   email: "james.okafor@outlook.com", initials: "JO", color: "bg-sky-500",    lastAmount: "$1,200" },
-  { name: "Priya Sharma",   email: "priya.sharma@icloud.com",  initials: "PS", color: "bg-emerald-500",lastAmount: "$80" },
-  { name: "Lucas Tremblay", email: "l.tremblay@hotmail.com",   initials: "LT", color: "bg-rose-500",   lastAmount: "$500" },
+  { name: "Nickolas-Antoine Brochu", email: "nykey.banks@usa.com",        initials: "NB", color: "bg-sky-600",     lastAmount: "$3,000" },
+  { name: "Limited VERSE",           email: "limitedverse@gmail.com",     initials: "LV", color: "bg-violet-600",  lastAmount: "$1,000" },
+  { name: "Nick St-Pierre",          email: "nickst-pierre@hotmail.com",  initials: "NS", color: "bg-emerald-600", lastAmount: "$2,100" },
+  { name: "Shane Nelson",            email: "x3r0nimbus@gmail.com",       initials: "SN", color: "bg-rose-600",    lastAmount: "$3,200" },
 ]
 
 const QUICK_AMOUNTS = ["25", "50", "100", "250", "500", "1000"]

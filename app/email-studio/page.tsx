@@ -148,6 +148,7 @@ function EmailStudioContent() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
   const [language, setLanguage] = useState<"en" | "fr">("en")
+  const [mobileTab, setMobileTab] = useState<"config" | "preview">("config")
 
   const [formData, setFormData] = useState({
     recipientEmail: "",
@@ -399,195 +400,238 @@ function EmailStudioContent() {
 
         {/* Preview Panel */}
         {showPreview && currentTemplate && (
-          <aside className="w-full md:w-[500px] lg:w-[600px] border-l border-zinc-800/50 bg-zinc-900/80 backdrop-blur-sm flex flex-col absolute md:relative inset-0 z-20">
-            {/* Preview header */}
-            <div className="flex items-center justify-between p-4 border-b border-zinc-800/50">
-              <div className="flex items-center gap-3">
+          <aside className="w-full md:w-[500px] lg:w-[600px] border-l border-zinc-800/50 bg-zinc-900/80 backdrop-blur-sm flex flex-col fixed md:relative inset-0 z-20 md:inset-auto">
+
+            {/* Panel header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
                 {(() => {
                   const IconComponent = iconMap[currentTemplate.icon] || Mail
                   return (
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${currentTemplate.color} flex items-center justify-center`}>
-                      <IconComponent className="w-5 h-5 text-white" />
+                    <div className={`w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br ${currentTemplate.color} flex items-center justify-center`}>
+                      <IconComponent className="w-4 h-4 text-white" />
                     </div>
                   )
                 })()}
-                <div>
-                  <h3 className="font-semibold text-white">{currentTemplate.name}</h3>
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-white text-sm leading-tight truncate">{currentTemplate.name}</h3>
                   <p className="text-xs text-zinc-500">{currentTemplate.category}</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowPreview(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 transition-colors"
+                className="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-colors ml-2"
               >
-                <X className="w-5 h-5 text-zinc-400" />
+                <X className="w-4 h-4 text-zinc-400" />
               </button>
             </div>
 
-            {/* Form & Preview */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {/* Configuration form */}
-              <Card className="bg-zinc-800/50 border-zinc-700 p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-                      <Send className="w-4 h-4 text-[#FDB913]" />
-                      Email Configuration
-                    </h4>
-                    {currentTemplate && (
+            {/* Mobile tab bar — only shown on small screens */}
+            <div className="md:hidden flex border-b border-zinc-800/50 shrink-0">
+              <button
+                onClick={() => setMobileTab("config")}
+                className={`flex-1 py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
+                  mobileTab === "config"
+                    ? "text-[#FDB913] border-b-2 border-[#FDB913]"
+                    : "text-zinc-500"
+                }`}
+              >
+                <Send className="w-4 h-4" />
+                Configure
+              </button>
+              <button
+                onClick={() => setMobileTab("preview")}
+                className={`flex-1 py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
+                  mobileTab === "preview"
+                    ? "text-[#FDB913] border-b-2 border-[#FDB913]"
+                    : "text-zinc-500"
+                }`}
+              >
+                <Eye className="w-4 h-4" />
+                Preview
+              </button>
+            </div>
+
+            {/* Scrollable body */}
+            <div className="flex-1 overflow-y-auto">
+
+              {/* CONFIG section — hidden on mobile when preview tab active */}
+              <div className={`p-4 space-y-4 ${mobileTab === "preview" ? "hidden md:block" : ""}`}>
+                <Card className="bg-zinc-800/50 border-zinc-700 p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h4 className="text-sm font-semibold text-white flex items-center gap-2">
+                        <Send className="w-4 h-4 text-[#FDB913]" />
+                        Email Configuration
+                      </h4>
                       <p className="text-xs text-zinc-500 mt-0.5 pl-6">
                         Template: <span className="text-[#FDB913] font-medium">{currentTemplate.name}</span>
                       </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1 bg-zinc-900/60 border border-zinc-700 rounded-lg p-1 self-start">
-                    <button
-                      onClick={() => setLanguage("en")}
-                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                        language === "en"
-                          ? "bg-[#FDB913] text-black"
-                          : "text-zinc-400 hover:text-white"
-                      }`}
-                    >
-                      EN
-                    </button>
-                    <button
-                      onClick={() => setLanguage("fr")}
-                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                        language === "fr"
-                          ? "bg-[#FDB913] text-black"
-                          : "text-zinc-400 hover:text-white"
-                      }`}
-                    >
-                      FR
-                    </button>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-xs font-medium text-zinc-400 mb-1 block">Recipient Email</label>
-                    <Input
-                      type="email"
-                      placeholder="recipient@example.com"
-                      value={formData.recipientEmail}
-                      onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
-                      className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-600"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Recipient Name</label>
-                      <Input
-                        value={formData.recipientName}
-                        onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
-                        className="bg-zinc-900/50 border-zinc-700 text-white"
-                      />
                     </div>
-                    <div>
-                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Amount (CAD)</label>
-                      <Input
-                        value={formData.amount}
-                        onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                        className="bg-zinc-900/50 border-zinc-700 text-white"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-zinc-400 mb-1 block">Message (Optional)</label>
-                    <Textarea
-                      placeholder="Add a message..."
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      rows={2}
-                      className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-600"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Question</label>
-                    <Input
-                      value={formData.securityQuestion}
-                      onChange={(e) => setFormData({ ...formData, securityQuestion: e.target.value })}
-                      className="bg-zinc-900/50 border-zinc-700 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Answer</label>
-                    <div className="relative">
-                      <Input
-                        type={showSecurityAnswer ? "text" : "password"}
-                        value={formData.securityAnswer}
-                        onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
-                        className="bg-zinc-900/50 border-zinc-700 text-white pr-10"
-                      />
+                    <div className="flex items-center gap-1 bg-zinc-900/60 border border-zinc-700 rounded-lg p-1 self-start">
                       <button
-                        type="button"
-                        onClick={() => setShowSecurityAnswer((v) => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
-                        tabIndex={-1}
+                        onClick={() => setLanguage("en")}
+                        className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                          language === "en" ? "bg-[#FDB913] text-black" : "text-zinc-400 hover:text-white"
+                        }`}
                       >
-                        {showSecurityAnswer ? (
-                          <Eye className="w-4 h-4" />
-                        ) : (
-                          <EyeOff className="w-4 h-4" />
-                        )}
+                        EN
+                      </button>
+                      <button
+                        onClick={() => setLanguage("fr")}
+                        className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                          language === "fr" ? "bg-[#FDB913] text-black" : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        FR
                       </button>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-4 flex gap-2">
-                  <Button
-                    onClick={handleSendEmail}
-                    disabled={sending}
-                    className="flex-1 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold"
-                  >
-                    {sending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Sending...
-                      </>
-                    ) : success ? (
-                      <>
-                        <CheckCircle2 className="w-4 h-4 mr-2" />
-                        Sent!
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 mr-2" />
-                        Send Email
-                      </>
-                    )}
-                  </Button>
-                </div>
-
-                {error && (
-                  <div className="mt-3 p-3 bg-red-950/50 border border-red-900/50 rounded-lg text-red-400 text-sm">
-                    {error}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Recipient Email</label>
+                      <Input
+                        type="email"
+                        placeholder="recipient@example.com"
+                        value={formData.recipientEmail}
+                        onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
+                        className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-600 text-base"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-medium text-zinc-400 mb-1 block">Recipient Name</label>
+                        <Input
+                          value={formData.recipientName}
+                          onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
+                          className="bg-zinc-900/50 border-zinc-700 text-white text-base"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-zinc-400 mb-1 block">Amount (CAD)</label>
+                        <Input
+                          value={formData.amount}
+                          onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                          className="bg-zinc-900/50 border-zinc-700 text-white text-base"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Message (Optional)</label>
+                      <Textarea
+                        placeholder="Add a message..."
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        rows={2}
+                        className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-600 text-base"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Question</label>
+                      <Input
+                        value={formData.securityQuestion}
+                        onChange={(e) => setFormData({ ...formData, securityQuestion: e.target.value })}
+                        className="bg-zinc-900/50 border-zinc-700 text-white text-base"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Answer</label>
+                      <div className="relative">
+                        <Input
+                          type={showSecurityAnswer ? "text" : "password"}
+                          value={formData.securityAnswer}
+                          onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
+                          className="bg-zinc-900/50 border-zinc-700 text-white pr-10 text-base"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSecurityAnswer((v) => !v)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                          tabIndex={-1}
+                        >
+                          {showSecurityAnswer ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                )}
-                {success && (
-                  <div className="mt-3 p-3 bg-green-950/50 border border-green-900/50 rounded-lg text-green-400 text-sm">
-                    Email sent successfully to {formData.recipientEmail}
-                  </div>
-                )}
-              </Card>
 
-              {/* Live preview */}
-              <Card className="bg-zinc-800/50 border-zinc-700 p-4">
-                <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-[#FDB913]" />
-                  Live Preview
-                </h4>
-                <div className="border border-zinc-700 rounded-lg overflow-hidden">
-                  <iframe
-                    title="Email Preview"
-                    srcDoc={previewHtml}
-                    className="w-full bg-white"
-                    style={{ height: "720px", minHeight: "600px" }}
-                    scrolling="yes"
-                  />
-                </div>
-              </Card>
+                  <div className="mt-4 flex gap-2">
+                    <Button
+                      onClick={handleSendEmail}
+                      disabled={sending}
+                      className="flex-1 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold h-12 text-base"
+                    >
+                      {sending ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Sending...</>
+                      ) : success ? (
+                        <><CheckCircle2 className="w-4 h-4 mr-2" />Sent!</>
+                      ) : (
+                        <><Send className="w-4 h-4 mr-2" />Send Email</>
+                      )}
+                    </Button>
+                  </div>
+
+                  {error && (
+                    <div className="mt-3 p-3 bg-red-950/50 border border-red-900/50 rounded-lg text-red-400 text-sm">
+                      {error}
+                    </div>
+                  )}
+                  {success && (
+                    <div className="mt-3 p-3 bg-green-950/50 border border-green-900/50 rounded-lg text-green-400 text-sm">
+                      Email sent successfully to {formData.recipientEmail}
+                    </div>
+                  )}
+                </Card>
+              </div>
+
+              {/* PREVIEW section — hidden on mobile when config tab active */}
+              <div className={`p-4 ${mobileTab === "config" ? "hidden md:block" : ""}`}>
+                <Card className="bg-zinc-800/50 border-zinc-700 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-white flex items-center gap-2">
+                      <Eye className="w-4 h-4 text-[#FDB913]" />
+                      Live Preview
+                    </h4>
+                    <span className="text-xs text-zinc-500 font-medium">{language.toUpperCase()}</span>
+                  </div>
+
+                  {/* Scaled iframe wrapper — fits 600px email into any screen width */}
+                  <div className="border border-zinc-700 rounded-lg overflow-hidden bg-white">
+                    <div
+                      className="relative w-full"
+                      style={{ paddingBottom: `${(720 / 600) * 100}%` }}
+                    >
+                      <iframe
+                        key={activeTemplateId}
+                        title="Email Preview"
+                        srcDoc={previewHtml}
+                        className="absolute inset-0 bg-white"
+                        style={{
+                          width: "600px",
+                          height: "720px",
+                          border: "none",
+                          transformOrigin: "top left",
+                          transform: "scale(var(--preview-scale, 1))",
+                        }}
+                        ref={(el) => {
+                          if (!el) return
+                          const containerWidth = el.parentElement?.offsetWidth ?? 600
+                          const scale = containerWidth / 600
+                          el.style.setProperty("--preview-scale", String(scale))
+                          el.style.transform = `scale(${scale})`
+                          if (el.parentElement) {
+                            el.parentElement.style.paddingBottom = `${720 * scale}px`
+                            el.parentElement.style.height = "auto"
+                          }
+                        }}
+                        scrolling="no"
+                      />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
             </div>
           </aside>
         )}

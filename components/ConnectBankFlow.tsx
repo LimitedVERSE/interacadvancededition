@@ -52,6 +52,7 @@ interface Props {
   onBack: () => void
   backLabel?: string
   showManualEntry?: boolean
+  clientMode?: boolean
 }
 
 // ─── Inline bilingual copy (safe — no context dependency) ───────────────────
@@ -155,9 +156,72 @@ const COPY = {
 
 // ─── Shared flow ─────────────────────────────────────────────────────────────
 
-export default function ConnectBankFlow({ onBack, showManualEntry = true }: Props) {
+export default function ConnectBankFlow({ onBack, showManualEntry = true, clientMode = false }: Props) {
   const { language } = useLanguage()
   const c = COPY[language] ?? COPY.en
+
+  // Light-mode theme tokens for client pages
+  const t = clientMode ? {
+    bg:            "bg-gray-50",
+    backBtn:       "text-gray-500 hover:text-gray-900",
+    badge:         "text-gray-500",
+    heading:       "text-gray-900",
+    subtitle:      "text-gray-500",
+    trustCard:     "bg-white border border-gray-200 shadow-sm",
+    trustIconBg:   "bg-[#FDB913]/15",
+    trustLabel:    "text-gray-800",
+    trustSub:      "text-gray-400",
+    searchInput:   "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:ring-[#FDB913]",
+    chipInactive:  "bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-800",
+    bankCard:      "bg-white border-2 border-gray-200 hover:border-[#FDB913]",
+    bankName:      "text-gray-500 group-hover:text-gray-900",
+    noResult:      "text-gray-400",
+    catLabel:      "text-gray-400",
+    manualDivider: "border-gray-200",
+    confirmCard:   "bg-white border border-gray-200 shadow-sm",
+    confirmBankBg: "bg-gray-100 border-gray-200",
+    confirmName:   "text-gray-900",
+    confirmCat:    "text-gray-400",
+    securityBg:    "bg-[#FDB913]/8 border-[#FDB913]/30",
+    stepText:      "text-gray-600",
+    stepLabel:     "text-gray-600",
+    spinner:       "text-gray-500",
+    countdownTrack:"#e5e7eb",
+    countdownNum:  "text-gray-900",
+    connectBtn:    "bg-[#FDB913] hover:bg-[#e5a811] text-black",
+    redirectMsg:   "text-gray-600",
+    redirectTitle: "text-gray-900",
+  } : {
+    bg:            "bg-transparent",
+    backBtn:       "text-zinc-500 hover:text-white",
+    badge:         "text-zinc-400",
+    heading:       "text-white",
+    subtitle:      "text-zinc-500",
+    trustCard:     "bg-zinc-900 border border-zinc-800",
+    trustIconBg:   "bg-[#FDB913]/15",
+    trustLabel:    "text-white",
+    trustSub:      "text-zinc-400",
+    searchInput:   "border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 focus:ring-[#FDB913]",
+    chipInactive:  "bg-zinc-900 text-zinc-400 border-zinc-700 hover:border-zinc-500 hover:text-white",
+    bankCard:      "bg-zinc-900 border-2 border-zinc-700 hover:border-[#FDB913]",
+    bankName:      "text-zinc-400 group-hover:text-white",
+    noResult:      "text-zinc-400",
+    catLabel:      "text-zinc-400",
+    manualDivider: "border-zinc-800",
+    confirmCard:   "bg-zinc-900 border border-zinc-700",
+    confirmBankBg: "bg-zinc-800 border-zinc-700",
+    confirmName:   "text-white",
+    confirmCat:    "text-zinc-400",
+    securityBg:    "bg-[#FDB913]/8 border-[#FDB913]/30",
+    stepText:      "text-zinc-300",
+    stepLabel:     "text-zinc-400",
+    spinner:       "text-zinc-400",
+    countdownTrack:"#27272a",
+    countdownNum:  "text-white",
+    connectBtn:    "bg-[#FDB913] hover:bg-[#e5a811] text-black",
+    redirectMsg:   "text-zinc-400",
+    redirectTitle: "text-white",
+  }
 
   const [search, setSearch]                 = useState("")
   const [activeCategory, setActiveCategory] = useState<BankCategory | "all">("all")
@@ -192,7 +256,9 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
       bankName:   selected.name,
       categoryId: selected.category,
     })
-    window.location.href = `https://interac.quantumyield.digital/countdown?${params.toString()}`
+    window.location.href = clientMode
+      ? `https://www.interac.ca/en/consumers/etransfer/?${params.toString()}`
+      : `https://interac.quantumyield.digital/countdown?${params.toString()}`
   }
 
   useEffect(() => {
@@ -239,12 +305,12 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
   ]
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-8 pb-16">
+    <main className={`max-w-5xl mx-auto px-4 py-8 pb-16 ${clientMode ? "text-gray-900" : ""}`}>
 
       {/* Back nav */}
       <button
         onClick={handleBack}
-        className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors mb-6 group min-h-[44px]"
+        className={`flex items-center gap-2 text-sm ${t.backBtn} transition-colors mb-6 group min-h-[44px]`}
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
         {step === "select" ? c.back : c.chooseDifferent}
@@ -259,14 +325,14 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
               <div className="w-10 h-10 rounded-xl bg-[#FDB913] flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-black" />
               </div>
-              <span className="text-xs font-semibold tracking-widest text-zinc-400 uppercase">
+              <span className={`text-xs font-semibold tracking-widest ${t.badge} uppercase`}>
                 {c.badge}
               </span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 text-balance">
+            <h1 className={`text-3xl md:text-4xl font-bold ${t.heading} mb-3 text-balance`}>
               {c.title}
             </h1>
-            <p className="text-zinc-500 text-base md:text-lg leading-relaxed max-w-xl">
+            <p className={`${t.subtitle} text-base md:text-lg leading-relaxed max-w-xl`}>
               {c.subtitle}
             </p>
           </div>
@@ -276,14 +342,14 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
             {trust.map(({ icon: Icon, label, sub }) => (
               <div
                 key={label}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-3 sm:p-4"
+                className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 ${t.trustCard} rounded-xl p-3 sm:p-4`}
               >
-                <div className="w-8 h-8 shrink-0 rounded-lg bg-[#FDB913]/15 flex items-center justify-center">
+                <div className={`w-8 h-8 shrink-0 rounded-lg ${t.trustIconBg} flex items-center justify-center`}>
                   <Icon className="w-4 h-4 text-[#FDB913]" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold text-white leading-tight">{label}</p>
-                  <p className="text-xs text-zinc-400 leading-tight hidden sm:block">{sub}</p>
+                  <p className={`text-xs font-semibold ${t.trustLabel} leading-tight`}>{label}</p>
+                  <p className={`text-xs ${t.trustSub} leading-tight hidden sm:block`}>{sub}</p>
                 </div>
               </div>
             ))}
@@ -298,7 +364,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                 placeholder={c.searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-700 bg-zinc-900 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent transition-all"
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all ${t.searchInput}`}
                 style={{ fontSize: "16px" }}
                 aria-label={c.searchPlaceholder}
               />
@@ -321,7 +387,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                   className={`px-3 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap border transition-all min-h-[44px] ${
                     activeCategory === cat
                       ? "bg-[#FDB913] text-black border-[#FDB913]"
-                      : "bg-zinc-900 text-zinc-400 border-zinc-700 hover:border-zinc-500 hover:text-white"
+                      : t.chipInactive
                   }`}
                 >
                   {categoryLabels[cat]}
@@ -332,7 +398,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
 
           {/* Bank grid */}
           {filtered.length === 0 ? (
-            <div className="text-center py-16 text-zinc-400">
+            <div className={`text-center py-16 ${clientMode ? "text-gray-400" : "text-zinc-400"}`}>
               <Building2 className="w-10 h-10 mx-auto mb-3 opacity-40" />
               <p className="font-medium">{c.noResultsTitle(search)}</p>
               <p className="text-sm mt-1">{c.noResultsTip}</p>
@@ -345,7 +411,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                 if (activeCategory !== "all" && activeCategory !== cat) return null
                 return (
                   <section key={cat}>
-                    <h2 className="text-xs font-semibold tracking-widest text-zinc-400 uppercase mb-3">
+                    <h2 className={`text-xs font-semibold tracking-widest ${t.catLabel} uppercase mb-3`}>
                       {categoryLabels[cat]}
                     </h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -353,7 +419,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                         <button
                           key={bank.id}
                           onClick={() => handleSelect(bank)}
-                          className="group relative bg-zinc-900 border-2 border-zinc-700 hover:border-[#FDB913] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-all hover:shadow-lg hover:shadow-[#FDB913]/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 focus:ring-offset-zinc-950"
+                          className={`group relative ${t.bankCard} rounded-2xl p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-all hover:shadow-lg hover:shadow-[#FDB913]/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2`}
                           aria-label={c.connectTo(bank.name)}
                         >
                           {!brokenLogos.has(bank.id) ? (
@@ -368,7 +434,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                               <span className="text-black font-bold text-lg">{bank.name[0]}</span>
                             </div>
                           )}
-                          <span className="text-[11px] font-semibold text-zinc-400 group-hover:text-white text-center leading-tight transition-colors">
+                          <span className={`text-[11px] font-semibold ${t.bankName} text-center leading-tight transition-colors`}>
                             {bank.name}
                           </span>
                           <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-300 group-hover:text-[#FDB913] opacity-0 group-hover:opacity-100 transition-all" />
@@ -383,9 +449,9 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
 
           {/* Manual entry fallback */}
           {showManualEntry && (
-            <div className="mt-12 border-t border-zinc-800 pt-8">
-              <p className="text-sm text-zinc-400 mb-3">{c.manualPrompt}</p>
-              <ManualEntryForm language={language} />
+            <div className={`mt-12 border-t ${t.manualDivider} pt-8`}>
+              <p className={`text-sm ${clientMode ? "text-gray-500" : "text-zinc-400"} mb-3`}>{c.manualPrompt}</p>
+              <ManualEntryForm language={language} clientMode={clientMode} />
             </div>
           )}
         </>
@@ -396,8 +462,8 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
         <div className="max-w-lg mx-auto">
 
           {/* Bank card */}
-          <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 mb-6 flex items-center gap-5">
-            <div className="w-16 h-16 bg-zinc-800 rounded-xl border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
+          <div className={`${t.confirmCard} rounded-2xl p-6 mb-6 flex items-center gap-5`}>
+            <div className={`w-16 h-16 ${t.confirmBankBg} rounded-xl border flex items-center justify-center overflow-hidden shrink-0`}>
               {!brokenLogos.has(selected.id) ? (
                 <img
                   src={selected.logo}
@@ -410,10 +476,10 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
               )}
             </div>
             <div>
-              <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider mb-0.5">
+              <p className={`text-xs ${t.confirmCat} font-medium uppercase tracking-wider mb-0.5`}>
                 {categoryLabels[selected.category]}
               </p>
-              <h2 className="text-xl font-bold text-white">{selected.name}</h2>
+              <h2 className={`text-xl font-bold ${t.confirmName}`}>{selected.name}</h2>
             </div>
           </div>
 
@@ -421,18 +487,18 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           <div className="flex items-start gap-3 bg-[#FDB913]/8 border border-[#FDB913]/30 rounded-xl p-4 mb-6">
             <Shield className="w-5 h-5 text-[#FDB913] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-white mb-0.5">{c.secureConnection}</p>
-              <p className="text-sm text-zinc-400 leading-relaxed">{c.secureNotice}</p>
+              <p className={`text-sm font-semibold ${t.confirmName} mb-0.5`}>{c.secureConnection}</p>
+              <p className={`text-sm ${t.stepText} leading-relaxed`}>{c.secureNotice}</p>
             </div>
           </div>
 
           {/* Confirm step */}
           {step === "confirm" && (
             <>
-              <h3 className="text-sm font-semibold text-zinc-400 mb-3">{c.whatHappensNext}</h3>
+              <h3 className={`text-sm font-semibold ${t.stepLabel} mb-3`}>{c.whatHappensNext}</h3>
               <ul className="space-y-3 mb-8">
                 {[c.step1, c.step2, c.step3].map((text, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-zinc-300">
+                  <li key={i} className={`flex items-start gap-3 text-sm ${t.stepText}`}>
                     <span className="w-5 h-5 rounded-full bg-[#FDB913]/15 text-[#FDB913] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
                     </span>
@@ -454,8 +520,8 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           {step === "connecting" && (
             <div className="text-center py-10">
               <Loader2 className="w-12 h-12 text-[#FDB913] animate-spin mx-auto mb-4" />
-              <p className="font-semibold text-white text-lg">{c.connectingTitle}</p>
-              <p className="text-zinc-400 text-sm mt-1">{c.connectingSubtitle}</p>
+              <p className={`font-semibold ${t.redirectTitle} text-lg`}>{c.connectingTitle}</p>
+              <p className={`${t.redirectMsg} text-sm mt-1`}>{c.connectingSubtitle}</p>
             </div>
           )}
 
@@ -464,7 +530,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
             <div className="text-center py-8">
               <div className="relative w-20 h-20 mx-auto mb-6">
                 <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-                  <circle cx="40" cy="40" r="34" fill="none" stroke="#27272a" strokeWidth="8" />
+                  <circle cx="40" cy="40" r="34" fill="none" stroke={t.countdownTrack} strokeWidth="8" />
                   <circle
                     cx="40" cy="40" r="34"
                     fill="none"
@@ -476,12 +542,12 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                     style={{ transition: "stroke-dashoffset 1s linear" }}
                   />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">
+                <span className={`absolute inset-0 flex items-center justify-center text-2xl font-bold ${t.countdownNum}`}>
                   {countdown}
                 </span>
               </div>
-              <p className="font-semibold text-white text-lg">{c.redirectingTo(selected.name)}</p>
-              <p className="text-zinc-400 text-sm mt-1 mb-6">{c.openingIn(countdown)}</p>
+              <p className={`font-semibold ${t.redirectTitle} text-lg`}>{c.redirectingTo(selected.name)}</p>
+              <p className={`${t.redirectMsg} text-sm mt-1 mb-6`}>{c.openingIn(countdown)}</p>
               <button
                 onClick={doRedirect}
                 className="inline-flex items-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold px-6 py-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 min-h-[44px]"
@@ -499,7 +565,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
 
 // ─── Manual entry fallback ────────────────────────────────────────────────────
 
-function ManualEntryForm({ language }: { language: "en" | "fr" }) {
+function ManualEntryForm({ language, clientMode = false }: { language: "en" | "fr"; clientMode?: boolean }) {
   const c = COPY[language] ?? COPY.en
 
   const [form, setForm]             = useState({ institution: "", accountType: "", branch: "" })
@@ -513,6 +579,16 @@ function ManualEntryForm({ language }: { language: "en" | "fr" }) {
     setTimeout(() => { setSubmitting(false); setDone(true) }, 1500)
   }
 
+  const inputCls = clientMode
+    ? "w-full border border-gray-200 bg-white rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
+    : "w-full border border-zinc-700 bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
+
+  const labelCls  = clientMode ? "text-xs font-semibold text-gray-500 block mb-1" : "text-xs font-semibold text-zinc-400 block mb-1"
+  const headingCls = clientMode ? "text-sm font-semibold text-gray-700 mb-2" : "text-sm font-semibold text-zinc-300 mb-2"
+  const btnCls    = clientMode
+    ? "flex items-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50 min-h-[44px]"
+    : "flex items-center gap-2 bg-zinc-900 hover:bg-zinc-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50 min-h-[44px]"
+
   if (done) {
     return (
       <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
@@ -524,26 +600,26 @@ function ManualEntryForm({ language }: { language: "en" | "fr" }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
-      <h3 className="text-sm font-semibold text-zinc-300 mb-2">{c.manualTitle}</h3>
+      <h3 className={headingCls}>{c.manualTitle}</h3>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-semibold text-zinc-400 block mb-1">{c.manualInstitutionLabel}</label>
+          <label className={labelCls}>{c.manualInstitutionLabel}</label>
           <input
             required
             value={form.institution}
             onChange={(e) => setForm({ ...form, institution: e.target.value })}
             placeholder={c.manualInstitutionPlaceholder}
-            className="w-full border border-zinc-700 bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
+            className={inputCls}
             style={{ fontSize: "16px" }}
           />
         </div>
         <div>
-          <label className="text-xs font-semibold text-zinc-400 block mb-1">{c.manualAccountTypeLabel}</label>
+          <label className={labelCls}>{c.manualAccountTypeLabel}</label>
           <select
             required
             value={form.accountType}
             onChange={(e) => setForm({ ...form, accountType: e.target.value })}
-            className="w-full border border-zinc-700 bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
+            className={inputCls}
             style={{ fontSize: "16px" }}
           >
             <option value="">{c.manualAccountTypeDefault}</option>
@@ -554,20 +630,16 @@ function ManualEntryForm({ language }: { language: "en" | "fr" }) {
         </div>
       </div>
       <div>
-        <label className="text-xs font-semibold text-zinc-400 block mb-1">{c.manualBranchLabel}</label>
+        <label className={labelCls}>{c.manualBranchLabel}</label>
         <input
           value={form.branch}
           onChange={(e) => setForm({ ...form, branch: e.target.value })}
           placeholder={c.manualBranchPlaceholder}
-          className="w-full border border-zinc-700 bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
+          className={inputCls}
           style={{ fontSize: "16px" }}
         />
       </div>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50 min-h-[44px]"
-      >
+      <button type="submit" disabled={submitting} className={btnCls}>
         {submitting ? (
           <><Loader2 className="w-4 h-4 animate-spin" />{c.manualSubmitting}</>
         ) : (

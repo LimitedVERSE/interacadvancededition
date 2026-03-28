@@ -1,6 +1,6 @@
 "use client"
 
-import { Languages } from "lucide-react"
+import { Languages, Shield } from "lucide-react"
 import ConnectBankFlow from "@/components/ConnectBankFlow"
 import { useLanguage } from "@/lib/i18n/context"
 
@@ -8,39 +8,41 @@ export default function ClientConnectBankPage() {
   const { language, setLanguage } = useLanguage()
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
 
-      {/* Minimal brand header */}
-      <header className="border-b border-zinc-800 bg-zinc-900/80 shrink-0">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-          {/* Left: Interac logo + QuantumYield */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#FDB913] rounded-lg flex items-center justify-center">
+      {/* Client header — links only to interac.ca */}
+      <header className="bg-white border-b border-gray-200 shrink-0 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+          {/* Logo block */}
+          <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-[#FDB913] rounded-lg flex items-center justify-center shadow-sm">
               <img
                 src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
                 alt="Interac"
-                className="h-5 object-contain"
+                className="h-6 object-contain"
               />
             </div>
-            <div className="w-px h-5 bg-zinc-700" />
-            <span className="text-sm font-bold text-white tracking-tight">QuantumYield</span>
-          </div>
+            <div>
+              <p className="text-sm font-bold text-gray-900 leading-none tracking-tight">Interac e&#8209;Transfer</p>
+              <p className="text-[10px] text-gray-400 leading-none mt-0.5 font-medium uppercase tracking-wide">Secure Deposit Portal</p>
+            </div>
+          </a>
 
-          {/* Right: language toggle + secure badge */}
+          {/* Right side */}
           <div className="flex items-center gap-4">
+            {/* Language toggle */}
             <button
               onClick={() => setLanguage(language === "en" ? "fr" : "en")}
-              className="flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-white transition-colors min-h-[44px]"
+              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors min-h-[44px] px-2"
               aria-label={language === "en" ? "Passer au français" : "Switch to English"}
             >
               <Languages className="w-4 h-4" />
               <span>{language === "en" ? "Français" : "English"}</span>
             </button>
-            <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-500 font-medium">
-              <svg className="w-3.5 h-3.5 text-[#FDB913]" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clipRule="evenodd" />
-              </svg>
-              Secured by Interac
+            {/* Secure badge */}
+            <div className="hidden sm:flex items-center gap-1.5 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">
+              <Shield className="w-3.5 h-3.5" />
+              <span>Secured by Interac</span>
             </div>
           </div>
         </div>
@@ -51,20 +53,29 @@ export default function ClientConnectBankPage() {
         <ConnectBankFlow
           onBack={() => {}}
           showManualEntry={false}
+          clientMode
         />
       </div>
 
-      {/* Minimal footer */}
-      <footer className="border-t border-zinc-800 py-6 px-4 shrink-0">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500">
-          <p>
-            &copy; {new Date().getFullYear()} QuantumYield. Payments processed via{" "}
-            <span className="font-medium text-zinc-400">Interac e-Transfer</span>.
-          </p>
+      {/* Client footer — only interac.ca links */}
+      <footer className="bg-white border-t border-gray-200 py-6 px-4 shrink-0">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-[#FDB913] rounded flex items-center justify-center">
+              <img
+                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
+                alt=""
+                className="h-3.5 object-contain"
+              />
+            </div>
+            <span>&copy; {new Date().getFullYear()} Interac Corp. All rights reserved.</span>
+          </div>
           <div className="flex items-center gap-4">
-            <span>256-bit SSL encryption</span>
-            <span className="w-1 h-1 rounded-full bg-zinc-700" />
-            <span>CDIC member institution</span>
+            <a href="https://www.interac.ca/en/consumers/privacy/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Privacy Policy</a>
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <a href="https://www.interac.ca/en/consumers/legal/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Terms of Use</a>
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">interac.ca</a>
           </div>
         </div>
       </footer>

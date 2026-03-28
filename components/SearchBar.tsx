@@ -15,42 +15,32 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (onSearch) {
-        onSearch(searchTerm)
-      }
-    }, 300) // 300ms debounce
-
+      if (onSearch) onSearch(searchTerm)
+    }, 300)
     return () => clearTimeout(timer)
   }, [searchTerm, onSearch])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    if (onSearch) {
-      onSearch(searchTerm)
-    }
+    if (onSearch) onSearch(searchTerm)
   }
 
   return (
-    <form onSubmit={handleSearch} className="relative w-full sm:w-auto" role="search">
+    <form onSubmit={handleSearch} className="relative w-full" role="search">
       <label htmlFor="bank-search" className="sr-only">
         {t.mainPage.searchLabel}
       </label>
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
       <input
         id="bank-search"
         type="search"
         placeholder={t.mainPage.searchPlaceholder}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full sm:w-64 pl-4 pr-12 py-2.5 border-2 border-gray-300 rounded-full text-gray-700 bg-white focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 transition-all"
+        className="w-full pl-11 pr-4 py-3 rounded-xl border border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent transition-all"
         aria-label={t.mainPage.searchLabel}
+        style={{ fontSize: "16px" }}
       />
-      <button
-        type="submit"
-        className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#FDB913] hover:bg-[#e5a710] text-white rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-1 shadow-sm"
-        aria-label={t.mainPage.searchLabel}
-      >
-        <Search className="w-5 h-5" />
-      </button>
     </form>
   )
 }

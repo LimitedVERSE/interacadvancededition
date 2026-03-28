@@ -3,7 +3,7 @@ interface InteracHeaderProps {
   language?: "en" | "fr"
 }
 
-export function InteracHeader({
+export default function InteracHeader({
   logoUrl = "https://etransfer-notification.interac.ca/images/new/interac_logo.png",
   language = "en",
 }: InteracHeaderProps) {

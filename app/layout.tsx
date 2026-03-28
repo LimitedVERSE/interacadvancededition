@@ -6,8 +6,8 @@ import "./globals.css"
 import { LanguageProvider } from "@/lib/i18n/context"
 import { AuthProvider } from "@/lib/auth/context"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -33,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-zinc-950">
-      <body className={`font-sans antialiased bg-zinc-950 text-white`}>
+    <html lang="en" className={`bg-zinc-950 ${geist.variable} ${geistMono.variable}`}>
+      <body className="font-sans antialiased bg-zinc-950 text-white">
         <AuthProvider>
           <LanguageProvider>{children}</LanguageProvider>
         </AuthProvider>

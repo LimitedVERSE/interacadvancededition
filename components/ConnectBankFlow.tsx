@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import {
   Shield,
   Search,
@@ -245,7 +244,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
       {/* Back nav */}
       <button
         onClick={handleBack}
-        className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors mb-6 group min-h-[44px]"
+        className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors mb-6 group min-h-[44px]"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
         {step === "select" ? c.back : c.chooseDifferent}
@@ -264,7 +263,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                 {c.badge}
               </span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-3 text-balance">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 text-balance">
               {c.title}
             </h1>
             <p className="text-zinc-500 text-base md:text-lg leading-relaxed max-w-xl">
@@ -277,13 +276,13 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
             {trust.map(({ icon: Icon, label, sub }) => (
               <div
                 key={label}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 bg-zinc-50 border border-zinc-200 rounded-xl p-3 sm:p-4"
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-3 sm:p-4"
               >
                 <div className="w-8 h-8 shrink-0 rounded-lg bg-[#FDB913]/15 flex items-center justify-center">
                   <Icon className="w-4 h-4 text-[#FDB913]" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold text-zinc-800 leading-tight">{label}</p>
+                  <p className="text-xs font-semibold text-white leading-tight">{label}</p>
                   <p className="text-xs text-zinc-400 leading-tight hidden sm:block">{sub}</p>
                 </div>
               </div>
@@ -299,7 +298,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                 placeholder={c.searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-700 bg-zinc-900 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent transition-all"
                 style={{ fontSize: "16px" }}
                 aria-label={c.searchPlaceholder}
               />
@@ -322,7 +321,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                   className={`px-3 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap border transition-all min-h-[44px] ${
                     activeCategory === cat
                       ? "bg-[#FDB913] text-black border-[#FDB913]"
-                      : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                      : "bg-zinc-900 text-zinc-400 border-zinc-700 hover:border-zinc-500 hover:text-white"
                   }`}
                 >
                   {categoryLabels[cat]}
@@ -354,25 +353,22 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                         <button
                           key={bank.id}
                           onClick={() => handleSelect(bank)}
-                          className="group relative bg-white border-2 border-zinc-100 hover:border-[#FDB913] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-all hover:shadow-lg hover:shadow-[#FDB913]/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+                          className="group relative bg-zinc-900 border-2 border-zinc-700 hover:border-[#FDB913] rounded-2xl p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-all hover:shadow-lg hover:shadow-[#FDB913]/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 focus:ring-offset-zinc-950"
                           aria-label={c.connectTo(bank.name)}
                         >
                           {!brokenLogos.has(bank.id) ? (
-                            <Image
+                            <img
                               src={bank.logo}
                               alt={`${bank.name} logo`}
-                              width={120}
-                              height={48}
                               className="w-full h-10 object-contain transition-all group-hover:scale-105"
                               onError={() => setBrokenLogos((p) => new Set(p).add(bank.id))}
-                              unoptimized
                             />
                           ) : (
                             <div className="w-10 h-10 rounded-xl bg-[#FDB913] flex items-center justify-center">
                               <span className="text-black font-bold text-lg">{bank.name[0]}</span>
                             </div>
                           )}
-                          <span className="text-[11px] font-semibold text-zinc-500 group-hover:text-zinc-900 text-center leading-tight transition-colors">
+                          <span className="text-[11px] font-semibold text-zinc-400 group-hover:text-white text-center leading-tight transition-colors">
                             {bank.name}
                           </span>
                           <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-300 group-hover:text-[#FDB913] opacity-0 group-hover:opacity-100 transition-all" />
@@ -387,7 +383,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
 
           {/* Manual entry fallback */}
           {showManualEntry && (
-            <div className="mt-12 border-t border-zinc-100 pt-8">
+            <div className="mt-12 border-t border-zinc-800 pt-8">
               <p className="text-sm text-zinc-400 mb-3">{c.manualPrompt}</p>
               <ManualEntryForm language={language} />
             </div>
@@ -400,27 +396,24 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
         <div className="max-w-lg mx-auto">
 
           {/* Bank card */}
-          <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-6 mb-6 flex items-center gap-5">
-            <div className="w-16 h-16 bg-white rounded-xl border border-zinc-200 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 mb-6 flex items-center gap-5">
+            <div className="w-16 h-16 bg-zinc-800 rounded-xl border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0">
               {!brokenLogos.has(selected.id) ? (
-                <Image
+                <img
                   src={selected.logo}
                   alt={selected.name}
-                  width={64}
-                  height={64}
                   className="w-full h-full object-contain p-2"
                   onError={() => setBrokenLogos((p) => new Set(p).add(selected.id))}
-                  unoptimized
                 />
               ) : (
-                <span className="text-xl font-bold text-zinc-900">{selected.name[0]}</span>
+                <span className="text-xl font-bold text-white">{selected.name[0]}</span>
               )}
             </div>
             <div>
               <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider mb-0.5">
                 {categoryLabels[selected.category]}
               </p>
-              <h2 className="text-xl font-bold text-zinc-900">{selected.name}</h2>
+              <h2 className="text-xl font-bold text-white">{selected.name}</h2>
             </div>
           </div>
 
@@ -428,18 +421,18 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           <div className="flex items-start gap-3 bg-[#FDB913]/8 border border-[#FDB913]/30 rounded-xl p-4 mb-6">
             <Shield className="w-5 h-5 text-[#FDB913] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-zinc-800 mb-0.5">{c.secureConnection}</p>
-              <p className="text-sm text-zinc-500 leading-relaxed">{c.secureNotice}</p>
+              <p className="text-sm font-semibold text-white mb-0.5">{c.secureConnection}</p>
+              <p className="text-sm text-zinc-400 leading-relaxed">{c.secureNotice}</p>
             </div>
           </div>
 
           {/* Confirm step */}
           {step === "confirm" && (
             <>
-              <h3 className="text-sm font-semibold text-zinc-700 mb-3">{c.whatHappensNext}</h3>
+              <h3 className="text-sm font-semibold text-zinc-400 mb-3">{c.whatHappensNext}</h3>
               <ul className="space-y-3 mb-8">
                 {[c.step1, c.step2, c.step3].map((text, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-zinc-600">
+                  <li key={i} className="flex items-start gap-3 text-sm text-zinc-300">
                     <span className="w-5 h-5 rounded-full bg-[#FDB913]/15 text-[#FDB913] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
                     </span>
@@ -461,7 +454,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
           {step === "connecting" && (
             <div className="text-center py-10">
               <Loader2 className="w-12 h-12 text-[#FDB913] animate-spin mx-auto mb-4" />
-              <p className="font-semibold text-zinc-800 text-lg">{c.connectingTitle}</p>
+              <p className="font-semibold text-white text-lg">{c.connectingTitle}</p>
               <p className="text-zinc-400 text-sm mt-1">{c.connectingSubtitle}</p>
             </div>
           )}
@@ -471,7 +464,7 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
             <div className="text-center py-8">
               <div className="relative w-20 h-20 mx-auto mb-6">
                 <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-                  <circle cx="40" cy="40" r="34" fill="none" stroke="#f4f4f5" strokeWidth="8" />
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#27272a" strokeWidth="8" />
                   <circle
                     cx="40" cy="40" r="34"
                     fill="none"
@@ -483,11 +476,11 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true }: Prop
                     style={{ transition: "stroke-dashoffset 1s linear" }}
                   />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-zinc-900">
+                <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white">
                   {countdown}
                 </span>
               </div>
-              <p className="font-semibold text-zinc-800 text-lg">{c.redirectingTo(selected.name)}</p>
+              <p className="font-semibold text-white text-lg">{c.redirectingTo(selected.name)}</p>
               <p className="text-zinc-400 text-sm mt-1 mb-6">{c.openingIn(countdown)}</p>
               <button
                 onClick={doRedirect}
@@ -531,26 +524,26 @@ function ManualEntryForm({ language }: { language: "en" | "fr" }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
-      <h3 className="text-sm font-semibold text-zinc-700 mb-2">{c.manualTitle}</h3>
+      <h3 className="text-sm font-semibold text-zinc-300 mb-2">{c.manualTitle}</h3>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-semibold text-zinc-600 block mb-1">{c.manualInstitutionLabel}</label>
+          <label className="text-xs font-semibold text-zinc-400 block mb-1">{c.manualInstitutionLabel}</label>
           <input
             required
             value={form.institution}
             onChange={(e) => setForm({ ...form, institution: e.target.value })}
             placeholder={c.manualInstitutionPlaceholder}
-            className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
+            className="w-full border border-zinc-700 bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
             style={{ fontSize: "16px" }}
           />
         </div>
         <div>
-          <label className="text-xs font-semibold text-zinc-600 block mb-1">{c.manualAccountTypeLabel}</label>
+          <label className="text-xs font-semibold text-zinc-400 block mb-1">{c.manualAccountTypeLabel}</label>
           <select
             required
             value={form.accountType}
             onChange={(e) => setForm({ ...form, accountType: e.target.value })}
-            className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent bg-white"
+            className="w-full border border-zinc-700 bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
             style={{ fontSize: "16px" }}
           >
             <option value="">{c.manualAccountTypeDefault}</option>
@@ -561,12 +554,12 @@ function ManualEntryForm({ language }: { language: "en" | "fr" }) {
         </div>
       </div>
       <div>
-        <label className="text-xs font-semibold text-zinc-600 block mb-1">{c.manualBranchLabel}</label>
+        <label className="text-xs font-semibold text-zinc-400 block mb-1">{c.manualBranchLabel}</label>
         <input
           value={form.branch}
           onChange={(e) => setForm({ ...form, branch: e.target.value })}
           placeholder={c.manualBranchPlaceholder}
-          className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
+          className="w-full border border-zinc-700 bg-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent"
           style={{ fontSize: "16px" }}
         />
       </div>

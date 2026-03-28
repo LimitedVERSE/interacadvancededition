@@ -150,28 +150,25 @@ function EmailStudioContent() {
   const [language, setLanguage] = useState<"en" | "fr">("en")
   const [mobileTab, setMobileTab] = useState<"config" | "preview">("config")
   const [previewScale, setPreviewScale] = useState(1)
-  const previewContainerRef = useRef<HTMLDivElement>(null)
+  const asideObsRef = useRef<ResizeObserver | null>(null)
 
-  useEffect(() => {
-    let obs: ResizeObserver | null = null
-    const CARD_PADDING = 64 // 32px left + 32px right (p-4 * 2 + card p-4 * 2)
-    const raf = requestAnimationFrame(() => {
-      const el = previewContainerRef.current
-      if (!el) return
-      const calc = (w: number) => {
-        if (w > 0) setPreviewScale(Math.min(1, (w - CARD_PADDING) / 600))
-      }
-      obs = new ResizeObserver((entries) => {
-        calc(entries[0]?.contentRect.width ?? 0)
-      })
-      obs.observe(el)
-      calc(el.offsetWidth)
-    })
-    return () => {
-      cancelAnimationFrame(raf)
-      obs?.disconnect()
+  // Ref callback — fires immediately after React mounts the aside into the DOM
+  const asideRefCallback = (el: HTMLElement | null) => {
+    // Tear down any previous observer
+    asideObsRef.current?.disconnect()
+    asideObsRef.current = null
+    if (!el) return
+    const PADDING = 64 // card p-4 * 2 sides * 2 nested = ~64px
+    const calc = (w: number) => {
+      if (w > 0) setPreviewScale(Math.min(1, (w - PADDING) / 600))
     }
-  }, [showPreview])
+    const obs = new ResizeObserver((entries) => {
+      calc(entries[0]?.contentRect.width ?? 0)
+    })
+    obs.observe(el)
+    asideObsRef.current = obs
+    calc(el.offsetWidth)
+  }
 
   const [formData, setFormData] = useState({
     recipientEmail: "",
@@ -423,7 +420,7 @@ function EmailStudioContent() {
 
         {/* Preview Panel */}
         {showPreview && currentTemplate && (
-          <aside ref={previewContainerRef} className="w-full md:w-[500px] lg:w-[600px] border-l border-zinc-800/50 bg-zinc-900/80 backdrop-blur-sm flex flex-col fixed md:relative inset-0 z-20 md:inset-auto">
+          <aside ref={asideRefCallback} className="w-full md:w-[500px] lg:w-[600px] border-l border-zinc-800/50 bg-zinc-900/80 backdrop-blur-sm flex flex-col fixed md:relative inset-0 z-20 md:inset-auto">
 
             {/* Panel header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 shrink-0">

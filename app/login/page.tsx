@@ -275,7 +275,7 @@ export default function LoginPage() {
           </div>
 
           {/* Footer */}
-          <p className="text-center text-[11px] text-zinc-700 mt-8">
+          <p className="text-center text-[11px] text-zinc-500 mt-8">
             Interac e&#8209;Transfer &middot; Secure Payment Services
           </p>
         </div>

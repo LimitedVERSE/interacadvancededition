@@ -78,15 +78,15 @@ function AccountBalancePanel() {
       {/* JP Morgan ledger badge row */}
       <div className="flex items-center justify-between mb-2.5 px-0.5">
         <div className="flex items-center gap-1.5">
-          <Building2 className="w-3 h-3 text-zinc-700" />
-          <span className="text-[10px] font-semibold tracking-widest text-zinc-700 uppercase">
+          <Building2 className="w-3 h-3 text-zinc-500" />
+          <span className="text-[10px] font-semibold tracking-widest text-zinc-500 uppercase">
             JP Morgan Payments Portal
           </span>
-          <span className="text-[10px] text-zinc-800">&middot; {JPM_IMPORT_DATE}</span>
+          <span className="text-[10px] text-zinc-500">&middot; {JPM_IMPORT_DATE}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className={`w-1.5 h-1.5 rounded-full ${rateFlash ? "bg-[#FDB913] animate-ping" : "bg-emerald-500"}`} />
-          <span className="text-[10px] text-zinc-700">Live Ledger</span>
+          <span className="text-[10px] text-zinc-500">Live Ledger</span>
         </div>
       </div>
 
@@ -96,25 +96,25 @@ function AccountBalancePanel() {
         {/* ── Chequing ── */}
         <div className={`relative rounded-2xl border overflow-hidden transition-all duration-500 ${
           isLow
-            ? "border-amber-500/30 bg-amber-950/15"
-            : "border-white/[0.07] bg-white/[0.03]"
+            ? "border-amber-500/30 bg-amber-950/10"
+            : "border-white/[0.08] bg-white/[0.04]"
         }`}>
           {/* Top accent line */}
-          <div className={`h-px w-full ${isLow ? "bg-amber-500/60" : "bg-[#FDB913]/40"}`} />
+          <div className={`h-px w-full ${isLow ? "bg-amber-500/70" : "bg-[#FDB913]/50"}`} />
 
           <div className="p-4 sm:p-5">
             {/* Header row */}
             <div className="flex items-start justify-between mb-3">
               <div>
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">Chequing</span>
+                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Chequing</span>
                   {isLow && (
-                    <span className="text-[9px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25 px-1.5 py-0.5 rounded-full uppercase tracking-wide">
+                    <span className="text-[9px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded-full uppercase tracking-wide">
                       Low
                     </span>
                   )}
                 </div>
-                <span className="text-[10px] text-zinc-700">Blockchain Ledger &middot; Active</span>
+                <span className="text-[10px] text-zinc-500">Blockchain Ledger &middot; Active</span>
               </div>
               <div className="flex items-center gap-1.5">
                 {reloadPulse && <RefreshCw className="w-3.5 h-3.5 text-[#FDB913] animate-spin" />}
@@ -124,10 +124,10 @@ function AccountBalancePanel() {
               </div>
             </div>
 
-            {/* Balance */}
+            {/* Balance — tap to reveal */}
             <button
               onClick={() => setRevealed(v => !v)}
-              className="text-left mb-0.5 focus:outline-none"
+              className="text-left mb-0.5 focus:outline-none group"
               aria-label={revealed ? "Hide balance" : "Reveal balance"}
             >
               {revealed ? (
@@ -135,12 +135,12 @@ function AccountBalancePanel() {
                   {formatCAD(chequingLive)}
                 </span>
               ) : (
-                <span className="text-2xl sm:text-[28px] font-bold text-zinc-700 tracking-tight select-none">
+                <span className="text-2xl sm:text-[28px] font-bold text-zinc-600 tracking-tight select-none group-hover:text-zinc-500 transition-colors">
                   CA$&nbsp;••••••••••
                 </span>
               )}
             </button>
-            <p className="text-[11px] text-zinc-700">
+            <p className="text-[11px] text-zinc-500">
               {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(CHEQUING_USD)} USD
               &nbsp;&middot;&nbsp;@{JPM_EXCHANGE_RATE} CAD/USD
             </p>
@@ -148,21 +148,21 @@ function AccountBalancePanel() {
             {/* Balance progress bar */}
             <div className="mt-4">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] text-zinc-700">Balance level</span>
-                <span className={`text-[10px] font-semibold tabular-nums ${isLow ? "text-amber-400" : "text-zinc-500"}`}>
+                <span className="text-[10px] text-zinc-500">Balance level</span>
+                <span className={`text-[10px] font-semibold tabular-nums ${isLow ? "text-amber-400" : "text-zinc-400"}`}>
                   {chequingPct.toFixed(1)}%
                 </span>
               </div>
-              <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="h-1 bg-white/[0.08] rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-1000 ${isLow ? "bg-amber-500" : "bg-[#FDB913]"}`}
                   style={{ width: `${Math.max(chequingPct, 1)}%` }}
                 />
               </div>
               {/* 20% marker */}
-              <div className="relative h-3 mt-0">
-                <div className="absolute top-0 w-px h-2 bg-zinc-700" style={{ left: "20%" }} />
-                <span className="absolute text-[9px] text-zinc-700 -translate-x-1/2" style={{ left: "20%", top: "8px" }}>
+              <div className="relative h-4 mt-0">
+                <div className="absolute top-0 w-px h-2 bg-zinc-600" style={{ left: "20%" }} />
+                <span className="absolute text-[9px] text-zinc-600 -translate-x-1/2" style={{ left: "20%", top: "8px" }}>
                   20%
                 </span>
               </div>
@@ -170,61 +170,61 @@ function AccountBalancePanel() {
           </div>
 
           {reloadPulse && (
-            <div className="absolute inset-0 bg-[#FDB913]/4 animate-pulse rounded-2xl pointer-events-none" />
+            <div className="absolute inset-0 bg-[#FDB913]/5 animate-pulse rounded-2xl pointer-events-none" />
           )}
         </div>
 
         {/* ── Savings ── */}
-        <div className="relative rounded-2xl border border-white/[0.07] bg-white/[0.03] overflow-hidden">
-          <div className="h-px w-full bg-white/[0.05]" />
+        <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.04] overflow-hidden">
+          <div className="h-px w-full bg-white/[0.08]" />
 
           <div className="p-4 sm:p-5">
             {/* Header row */}
             <div className="flex items-start justify-between mb-3">
               <div>
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest">Savings</span>
-                  <span className="text-[9px] font-bold bg-white/[0.05] text-zinc-600 border border-white/[0.07] px-1.5 py-0.5 rounded-full uppercase tracking-wide">
+                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Savings</span>
+                  <span className="text-[9px] font-bold bg-white/[0.07] text-zinc-400 border border-white/[0.10] px-1.5 py-0.5 rounded-full uppercase tracking-wide">
                     Locked
                   </span>
                 </div>
-                <span className="text-[10px] text-zinc-700">Blockchain Ledger &middot; Reserve</span>
+                <span className="text-[10px] text-zinc-500">Blockchain Ledger &middot; Reserve</span>
               </div>
-              <div className="w-7 h-7 bg-white/[0.05] rounded-lg flex items-center justify-center">
-                <Lock className="w-3.5 h-3.5 text-zinc-600" />
+              <div className="w-7 h-7 bg-white/[0.07] rounded-lg flex items-center justify-center">
+                <Lock className="w-3.5 h-3.5 text-zinc-400" />
               </div>
             </div>
 
             {/* Balance */}
             <div className="mb-0.5">
               {revealed ? (
-                <span className="text-2xl sm:text-[28px] font-bold text-zinc-400 tracking-tight tabular-nums">
+                <span className="text-2xl sm:text-[28px] font-bold text-zinc-300 tracking-tight tabular-nums">
                   {formatCAD(SAVINGS_CAD)}
                 </span>
               ) : (
-                <span className="text-2xl sm:text-[28px] font-bold text-zinc-700 tracking-tight select-none">
+                <span className="text-2xl sm:text-[28px] font-bold text-zinc-600 tracking-tight select-none">
                   CA$&nbsp;••••••••••
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-zinc-700">
+            <p className="text-[11px] text-zinc-500">
               {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(SAVINGS_USD)} USD
               &nbsp;&middot;&nbsp;@{JPM_EXCHANGE_RATE} CAD/USD
             </p>
 
             {/* Auto-reload notice */}
-            <div className="mt-4 flex items-start gap-2 p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-              <RefreshCw className="w-3 h-3 text-zinc-700 mt-0.5 shrink-0" />
-              <p className="text-[10px] text-zinc-600 leading-relaxed">
+            <div className="mt-4 flex items-start gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08]">
+              <RefreshCw className="w-3 h-3 text-zinc-500 mt-0.5 shrink-0" />
+              <p className="text-[10px] text-zinc-400 leading-relaxed">
                 Auto-reloads Chequing below{" "}
-                <span className="text-zinc-400 font-semibold">{formatCAD(thresholdCAD)}</span>
+                <span className="text-zinc-200 font-semibold">{formatCAD(thresholdCAD)}</span>
                 {" "}(20% threshold)
               </p>
             </div>
 
             <div className="mt-2.5 flex items-center gap-1.5">
-              <TrendingUp className="w-3 h-3 text-zinc-700" />
-              <span className="text-[10px] text-zinc-700">Unlocks on Chequing reload trigger</span>
+              <TrendingUp className="w-3 h-3 text-zinc-500" />
+              <span className="text-[10px] text-zinc-500">Unlocks on Chequing reload trigger</span>
             </div>
           </div>
         </div>
@@ -524,10 +524,11 @@ function DashboardContent() {
         </div>
       </header>
 
-      {/* Mobile clock */}
-      <div className="md:hidden text-center pt-3 pb-1">
-        <p className="text-xl font-light text-white tracking-tight tabular-nums">{formatTime(currentTime)}</p>
-        <p className="text-[11px] text-zinc-600">{formatDate(currentTime)}</p>
+      {/* Mobile clock — compact single-line bar */}
+      <div className="md:hidden flex items-center justify-center gap-2 py-2 border-b border-white/[0.05]">
+        <p className="text-sm font-semibold text-white tabular-nums">{formatTime(currentTime)}</p>
+        <span className="text-zinc-600">&middot;</span>
+        <p className="text-[11px] text-zinc-500">{formatDate(currentTime)}</p>
       </div>
 
       {/* ── Main content ── */}
@@ -552,7 +553,7 @@ function DashboardContent() {
 
         {/* App Grid */}
         <div className="w-full max-w-3xl mx-auto">
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1 sm:gap-2">
+          <div className="grid grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
             {menuItems.map((item, index) => (
               <AppGridItem key={item.id} item={item} index={index} onClick={() => router.push(item.href)} />
             ))}
@@ -560,7 +561,7 @@ function DashboardContent() {
         </div>
 
         {/* Footer tag */}
-        <p className="mt-8 text-[11px] text-zinc-800">Interac e&#8209;Transfer &middot; Secure Payment Services</p>
+        <p className="mt-8 text-[11px] text-zinc-600">Interac e&#8209;Transfer &middot; Secure Payment Services</p>
       </main>
 
       {/* Footer Mega Menu */}

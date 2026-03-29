@@ -271,7 +271,7 @@ export default function FooterMegaMenu() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search services..."
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.04] text-[14px] text-white placeholder:text-zinc-700 focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40 focus:border-[#FDB913]/30 transition-all"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.04] text-[14px] text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40 focus:border-[#FDB913]/30 transition-all"
                 style={{ fontSize: "16px" }}
               />
             </div>
@@ -298,8 +298,8 @@ export default function FooterMegaMenu() {
           <div className="flex-1 overflow-y-auto px-5 sm:px-8 py-5">
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-48 gap-2.5">
-                <Grid3x3 className="w-7 h-7 text-zinc-800" />
-                <p className="text-[13px] text-zinc-700">No services match your search</p>
+                <Grid3x3 className="w-7 h-7 text-zinc-600" />
+                <p className="text-[13px] text-zinc-500">No services match your search</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-2.5">
@@ -350,7 +350,7 @@ export default function FooterMegaMenu() {
 
           {/* ── Mini footer inside overlay ── */}
           <div className="relative z-10 border-t border-white/[0.05] px-5 sm:px-8 py-3 flex items-center justify-between">
-            <p className="text-[10px] text-zinc-800">Interac e&#8209;Transfer &middot; Secure Payment Services</p>
+            <p className="text-[10px] text-zinc-500">Interac e&#8209;Transfer &middot; Secure Payment Services</p>
             <button
               onClick={() => setOpen(false)}
               className="text-[12px] font-semibold text-zinc-600 hover:text-[#FDB913] transition-colors flex items-center gap-1.5 focus:outline-none"
@@ -383,8 +383,8 @@ export default function FooterMegaMenu() {
                     onClick={() => router.push(item.href)}
                     className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 rounded-xl hover:bg-white/[0.06] active:scale-95 transition-all duration-150 group"
                   >
-                    <Icon className="w-[18px] h-[18px] text-zinc-500 group-hover:text-zinc-200 transition-colors duration-150" />
-                    <span className="text-[10px] font-medium text-zinc-700 group-hover:text-zinc-400 transition-colors duration-150 leading-none">
+                    <Icon className="w-[18px] h-[18px] text-zinc-400 group-hover:text-zinc-100 transition-colors duration-150" />
+                    <span className="text-[10px] font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors duration-150 leading-none">
                       {item.label}
                     </span>
                   </button>
@@ -397,7 +397,7 @@ export default function FooterMegaMenu() {
               {/* Mega-menu trigger — prominent gold pill */}
               <button
                 onClick={() => setOpen(true)}
-                className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 mx-1 rounded-xl bg-[#FDB913]/12 hover:bg-[#FDB913]/22 border border-[#FDB913]/25 hover:border-[#FDB913]/50 active:scale-95 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40"
+                className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 mx-1 rounded-xl bg-[#FDB913]/10 hover:bg-[#FDB913]/20 border border-[#FDB913]/30 hover:border-[#FDB913]/50 active:scale-95 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40"
                 aria-label="Open service menu"
                 aria-expanded={open}
               >

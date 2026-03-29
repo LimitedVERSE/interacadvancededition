@@ -50,11 +50,11 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
             rel="noopener noreferrer"
             className="flex items-center gap-2.5"
           >
-            <div className="w-8 h-8 bg-[#FDB913] rounded-md flex items-center justify-center">
+            <div className="w-8 h-8 bg-[#FDB913] rounded-md flex items-center justify-center p-1.5">
               <img
                 src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
                 alt="Interac"
-                className="h-5 object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
             <span className="text-sm font-bold text-gray-900 tracking-tight">Interac e&#8209;Transfer</span>

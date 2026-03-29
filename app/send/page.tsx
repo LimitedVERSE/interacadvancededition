@@ -425,11 +425,11 @@ export default function SendTransferPage() {
       <header className="border-b border-zinc-900 bg-zinc-950/90 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#FDB913] rounded-lg flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#FDB913] rounded-lg flex items-center justify-center p-1.5">
               <img
                 src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
                 alt="Interac"
-                className="h-5 object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
             <div>

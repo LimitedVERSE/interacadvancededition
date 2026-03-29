@@ -15,11 +15,13 @@ export default function InteracHeader({
         <div className="h-1 bg-[#FDB913]" />
         <div className="px-6 py-3.5 flex items-center justify-between">
           <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="flex items-center">
-            <img
-              src={logoUrl || "/placeholder.svg"}
-              alt="INTERAC"
-              className="h-10 block flex-shrink-0"
-            />
+            <div className="w-10 h-10 bg-[#FDB913] rounded-lg flex items-center justify-center p-2 shadow-sm flex-shrink-0">
+              <img
+                src={logoUrl || "/placeholder.svg"}
+                alt="INTERAC"
+                className="w-full h-full object-contain"
+              />
+            </div>
             <div className="w-px h-7 bg-gray-200 mx-4 flex-shrink-0" />
             <div className="flex flex-col justify-center">
               <span className="text-gray-900 font-bold text-[13px] tracking-[0.04em] leading-tight">
@@ -47,11 +49,13 @@ export default function InteracHeader({
       <div className="px-6 py-3.5 flex items-center justify-between">
         {/* Left: logo + divider + brand name */}
         <div className="flex items-center">
-          <img
-            src={logoUrl || "/placeholder.svg"}
-            alt="INTERAC"
-            className="h-10 block flex-shrink-0"
-          />
+          <div className="w-10 h-10 bg-[#FDB913] rounded-lg flex items-center justify-center p-2 flex-shrink-0">
+            <img
+              src={logoUrl || "/placeholder.svg"}
+              alt="INTERAC"
+              className="w-full h-full object-contain"
+            />
+          </div>
           {/* Vertical divider */}
           <div className="w-px h-7 bg-white/15 mx-4 flex-shrink-0" />
           <div className="flex flex-col justify-center">

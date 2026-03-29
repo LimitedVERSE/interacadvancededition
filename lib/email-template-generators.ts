@@ -1591,6 +1591,8 @@ export const templateGenerators: Record<string, (data: BaseEmailData) => string>
   "aml-hold": generateAmlHold,
   "monthly-statement": generateMonthlyStatement,
   "large-transaction-review": generateLargeTransactionReview,
+}
+
 // ─── SETTLEMENT & COMPLIANCE GENERATORS ───────────────────────────────────────
 
 // 34. Settlement Confirmation
@@ -1808,6 +1810,8 @@ export function generateDisputeResolutionFr(d: BaseEmailData): string {
 
 // ─── END SETTLEMENT & COMPLIANCE ──────────────────────────────────────────────
 
+// Merge settlement & compliance keys into the main templateGenerators map
+Object.assign(templateGenerators, {
   // Settlement & Compliance (34-39)
   "settlement-confirmation": generateSettlementConfirmation,
   "settlement-delayed": generateSettlementDelayed,
@@ -1856,7 +1860,7 @@ export function generateDisputeResolutionFr(d: BaseEmailData): string {
   "aml-hold-fr": generateAmlHoldFr,
   "monthly-statement-fr": generateMonthlyStatementFr,
   "large-transaction-review-fr": generateLargeTransactionReviewFr,
-}
+})
 
 export function generateEmailByTemplateId(templateId: string, data: BaseEmailData): string {
   const generator = templateGenerators[templateId]

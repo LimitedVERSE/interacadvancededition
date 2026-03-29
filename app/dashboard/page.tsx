@@ -16,8 +16,240 @@ import {
   ShieldCheck,
   BarChart3,
   Mail,
+  Lock,
+  RefreshCw,
+  TrendingUp,
+  Building2,
+  Zap,
 } from "lucide-react"
 import { useState, useEffect } from "react"
+
+// ─── JP Morgan Payments Partner Portal — Imported Ledger ────────────────────
+const JPM_EXCHANGE_RATE   = 1.3847            // USD → CAD (JP Morgan FX, imported)
+const JPM_IMPORT_DATE     = "2025-03-29"
+const CHEQUING_USD        = 7_000_000         // Blockchain-based ledger balance
+const CHEQUING_CAD        = CHEQUING_USD * JPM_EXCHANGE_RATE
+const SAVINGS_USD         = 14_250_000        // Locked assets, same ledger
+const SAVINGS_CAD         = SAVINGS_USD * JPM_EXCHANGE_RATE
+const RELOAD_THRESHOLD    = 0.20              // Auto-reload triggers at 20% of Chequing
+
+function formatCAD(amount: number) {
+  return new Intl.NumberFormat("en-CA", {
+    style: "currency",
+    currency: "CAD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount)
+}
+
+function AccountBalancePanel() {
+  const [revealed, setRevealed]           = useState(false)
+  const [reloadPulse, setReloadPulse]     = useState(false)
+  const [rateFlash, setRateFlash]         = useState(false)
+
+  // Simulate a chequing balance that ticks down slightly to demonstrate reload logic
+  const [chequingLive, setChequingLive]   = useState(CHEQUING_CAD)
+  const thresholdCAD                      = CHEQUING_CAD * RELOAD_THRESHOLD
+  const chequingPct                       = (chequingLive / CHEQUING_CAD) * 100
+  const isLow                             = chequingLive <= thresholdCAD
+
+  // Rate flash on mount to signal live import
+  useEffect(() => {
+    const t = setTimeout(() => setRateFlash(true), 800)
+    const t2 = setTimeout(() => setRateFlash(false), 2200)
+    return () => { clearTimeout(t); clearTimeout(t2) }
+  }, [])
+
+  // Auto-reload animation when chequing hits 20%
+  useEffect(() => {
+    if (isLow && !reloadPulse) {
+      setReloadPulse(true)
+      const t = setTimeout(() => {
+        setChequingLive(CHEQUING_CAD)
+        setReloadPulse(false)
+      }, 2000)
+      return () => clearTimeout(t)
+    }
+  }, [isLow, reloadPulse])
+
+  return (
+    <div className="w-full max-w-3xl mx-auto mb-5 sm:mb-6">
+      {/* JP Morgan import badge */}
+      <div className="flex items-center justify-between mb-3 px-0.5">
+        <div className="flex items-center gap-2">
+          <Building2 className="w-3.5 h-3.5 text-zinc-500" />
+          <span className="text-[10px] font-semibold tracking-widest text-zinc-500 uppercase">
+            JP Morgan Payments Partner Portal
+          </span>
+          <span className="text-[10px] text-zinc-600">— Imported {JPM_IMPORT_DATE}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className={`w-1.5 h-1.5 rounded-full ${rateFlash ? "bg-[#FDB913] animate-ping" : "bg-green-500"}`} />
+          <span className="text-[10px] text-zinc-500">Live Ledger</span>
+        </div>
+      </div>
+
+      {/* Cards row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+        {/* ── Chequing ── */}
+        <div className={`relative rounded-2xl border overflow-hidden transition-all duration-500 ${
+          isLow
+            ? "border-amber-500/40 bg-amber-950/20"
+            : "border-zinc-800 bg-zinc-900/80"
+        }`}>
+          {/* Top accent */}
+          <div className={`h-0.5 w-full ${isLow ? "bg-amber-500" : "bg-[#FDB913]"}`} />
+
+          <div className="p-4 sm:p-5">
+            {/* Header row */}
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Chequing</span>
+                  {isLow && (
+                    <span className="text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded-full">
+                      LOW
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] text-zinc-600">Blockchain Ledger · Active</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {reloadPulse && (
+                  <RefreshCw className="w-3.5 h-3.5 text-[#FDB913] animate-spin" />
+                )}
+                <div className="w-8 h-8 bg-[#FDB913]/10 rounded-lg flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-[#FDB913]" />
+                </div>
+              </div>
+            </div>
+
+            {/* Balance */}
+            <div className="mb-1">
+              <button
+                onClick={() => setRevealed(v => !v)}
+                className="text-left group"
+                aria-label={revealed ? "Hide balance" : "Reveal balance"}
+              >
+                {revealed ? (
+                  <span className="text-2xl sm:text-3xl font-bold text-white tracking-tight tabular-nums">
+                    {formatCAD(chequingLive)}
+                  </span>
+                ) : (
+                  <span className="text-2xl sm:text-3xl font-bold text-zinc-600 tracking-tight select-none">
+                    {"CA$ ••••••••••"}
+                  </span>
+                )}
+              </button>
+              <p className="text-[11px] text-zinc-500 mt-0.5">
+                = {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(CHEQUING_USD)} USD
+                &nbsp;·&nbsp; @{JPM_EXCHANGE_RATE} CAD/USD
+              </p>
+            </div>
+
+            {/* Balance bar — threshold at 20% */}
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] text-zinc-600">Balance level</span>
+                <span className={`text-[10px] font-semibold ${isLow ? "text-amber-400" : "text-zinc-400"}`}>
+                  {chequingPct.toFixed(1)}%
+                </span>
+              </div>
+              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-1000 ${
+                    isLow ? "bg-amber-500" : "bg-[#FDB913]"
+                  }`}
+                  style={{ width: `${Math.max(chequingPct, 2)}%` }}
+                />
+              </div>
+              {/* Threshold marker */}
+              <div className="relative h-0 mt-0">
+                <div
+                  className="absolute top-0 -mt-1.5 w-px h-3 bg-zinc-600"
+                  style={{ left: `${RELOAD_THRESHOLD * 100}%` }}
+                />
+                <span
+                  className="absolute text-[9px] text-zinc-600 -translate-x-1/2"
+                  style={{ left: `${RELOAD_THRESHOLD * 100}%`, top: "6px" }}
+                >
+                  20% reload
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Reload pulse overlay */}
+          {reloadPulse && (
+            <div className="absolute inset-0 bg-[#FDB913]/5 animate-pulse rounded-2xl pointer-events-none" />
+          )}
+        </div>
+
+        {/* ── Savings ── */}
+        <div className="relative rounded-2xl border border-zinc-800 bg-zinc-900/80 overflow-hidden">
+          <div className="h-0.5 w-full bg-zinc-700" />
+
+          <div className="p-4 sm:p-5">
+            {/* Header row */}
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Savings</span>
+                  <span className="text-[10px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700 px-1.5 py-0.5 rounded-full">
+                    LOCKED
+                  </span>
+                </div>
+                <span className="text-[10px] text-zinc-600">Blockchain Ledger · Reserve</span>
+              </div>
+              <div className="w-8 h-8 bg-zinc-800 rounded-lg flex items-center justify-center">
+                <Lock className="w-4 h-4 text-zinc-400" />
+              </div>
+            </div>
+
+            {/* Balance */}
+            <div className="mb-1">
+              {revealed ? (
+                <span className="text-2xl sm:text-3xl font-bold text-zinc-300 tracking-tight tabular-nums">
+                  {formatCAD(SAVINGS_CAD)}
+                </span>
+              ) : (
+                <span className="text-2xl sm:text-3xl font-bold text-zinc-600 tracking-tight select-none">
+                  {"CA$ ••••••••••"}
+                </span>
+              )}
+              <p className="text-[11px] text-zinc-500 mt-0.5">
+                = {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(SAVINGS_USD)} USD
+                &nbsp;·&nbsp; @{JPM_EXCHANGE_RATE} CAD/USD
+              </p>
+            </div>
+
+            {/* Reload notice */}
+            <div className="mt-4 flex items-start gap-2 p-2.5 rounded-xl bg-zinc-800/60 border border-zinc-700/50">
+              <RefreshCw className="w-3 h-3 text-zinc-500 mt-0.5 shrink-0" />
+              <p className="text-[10px] text-zinc-500 leading-relaxed">
+                Auto-reloads Chequing when balance falls below{" "}
+                <span className="text-zinc-300 font-semibold">{formatCAD(thresholdCAD)}</span>{" "}
+                (20% of {formatCAD(CHEQUING_CAD)})
+              </p>
+            </div>
+
+            {/* Locked indicator */}
+            <div className="mt-3 flex items-center gap-2">
+              <TrendingUp className="w-3 h-3 text-zinc-600" />
+              <span className="text-[10px] text-zinc-600">Assets locked · Unlocks on chequing trigger</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tap-to-reveal hint */}
+      <p className="text-center text-[10px] text-zinc-700 mt-2">
+        {revealed ? "Tap balance to hide" : "Tap balance to reveal"}
+      </p>
+    </div>
+  )
+}
 
 const menuItems = [
   {
@@ -319,14 +551,17 @@ function DashboardContent() {
       </div>
 
       {/* Main content - App Grid */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-4">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-start overflow-y-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         {/* Welcome message */}
-        <div className="text-center mb-6 sm:mb-8">
+        <div className="text-center mb-4 sm:mb-5">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-1">
             Welcome, {user?.name?.split(" ")[0]}
           </h2>
           <p className="text-sm sm:text-base text-zinc-500">Select a service to continue</p>
         </div>
+
+        {/* Account Balance Panel */}
+        <AccountBalancePanel />
 
         {/* App Grid */}
         <div className="w-full max-w-3xl mx-auto">

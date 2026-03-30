@@ -29,7 +29,7 @@ export const emailCopy = {
     ],
     complianceTitle: "Important regulatory information",
     complianceBody:
-      "This message is a transactional notification issued by QuantumYield Holdings. Funds availability is subject to verification, institutional controls, and applicable financial regulations.",
+      "This message is a transactional notification issued by QuantumYield. Funds availability is subject to verification, institutional controls, and applicable financial regulations.",
   },
   fr: {
     greetingPrefix: "Bonjour",
@@ -58,6 +58,6 @@ export const emailCopy = {
     ],
     complianceTitle: "Informations réglementaires importantes",
     complianceBody:
-      "Ce message est une notification transactionnelle émise par QuantumYield Holdings. La disponibilité des fonds est soumise à des vérifications, à des contrôles institutionnels et aux réglementations financières applicables.",
+      "Ce message est une notification transactionnelle émise par QuantumYield. La disponibilité des fonds est soumise à des vérifications, à des contrôles institutionnels et aux réglementations financières applicables.",
   },
 } as const

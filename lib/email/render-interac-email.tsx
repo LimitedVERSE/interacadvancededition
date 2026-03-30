@@ -188,7 +188,7 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
             <div style="border-top:1px solid #e5e7eb;margin-top:16px;padding-top:16px">
               <p style="font-size:12px;color:#373737;line-height:1.6;margin:0">
                 Email or text messages carry the notice while the financial institutions securely transfer the money using existing payment networks.<br/><br/>
-                This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of <strong>${data.senderName || "Global Payments v2 Banking System"}</strong> at <strong>${data.institution || "QuantumYield Holdings | Treasury & Vault Portal"}</strong>.
+                This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of <strong>${data.senderName || "Global Payments v2 Banking System"}</strong> at <strong>${data.institution || "QuantumYield | Treasury & Vault Portal"}</strong>.
               </p>
             </div>
           </div>

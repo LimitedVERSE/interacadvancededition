@@ -36,7 +36,6 @@ function HomeContent() {
     e.preventDefault()
     setFormError("")
 
-    // Validate required fields
     if (!manualForm.institution || !manualForm.province || !manualForm.accountType) {
       setFormError(t.mainPage.formValidationError)
       return
@@ -44,25 +43,15 @@ function HomeContent() {
 
     setIsSubmitting(true)
 
-    // Simulate connection process
     setTimeout(() => {
-      // In production, this would connect to the bank
-      console.log("[v0] Connecting to bank:", manualForm)
       window.open(`/bank/${manualForm.institution}`, "_blank")
       setIsSubmitting(false)
-
-      // Reset form
-      setManualForm({
-        institution: "",
-        province: "",
-        accountType: "",
-        branchNumber: "",
-      })
+      setManualForm({ institution: "", province: "", accountType: "", branchNumber: "" })
     }, 1500)
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-zinc-950">
       <Header />
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <DepositPanel />
@@ -185,7 +174,7 @@ function HomeContent() {
         {connectionMethod === "grid" && (
           <section className="mt-12" aria-labelledby="institution-selection-heading">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-              <h2 id="institution-selection-heading" className="text-2xl font-bold text-black">
+              <h2 id="institution-selection-heading" className="text-2xl font-bold text-white">
                 {t.mainPage.selectInstitutionTitle}
               </h2>
               <SearchBar onSearch={setSearchTerm} />
@@ -197,10 +186,10 @@ function HomeContent() {
         {connectionMethod === "multi-select" && (
           <section className="mt-12" aria-labelledby="multi-select-heading">
             <div className="mb-6">
-              <h2 id="multi-select-heading" className="text-2xl font-bold text-black mb-2">
+              <h2 id="multi-select-heading" className="text-2xl font-bold text-white mb-2">
                 {t.mainPage.multiSelectTitle}
               </h2>
-              <p className="text-gray-600">{t.mainPage.multiSelectDescription}</p>
+              <p className="text-zinc-400">{t.mainPage.multiSelectDescription}</p>
             </div>
             <InstitutionMultiSelect
               onSelectionChange={(selected) => {
@@ -213,10 +202,10 @@ function HomeContent() {
         {connectionMethod === "manual" && (
           <section className="mt-12" aria-labelledby="manual-selection-heading">
             <div className="mb-6">
-              <h2 id="manual-selection-heading" className="text-2xl font-bold text-black mb-2">
+              <h2 id="manual-selection-heading" className="text-2xl font-bold text-white mb-2">
                 {t.mainPage.manualSelectionTitle}
               </h2>
-              <p className="text-gray-600">Connect by selecting your institution details manually</p>
+              <p className="text-zinc-400">Connect by selecting your institution details manually</p>
             </div>
 
             <form
@@ -363,9 +352,9 @@ function HomeContent() {
 
               {/* Error Message */}
               {formError && (
-                <div className="mt-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg flex items-start gap-3 animate-in slide-in-from-top-2 duration-300">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-700 font-medium">{formError}</p>
+                <div className="mt-6 p-4 bg-red-950/50 border border-red-900/50 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-400 font-medium">{formError}</p>
                 </div>
               )}
 
@@ -413,7 +402,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-[#FDB913] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-muted-foreground">Loading...</p>

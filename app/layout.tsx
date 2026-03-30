@@ -1,13 +1,20 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { LanguageProvider } from "@/lib/i18n/context"
 import { AuthProvider } from "@/lib/auth/context"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#09090b",
+}
 
 export const metadata: Metadata = {
   title: "Interac e-Transfer - Deposit Your Money",
@@ -26,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans antialiased`}>
+    <html lang="en" className={`bg-zinc-950 ${geist.variable} ${geistMono.variable}`}>
+      <body className="font-sans antialiased bg-zinc-950 text-white">
         <AuthProvider>
           <LanguageProvider>{children}</LanguageProvider>
         </AuthProvider>

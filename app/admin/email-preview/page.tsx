@@ -29,7 +29,7 @@ export default function EmailPreviewPage() {
     transferId: "INTC-733346-AWLX84P",
     depositLink: "https://brandcentre.interac.ca/member-login/",
     senderName: "QuantumYield Treasury",
-    institution: "QuantumYield Holdings | Treasury Reserve & Vaulted-Portal",
+    institution: "QuantumYield | Treasury Reserve & Vaulted-Portal",
   })
   // </CHANGE>
 

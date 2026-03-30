@@ -7,11 +7,11 @@ export function InteracFooter({ senderName = "Sender", institution = "Financial 
   return (
     <div className="px-8 py-8 border-t">
       <div className="flex items-start justify-between mb-4">
-        <div className="h-16 w-16">
+        <div className="w-16 h-16 bg-[#FDB913] rounded-lg flex items-center justify-center p-2.5 flex-shrink-0">
           <img
             src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
             alt="INTERAC e-Transfer"
-            className="h-16 block"
+            className="w-full h-full object-contain"
           />
         </div>
         <div className="text-right text-sm">

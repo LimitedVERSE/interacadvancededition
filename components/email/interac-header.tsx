@@ -1,42 +1,99 @@
 interface InteracHeaderProps {
   logoUrl?: string
   language?: "en" | "fr"
+  clientMode?: boolean
 }
 
-export function InteracHeader({
+export default function InteracHeader({
   logoUrl = "https://etransfer-notification.interac.ca/images/new/interac_logo.png",
   language = "en",
+  clientMode = false,
 }: InteracHeaderProps) {
-  return (
-    <div className="bg-black px-3 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between flex-wrap gap-2 sm:gap-3">
-      <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-        <img src={logoUrl || "/placeholder.svg"} alt="INTERAC e-Transfer" className="h-8 sm:h-10 md:h-[50px] block" />
-        <div className="bg-black text-[rgba(250,250,250,0.4)] font-bold text-[10px] sm:text-xs px-2 py-1 sm:px-2.5 sm:py-1.5 rounded flex items-center">
-          <span className="hidden sm:inline">
-            {language === "en" ? "Partnered with QuantumYield Holdings" : "En partenariat avec QuantumYield Holdings"}
-          </span>
-          <span className="inline sm:hidden">
-            {language === "en" ? "QuantumYield Holdings" : "QuantumYield Holdings"}
-          </span>
+  if (clientMode) {
+    return (
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="h-1 bg-[#FDB913]" />
+        <div className="px-6 py-3.5 flex items-center justify-between">
+          <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="flex items-center">
+            <div className="w-10 h-10 bg-[#FDB913] rounded-lg flex items-center justify-center p-2 shadow-sm flex-shrink-0">
+              <img
+                src={logoUrl || "/placeholder.svg"}
+                alt="INTERAC"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="w-px h-7 bg-gray-200 mx-4 flex-shrink-0" />
+            <div className="flex flex-col justify-center">
+              <span className="text-gray-900 font-bold text-[13px] tracking-[0.04em] leading-tight">
+                Interac e&#8209;Transfer
+              </span>
+              <span className="text-gray-400 font-normal text-[10px] tracking-[0.06em] uppercase mt-0.5">
+                {language === "fr" ? "Portail de Dépôt" : "Secure Deposit Portal"}
+              </span>
+            </div>
+          </a>
+          <div className="inline-flex items-center gap-1.5 bg-[#FDB913] text-black font-bold text-[11px] tracking-[0.05em] uppercase px-3 py-1.5 rounded">
+            <span className="w-1.5 h-1.5 rounded-full bg-black/40 flex-shrink-0" />
+            e&#8209;Transfer
+          </div>
         </div>
       </div>
+    )
+  }
 
-      <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-        <div className="flex items-center gap-1.5 sm:gap-2 text-white text-xs sm:text-sm">
-          <span
-            className={`font-bold cursor-pointer transition-opacity ${language === "en" ? "underline opacity-100" : "opacity-70 hover:opacity-90"}`}
-          >
-            EN
-          </span>
-          <span className="text-white opacity-50">|</span>
-          <span
-            className={`font-bold cursor-pointer transition-opacity ${language === "fr" ? "underline opacity-100" : "opacity-70 hover:opacity-90"}`}
-          >
-            FR
-          </span>
+  return (
+    <div className="bg-[#0a0a0a] border-b border-[#1a1a1a]">
+      {/* Yellow accent bar */}
+      <div className="h-[3px] bg-[#FDB913]" />
+
+      <div className="px-6 py-3.5 flex items-center justify-between">
+        {/* Left: logo + divider + brand name */}
+        <div className="flex items-center">
+          <div className="w-10 h-10 bg-[#FDB913] rounded-lg flex items-center justify-center p-2 flex-shrink-0">
+            <img
+              src={logoUrl || "/placeholder.svg"}
+              alt="INTERAC"
+              className="w-full h-full object-contain"
+            />
+          </div>
+          {/* Vertical divider */}
+          <div className="w-px h-7 bg-white/15 mx-4 flex-shrink-0" />
+          <div className="flex flex-col justify-center">
+            <span className="text-white font-bold text-[13px] tracking-[0.04em] leading-tight">
+              QuantumYield
+            </span>
+            <span className="text-white/40 font-normal text-[10px] tracking-[0.06em] uppercase mt-0.5">
+              {language === "fr" ? "Paiements Sécurisés" : "Secure Payments"}
+            </span>
+          </div>
         </div>
-        <div className="bg-[#FDB913] text-black font-bold text-sm sm:text-base px-2.5 py-1.5 sm:px-3 sm:py-2 rounded flex items-center whitespace-nowrap">
-          Interac e-Transfer
+
+        {/* Right: e-Transfer badge */}
+        <div className="flex items-center gap-2">
+          {/* EN / FR toggle */}
+          <div className="flex items-center gap-1.5 mr-3">
+            <span
+              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${
+                language === "en" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
+              }`}
+            >
+              EN
+            </span>
+            <span className="text-white/25 text-xs">|</span>
+            <span
+              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${
+                language === "fr" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
+              }`}
+            >
+              FR
+            </span>
+          </div>
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-1.5 bg-[#FDB913] text-black font-bold text-[11px] tracking-[0.05em] uppercase px-3 py-1.5 rounded">
+            <span className="w-1.5 h-1.5 rounded-full bg-black/40 flex-shrink-0" />
+            e&#8209;Transfer
+          </div>
         </div>
       </div>
     </div>

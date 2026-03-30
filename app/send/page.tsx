@@ -551,12 +551,18 @@ export default function SendTransferPage() {
   const set = (field: keyof FormData, value: string) =>
     setFormData((prev) => ({ ...prev, [field]: value }))
 
+  // Strict RFC-5321 compatible email regex used by Resend
+  const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/
+
+  const isEmailValid = (email: string) => EMAIL_REGEX.test(email.trim())
+  const recipientTouched = formData.recipient.length > 0
+  const recipientInvalid = recipientTouched && !isEmailValid(formData.recipient)
+
   const validateStep = (): boolean => {
     setStepError("")
     if (step === 1) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!formData.recipient.trim()) { setStepError("Recipient email is required."); return false }
-      if (!emailRegex.test(formData.recipient)) { setStepError("Please enter a valid email address."); return false }
+      if (!isEmailValid(formData.recipient)) { setStepError("Please enter a valid email address (e.g. name@example.com)."); return false }
     }
     if (step === 2) {
       const amt = parseFloat(formData.amount)
@@ -735,9 +741,16 @@ export default function SendTransferPage() {
 
             {/* API error */}
             {error && (
-              <div className="mb-5 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <div className="mb-5 flex items-start gap-3 px-4 py-3.5 rounded-xl bg-red-500/10 border border-red-500/20" role="alert">
                 <XCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
-                <p className="text-sm text-red-300">{error}</p>
+                <div>
+                  <p className="text-sm text-red-300 font-medium leading-snug">{error}</p>
+                  {(error.includes("422") || error.includes("from") || error.includes("misconfigured")) && (
+                    <p className="mt-1 text-[11px] text-red-400/70 leading-relaxed">
+                      This is a sender configuration issue, not a problem with your input. Please contact support or verify the sender email domain in the Resend dashboard.
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
@@ -791,18 +804,52 @@ export default function SendTransferPage() {
 
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="recipient" className="text-zinc-400 text-[10px] uppercase tracking-wider mb-2 block">
-                        Email Address <span className="text-red-400">*</span>
-                      </Label>
+                      <div className="flex items-center justify-between mb-2">
+                        <Label htmlFor="recipient" className="text-zinc-400 text-[10px] uppercase tracking-wider">
+                          Email Address <span className="text-red-400">*</span>
+                        </Label>
+                        {recipientTouched && (
+                          recipientInvalid ? (
+                            <span className="flex items-center gap-1 text-[10px] text-red-400">
+                              <XCircle className="w-3 h-3" />
+                              Invalid format
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-[10px] text-emerald-400">
+                              <CheckCircle2 className="w-3 h-3" />
+                              Valid
+                            </span>
+                          )
+                        )}
+                      </div>
                       <Input
                         id="recipient"
                         type="email"
-                        placeholder="recipient@example.com"
+                        placeholder="name@example.com"
                         value={formData.recipient}
-                        onChange={(e) => set("recipient", e.target.value)}
-                        className="bg-white/[0.05] border-white/[0.09] text-white placeholder:text-zinc-600 focus:border-[#FDB913] focus:ring-[#FDB913]/20"
+                        onChange={(e) => set("recipient", e.target.value.trim())}
+                        className={`bg-white/[0.05] text-white placeholder:text-zinc-600 transition-colors ${
+                          recipientInvalid
+                            ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20"
+                            : recipientTouched
+                            ? "border-emerald-500/40 focus:border-emerald-500 focus:ring-emerald-500/20"
+                            : "border-white/[0.09] focus:border-[#FDB913] focus:ring-[#FDB913]/20"
+                        }`}
                         autoComplete="email"
+                        inputMode="email"
+                        aria-invalid={recipientInvalid}
+                        aria-describedby={recipientInvalid ? "recipient-error" : undefined}
                       />
+                      {recipientInvalid && (
+                        <p id="recipient-error" className="mt-1.5 text-[11px] text-red-400">
+                          Must be a valid address, e.g. <span className="font-mono">name@example.com</span>
+                        </p>
+                      )}
+                      {!recipientInvalid && recipientTouched && (
+                        <p className="mt-1.5 text-[11px] text-zinc-600">
+                          The recipient will receive an Interac e&#8209;Transfer email at this address.
+                        </p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="recipientName" className="text-zinc-400 text-[10px] uppercase tracking-wider mb-2 block">

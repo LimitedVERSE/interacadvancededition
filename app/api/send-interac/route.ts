@@ -127,41 +127,73 @@ export async function POST(request: Request) {
     // Prefix subject with [FR] indicator when French
     const finalSubject = language === "fr" ? `[FR] ${subject}` : subject
 
-    const fromAddress = process.env.RESEND_FROM_EMAIL || "Interac e-Transfer <onboarding@resend.dev>"
+    // ── Build and sanitize the `from` address ────────────────────────────────
+    // Resend requires one of:
+    //   • "email@verified-domain.com"
+    //   • "Display Name <email@verified-domain.com>"
+    // The env var RESEND_FROM_EMAIL should be the raw email address only (e.g. "noreply@yourdomain.com")
+    // or a full formatted string. We always inject the "Interac e-Transfer" display name.
+    const SENDER_NAME = "Interac e-Transfer"
+    const rawFromEnv  = (process.env.RESEND_FROM_EMAIL || "").trim()
 
-    // Warn if using the default onboarding@resend.dev sender — it only delivers to the Resend account owner
-    if (fromAddress.includes("onboarding@resend.dev")) {
-      console.warn("[v0] WARNING: Using onboarding@resend.dev — Resend only delivers to the verified account owner's email. Set RESEND_FROM_EMAIL to a verified domain sender.")
+    // Extract just the email address from the env value (strip any existing display name wrapper)
+    const emailOnly = rawFromEnv.includes("<")
+      ? rawFromEnv.match(/<([^>]+)>/)?.[1]?.trim() ?? rawFromEnv
+      : rawFromEnv
+
+    // Validate the extracted email
+    const fromEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailOnly || !fromEmailRegex.test(emailOnly)) {
+      console.error("[send-interac] RESEND_FROM_EMAIL is missing or malformed:", rawFromEnv)
+      return NextResponse.json(
+        {
+          error:
+            "Email service is misconfigured: RESEND_FROM_EMAIL must be a valid address " +
+            "(e.g. noreply@yourdomain.com). Please update it in the Vars settings.",
+        },
+        { status: 500 },
+      )
     }
 
-    console.log("[v0] Sending email — from:", fromAddress, "to:", recipientEmail, "subject:", finalSubject, "templateId:", resolvedId)
+    // Compose the final `from` string Resend will accept
+    const fromAddress = `${SENDER_NAME} <${emailOnly}>`
 
-    // Send via Resend
+    if (emailOnly.endsWith("@resend.dev")) {
+      console.warn(
+        "[send-interac] Using a @resend.dev sender — Resend only delivers to the verified account owner. " +
+        "Set RESEND_FROM_EMAIL to an address on your verified domain.",
+      )
+    }
+
+    // ── Send via Resend ───────────────────────────────────────────────────────
+    const resendPayload = {
+      from:    fromAddress,
+      to:      [recipientEmail],
+      subject: finalSubject,
+      html:    emailHtml,
+    }
+
     const resendResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
+      method:  "POST",
       headers: {
-        Authorization: `Bearer ${resendApiKey}`,
+        Authorization:  `Bearer ${resendApiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        from: fromAddress,
-        to: [recipientEmail],
-        subject: finalSubject,
-        html: emailHtml,
-      }),
+      body: JSON.stringify(resendPayload),
     })
 
     const resendData = await resendResponse.json()
-    console.log("[v0] Resend response status:", resendResponse.status, "body:", JSON.stringify(resendData))
 
     if (!resendResponse.ok) {
       const errorMsg = resendData?.message || resendData?.name || JSON.stringify(resendData)
-      const hint = fromAddress.includes("onboarding@resend.dev")
-        ? " — NOTE: onboarding@resend.dev can only send to the Resend account owner. Set RESEND_FROM_EMAIL to a verified domain."
-        : ""
+      const hint =
+        resendResponse.status === 422
+          ? ` (422) — The 'from' address "${fromAddress}" was rejected. Ensure RESEND_FROM_EMAIL uses a domain verified in your Resend dashboard.`
+          : ""
+      console.error("[send-interac] Resend error:", resendResponse.status, errorMsg, "from:", fromAddress)
       return NextResponse.json(
-        { error: `Resend error (${resendResponse.status}): ${errorMsg}${hint}` },
-        { status: 500 }
+        { error: `Email delivery failed: ${errorMsg}${hint}` },
+        { status: 500 },
       )
     }
 

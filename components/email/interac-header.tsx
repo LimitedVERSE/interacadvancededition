@@ -58,12 +58,12 @@ export default function InteracHeader({
           </div>
           {/* Vertical divider */}
           <div className="w-px h-7 bg-white/15 mx-4 flex-shrink-0" />
-          <div className="flex flex-col justify-center">
-            <span className="text-white font-bold text-[13px] tracking-[0.04em] leading-tight">
+          <div className="flex flex-col justify-center gap-0">
+            <span className="block text-white font-bold text-[13px] tracking-[0.04em] leading-tight">
               QuantumYield
             </span>
-            <span className="text-white/40 font-normal text-[10px] tracking-[0.06em] uppercase mt-0.5">
-              {language === "fr" ? "Paiements Sécurisés" : "Secure Payments"}
+            <span className="block text-[#888888] font-normal text-[10px] tracking-[0.08em] uppercase mt-0.5">
+              {language === "fr" ? "PAIEMENTS SÉCURISÉS" : "SECURE PAYMENTS"}
             </span>
           </div>
         </div>
@@ -90,9 +90,9 @@ export default function InteracHeader({
           </div>
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 bg-[#FDB913] text-black font-bold text-[11px] tracking-[0.05em] uppercase px-3 py-1.5 rounded">
-            <span className="w-1.5 h-1.5 rounded-full bg-black/40 flex-shrink-0" />
-            e&#8209;Transfer
+          <div className="inline-flex items-center gap-1.5 bg-[#FDB913] text-black font-bold text-[12px] tracking-[0.07em] uppercase px-3.5 py-2 rounded">
+            <span className="w-1.5 h-1.5 rounded-full bg-black/50 flex-shrink-0" />
+            E&#8209;TRANSFER
           </div>
         </div>
       </div>

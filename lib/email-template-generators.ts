@@ -23,18 +23,6 @@ const getEmailStyles = () => `
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; }
     .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-    .header-wrap { background-color: #0a0a0a; border-bottom: 1px solid #1a1a1a; }
-    .header-accent { height: 3px; background-color: #FDB913; }
-    .topbar { background-color: #0a0a0a; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
-    .topbar-left { display: flex; align-items: center; gap: 0; }
-    .topbar img { height: 44px; display: block; }
-    .divider { width: 1px; height: 28px; background-color: rgba(255,255,255,0.15); margin: 0 16px; }
-    .dba { display: flex; flex-direction: column; justify-content: center; }
-    .dba-name { color: #ffffff; font-weight: 700; font-size: 13px; letter-spacing: 0.04em; line-height: 1.2; }
-    .dba-sub { color: rgba(255,255,255,0.4); font-weight: 400; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
-    .topbar-right { display: flex; align-items: center; }
-    .brand { display: inline-flex; align-items: center; gap: 7px; background-color: #FDB913; color: #000000; font-weight: 700; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; padding: 7px 13px; border-radius: 4px; }
-    .brand-dot { width: 6px; height: 6px; background-color: #000000; border-radius: 50%; opacity: 0.5; }
     .content { padding: 32px 24px; }
     .greeting { font-size: 24px; font-weight: 700; color: #000000; margin-bottom: 8px; }
     .subtitle { font-size: 16px; color: #666666; margin-bottom: 24px; }
@@ -68,25 +56,86 @@ const getEmailStyles = () => `
 `
 
 const getHeader = () => `
-  <div class="header-wrap">
-    <div class="header-accent"></div>
-    <div class="topbar">
-      <div class="topbar-left">
-        <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC" height="44">
-        <div class="divider"></div>
-        <div class="dba">
-          <span class="dba-name">QuantumYield</span>
-          <span class="dba-sub">Secure Payments</span>
-        </div>
-      </div>
-      <div class="topbar-right">
-        <div class="brand">
-          <span class="brand-dot"></span>
-          e&#8209;Transfer
-        </div>
-      </div>
-    </div>
-  </div>
+  <!--[if mso]><table width="600" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
+  <!-- Yellow accent bar -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;">
+    <tr>
+      <td height="3" style="background-color:#FDB913;font-size:0;line-height:0;">&nbsp;</td>
+    </tr>
+  </table>
+  <!-- Main header row -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;border-bottom:1px solid #1a1a1a;">
+    <tr>
+      <!-- Left: logo square + divider + brand text -->
+      <td style="padding:13px 24px;" valign="middle">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <!-- Interac logo in yellow square -->
+            <td valign="middle" style="padding-right:0;">
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="44" height="44" style="background-color:#FDB913;border-radius:8px;text-align:center;vertical-align:middle;padding:6px;">
+                    <img
+                      src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
+                      alt="Interac"
+                      width="32"
+                      height="32"
+                      style="display:block;width:32px;height:32px;object-fit:contain;"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <!-- Vertical divider -->
+            <td width="1" style="padding:0 16px;" valign="middle">
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td width="1" height="28" style="background-color:rgba(255,255,255,0.18);font-size:0;line-height:0;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+            <!-- Brand name stacked -->
+            <td valign="middle">
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;font-weight:700;color:#ffffff;letter-spacing:0.04em;line-height:1.2;display:block;padding-bottom:3px;">
+                    QuantumYield
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:10px;font-weight:400;color:#888888;letter-spacing:0.08em;text-transform:uppercase;line-height:1;">
+                    SECURE PAYMENTS
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <!-- Right: E-TRANSFER badge -->
+      <td style="padding:13px 24px;" valign="middle" align="right">
+        <table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;">
+          <tr>
+            <td style="background-color:#FDB913;border-radius:4px;padding:8px 14px;vertical-align:middle;white-space:nowrap;">
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <!-- Bullet dot -->
+                  <td width="7" height="7" valign="middle" style="padding-right:6px;">
+                    <div style="width:7px;height:7px;background-color:#000000;border-radius:50%;opacity:0.5;"></div>
+                  </td>
+                  <!-- Label -->
+                  <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;font-weight:700;color:#000000;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;">
+                    E&#8209;TRANSFER
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <!--[if mso]></td></tr></table><![endif]-->
 `
 
 const getFooter = () => `

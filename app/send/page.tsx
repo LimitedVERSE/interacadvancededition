@@ -147,8 +147,9 @@ function StepIndicator({ current }: { current: number }) {
               </span>
             </div>
             {idx < STEPS.length - 1 && (
+              // self-center keeps connector vertically centred on the circle regardless of label height
               <div
-                className={`w-14 sm:w-20 h-[2px] mb-6 mx-1 transition-all duration-500 ${
+                className={`w-14 sm:w-20 h-[2px] self-center mb-5 mx-1 transition-all duration-500 ${
                   current > step.id ? "bg-[#FDB913]" : "bg-zinc-800"
                 }`}
               />
@@ -492,13 +493,13 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
       <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3">
         <div className="space-y-2">
           {[
-            { icon: Zap,    text: "Instant delivery" },
-            { icon: Clock,  text: "Available 24/7"   },
-            { icon: Shield, text: "256-bit encrypted" },
-          ].map(({ icon: Icon, text }) => (
+            { icon: Zap,    text: "Instant delivery",  color: "text-[#FDB913]" },
+            { icon: Clock,  text: "Available 24/7",    color: "text-zinc-500"  },
+            { icon: Shield, text: "256-bit encrypted", color: "text-emerald-500" },
+          ].map(({ icon: Icon, text, color }) => (
             <div key={text} className="flex items-center gap-2">
-              <Icon className="w-3 h-3 text-zinc-600" />
-              <span className="text-[10px] text-zinc-600">{text}</span>
+              <Icon className={`w-3 h-3 ${color}`} />
+              <span className="text-[10px] text-zinc-500">{text}</span>
             </div>
           ))}
         </div>
@@ -555,8 +556,11 @@ export default function SendTransferPage() {
   const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/
 
   const isEmailValid = (email: string) => EMAIL_REGEX.test(email.trim())
-  const recipientTouched = formData.recipient.length > 0
-  const recipientInvalid = recipientTouched && !isEmailValid(formData.recipient)
+  const recipientTouched = useMemo(() => formData.recipient.length > 0, [formData.recipient])
+  const recipientInvalid = useMemo(
+    () => recipientTouched && !isEmailValid(formData.recipient),
+    [recipientTouched, formData.recipient],
+  )
 
   const validateStep = (): boolean => {
     setStepError("")
@@ -933,6 +937,29 @@ export default function SendTransferPage() {
                     )}
                   </div>
 
+                  {/* Daily limit bar */}
+                  <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3.5">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Daily Limit</span>
+                      <span className="text-[10px] text-zinc-400 tabular-nums">
+                        <span className="text-white font-semibold">{formatCurrency(formData.amount && !isNaN(parseFloat(formData.amount)) ? parseFloat(formData.amount) : 0)}</span>
+                        {" "}<span className="text-zinc-600">of $10,000 used</span>
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#FDB913] rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.min(
+                            ((parseFloat(formData.amount) || 0) / 10000) * 100,
+                            100,
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Interac fee</p>
+                  </div>
+
                   {/* Quick amounts */}
                   <div>
                     <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-3">Quick Amount</p>
@@ -1028,7 +1055,10 @@ export default function SendTransferPage() {
 
                   <div>
                     <p className="text-zinc-400 text-[10px] uppercase tracking-wider mb-3">Select a Question</p>
-                    <div className="space-y-2 max-h-56 overflow-y-auto pr-1 scrollbar-thin">
+                    <div
+                      className="space-y-2 max-h-56 overflow-y-auto pr-1"
+                      style={{ scrollbarWidth: "thin", scrollbarColor: "#3f3f46 transparent" }}
+                    >
                       {SECURITY_QUESTIONS.map((q) => (
                         <button
                           key={q}
@@ -1090,8 +1120,9 @@ export default function SendTransferPage() {
                       { label: "Amount",            value: formatCurrency(formData.amount), highlight: true },
                       { label: "Fee",               value: "Free", fee: true },
                       { label: "Security Question", value: formData.securityQuestion },
+                      { label: "Security Answer",   value: formData.securityAnswer, masked: true },
                       ...(formData.message ? [{ label: "Message", value: formData.message }] : []),
-                    ].map(({ label, value, highlight, fee }: { label: string; value: string; highlight?: boolean; fee?: boolean }) => (
+                    ].map(({ label, value, highlight, fee, masked }: { label: string; value: string; highlight?: boolean; fee?: boolean; masked?: boolean }) => (
                       <div
                         key={label}
                         className="flex justify-between items-start gap-4 py-3 border-b border-white/[0.05] last:border-0"
@@ -1100,6 +1131,20 @@ export default function SendTransferPage() {
                         {fee ? (
                           <span className="inline-flex items-center gap-1 bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
                             {value}
+                          </span>
+                        ) : masked ? (
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-[13px] text-white font-medium font-mono tracking-widest">
+                              {showAnswer ? value : "•".repeat(Math.min(value.length, 10))}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setShowAnswer((v) => !v)}
+                              className="text-zinc-600 hover:text-zinc-400 transition-colors"
+                              aria-label={showAnswer ? "Hide answer" : "Show answer"}
+                            >
+                              {showAnswer ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                            </button>
                           </span>
                         ) : (
                           <span className={`text-[13px] text-right break-all ${highlight ? "text-[#FDB913] font-bold text-base" : "text-white font-medium"}`}>

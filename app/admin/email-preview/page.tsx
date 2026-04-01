@@ -1,7 +1,7 @@
 "use client"
 
 import { generateInteracEmailHtml } from "@/lib/email-template"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card"
 import { CheckCircle2, Loader2, Send } from "lucide-react"
 
 export default function EmailPreviewPage() {
+  const [mounted, setMounted] = useState(false)
   const [formData, setFormData] = useState({
     recipientEmail: "",
     recipientName: "Jean-Francois Melancon",
@@ -170,7 +171,13 @@ export default function EmailPreviewPage() {
               Click EN/FR in the header to switch languages. Click the security answer to reveal.
             </p>
             <div className="border border-gray-300 rounded-lg overflow-hidden shadow-lg">
-              <iframe title="Email Preview" srcDoc={html} className="w-full" style={{ height: "800px" }} />
+              {html ? (
+                <iframe title="Email Preview" srcDoc={html} className="w-full" style={{ height: "800px" }} />
+              ) : (
+                <div className="w-full flex items-center justify-center" style={{ height: "800px" }}>
+                  <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                </div>
+              )}
             </div>
           </Card>
         </div>

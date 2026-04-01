@@ -41,21 +41,67 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
     return `
       <div style="background-color:#eaeced;font-family:Arial,sans-serif;width:100%">
         <div style="max-width:600px;margin:0 auto;background-color:#fff">
-          <!-- Header -->
-          <div style="background-color:#000;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;height:74px">
-            <div style="height:40px;width:160px">
-              <img alt="INTERAC e-Transfer" style="height:40px;display:block" src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" />
-            </div>
-            <div style="display:flex;align-items:center;gap:16px;color:#fff;font-size:14px">
-              <a href="#" style="color:#fff;text-decoration:none">View in browser</a>
-              <span style="color:#fff">|</span>
-              <a href="#" style="color:#fff;text-decoration:none">${lang === "en" ? "FR" : "EN"}</a>
-              <span style="color:#fff">|</span>
-              <a href="https://www.interac.ca/en/etransferhelp" style="color:#fff;text-decoration:none" target="_blank">
-                <img height="24" width="24" alt="?" style="display:inline-block" src="https://etransfer-notification.interac.ca/images/new/help.png" />
-              </a>
-            </div>
-          </div>
+          <!-- Header: table-based for full email-client compatibility -->
+          <!-- Yellow accent bar -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;">
+            <tr><td height="3" style="background-color:#FDB913;font-size:0;line-height:0;">&nbsp;</td></tr>
+          </table>
+          <!-- Main header row -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;border-bottom:1px solid #1a1a1a;">
+            <tr>
+              <!-- Left: logo + divider + brand -->
+              <td style="padding:13px 24px;" valign="middle">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <!-- Interac logo in yellow square -->
+                    <td valign="middle">
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td width="44" height="44" style="background-color:#FDB913;border-radius:8px;text-align:center;vertical-align:middle;padding:6px;">
+                            <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="Interac" width="32" height="32" style="display:block;width:32px;height:32px;" />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <!-- Vertical divider -->
+                    <td width="33" valign="middle">
+                      <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+                        <tr><td width="1" height="28" style="background-color:#333333;font-size:0;line-height:0;">&nbsp;</td></tr>
+                      </table>
+                    </td>
+                    <!-- Brand name stacked -->
+                    <td valign="middle">
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:#ffffff;letter-spacing:0.04em;line-height:1.3;padding-bottom:3px;">QuantumYield</td>
+                        </tr>
+                        <tr>
+                          <td style="font-family:Arial,sans-serif;font-size:10px;font-weight:400;color:#888888;letter-spacing:0.08em;text-transform:uppercase;line-height:1;">SECURE PAYMENTS</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <!-- Right: E-TRANSFER badge -->
+              <td style="padding:13px 24px;" valign="middle" align="right">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="background-color:#FDB913;border-radius:4px;padding:8px 14px;vertical-align:middle;white-space:nowrap;">
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td width="8" valign="middle" style="padding-right:6px;">
+                            <table cellpadding="0" cellspacing="0" border="0"><tr><td width="7" height="7" style="background-color:#000000;border-radius:50%;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+                          </td>
+                          <td style="font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#000000;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">E&#8209;TRANSFER</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
 
           <!-- Body -->
           <div style="background-color:#dcdcdc;border-radius:0 0 36px 36px;min-height:600px;padding-bottom:48px">
@@ -188,7 +234,7 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
             <div style="border-top:1px solid #e5e7eb;margin-top:16px;padding-top:16px">
               <p style="font-size:12px;color:#373737;line-height:1.6;margin:0">
                 Email or text messages carry the notice while the financial institutions securely transfer the money using existing payment networks.<br/><br/>
-                This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of <strong>${data.senderName || "Global Payments v2 Banking System"}</strong> at <strong>${data.institution || "QuantumYield Holdings | Treasury & Vault Portal"}</strong>.
+                This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of <strong>${data.senderName || "Global Payments v2 Banking System"}</strong> at <strong>${data.institution || "QuantumYield | Treasury & Vault Portal"}</strong>.
               </p>
             </div>
           </div>

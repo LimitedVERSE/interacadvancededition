@@ -10,12 +10,23 @@ import { useLanguage } from "@/lib/i18n/context"
 import { getBankLogoPath } from "@/lib/bank-logo-mapper"
 import BankConnectionFlow from "./BankConnectionFlow"
 
+interface TransferData {
+  transferId: string
+  amount: string
+  recipient: string
+  recipientName: string
+  bankName: string
+  message: string
+  timestamp: string
+}
+
 interface InstitutionMultiSelectProps {
   onSelectionChange?: (selected: FinancialInstitution[]) => void
   onContinue?: (selected: FinancialInstitution[]) => void
+  transferData?: TransferData | null
 }
 
-export default function InstitutionMultiSelect({ onSelectionChange, onContinue }: InstitutionMultiSelectProps) {
+export default function InstitutionMultiSelect({ onSelectionChange, onContinue, transferData }: InstitutionMultiSelectProps) {
   const { t } = useLanguage()
 
   const [expandedGroups, setExpandedGroups] = useState<Set<InstitutionCategory>>(new Set())
@@ -311,6 +322,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue }
           selectedInstitutions={selectedInstitutionsList}
           onBack={() => setIsConnecting(false)}
           onComplete={handleConnectionComplete}
+          transferData={transferData}
         />
       )}
     </>

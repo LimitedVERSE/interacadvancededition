@@ -22,22 +22,17 @@ export default function EmailPreviewPage() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const html = mounted
-    ? generateInteracEmailHtml({
-        recipientName: formData.recipientName,
-        amount: Number.parseFloat(formData.amount) || 0,
-        message: formData.message || undefined,
-        securityQuestion: formData.securityQuestion,
-        transferId: "INTC-733346-AWLX84P",
-        depositLink: "https://brandcentre.interac.ca/member-login/",
-        senderName: "QuantumYield Treasury",
-        institution: "QuantumYield Holdings | Treasury Reserve & Vaulted-Portal",
-      })
-    : null
+  const html = generateInteracEmailHtml({
+    recipientName: formData.recipientName,
+    amount: Number.parseFloat(formData.amount) || 0,
+    message: formData.message || undefined,
+    securityQuestion: formData.securityQuestion,
+    transferId: "INTC-733346-AWLX84P",
+    depositLink: "https://brandcentre.interac.ca/member-login/",
+    senderName: "QuantumYield Treasury",
+    institution: "QuantumYield | Treasury Reserve & Vaulted-Portal",
+  })
+  // </CHANGE>
 
   const handleSendEmail = async () => {
     setError("")

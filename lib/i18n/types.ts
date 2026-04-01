@@ -226,4 +226,47 @@ export interface Translations {
     loading: string
     error: string
   }
+
+  // Connect Bank page
+  connectBank: {
+    badge: string
+    title: string
+    subtitle: string
+    searchPlaceholder: string
+    allCategory: string
+    noResultsTitle: (term: string) => string
+    noResultsTip: string
+    backToDashboard: string
+    chooseDifferent: string
+    connectTo: (name: string) => string
+    connectingTitle: string
+    connectingSubtitle: string
+    redirectingTo: (name: string) => string
+    openingIn: (seconds: number) => string
+    continueNow: string
+    trustSsl: string
+    trustSslSub: string
+    trustSecurity: string
+    trustSecuritySub: string
+    trustCdic: string
+    trustCdicSub: string
+    manualPrompt: string
+    manualTitle: string
+    manualInstitutionLabel: string
+    manualInstitutionPlaceholder: string
+    manualAccountTypeLabel: string
+    manualAccountTypeDefault: string
+    manualChequing: string
+    manualSavings: string
+    manualBusiness: string
+    manualBranchLabel: string
+    manualBranchPlaceholder: string
+    manualSubmit: string
+    manualSubmitting: string
+    manualSuccess: string
+    catBigSix: string
+    catOnline: string
+    catCreditUnions: string
+    catRegional: string
+  }
 }

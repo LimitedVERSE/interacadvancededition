@@ -114,62 +114,49 @@ function formatCurrency(val: string | number) {
 
 // ─── Step indicator ───────────────────────────────────────────────────────────
 function StepIndicator({ current }: { current: number }) {
-  const activeStep = STEPS.find((s) => s.id === current)
   return (
-    <div className="mb-6 sm:mb-8">
-      {/* Mobile step label — visible only on xs screens */}
-      <div className="flex items-center justify-between mb-3 sm:hidden">
-        <span className="text-[11px] font-semibold text-[#FDB913] uppercase tracking-widest">
-          Step {current} of {STEPS.length}
-        </span>
-        <span className="text-[11px] font-medium text-zinc-400">
-          {activeStep?.label}
-        </span>
-      </div>
-
-      {/* Step circles + connectors */}
-      <div className="flex items-center justify-center gap-0">
-        {STEPS.map((step, idx) => {
-          const done   = current > step.id
-          const active = current === step.id
-          const Icon   = step.icon
-          return (
-            <div key={step.id} className="flex items-center">
-              <div className="flex flex-col items-center gap-1">
-                <div
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                    done
-                      ? "bg-[#FDB913] border-[#FDB913]"
-                      : active
-                      ? "bg-zinc-800 border-[#FDB913]"
-                      : "bg-zinc-900 border-zinc-700"
-                  }`}
-                >
-                  {done ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
-                  ) : (
-                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${active ? "text-[#FDB913]" : "text-zinc-600"}`} />
-                  )}
-                </div>
-                <span
-                  className={`text-[10px] font-medium hidden sm:block ${
-                    active ? "text-[#FDB913]" : done ? "text-zinc-400" : "text-zinc-600"
-                  }`}
-                >
-                  {step.label}
-                </span>
+    <div className="flex items-center justify-center gap-0 mb-8">
+      {STEPS.map((step, idx) => {
+        const done   = current > step.id
+        const active = current === step.id
+        const Icon   = step.icon
+        return (
+          <div key={step.id} className="flex items-center">
+            <div className="flex flex-col items-center gap-1.5">
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                  done
+                    ? "bg-[#FDB913] border-[#FDB913]"
+                    : active
+                    ? "bg-zinc-800 border-[#FDB913]"
+                    : "bg-zinc-900 border-zinc-700"
+                }`}
+              >
+                {done ? (
+                  <CheckCircle2 className="w-4 h-4 text-black" />
+                ) : (
+                  <Icon className={`w-4 h-4 ${active ? "text-[#FDB913]" : "text-zinc-600"}`} />
+                )}
               </div>
-              {idx < STEPS.length - 1 && (
-                <div
-                  className={`w-10 xs:w-12 sm:w-20 h-[2px] self-center mb-0 sm:mb-5 mx-0.5 sm:mx-1 transition-all duration-500 ${
-                    current > step.id ? "bg-[#FDB913]" : "bg-zinc-800"
-                  }`}
-                />
-              )}
+              <span
+                className={`text-[10px] font-medium hidden sm:block ${
+                  active ? "text-[#FDB913]" : done ? "text-zinc-400" : "text-zinc-600"
+                }`}
+              >
+                {step.label}
+              </span>
             </div>
-          )
-        })}
-      </div>
+            {idx < STEPS.length - 1 && (
+              // self-center keeps connector vertically centred on the circle regardless of label height
+              <div
+                className={`w-14 sm:w-20 h-[2px] self-center mb-5 mx-1 transition-all duration-500 ${
+                  current > step.id ? "bg-[#FDB913]" : "bg-zinc-800"
+                }`}
+              />
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -639,7 +626,7 @@ export default function SendTransferPage() {
   if (transferId) {
     return (
       <div className="min-h-screen bg-[#080808] flex items-center justify-center px-4">
-        <div className="w-full max-w-md text-center space-y-5">
+        <div className="w-full max-w-md text-center space-y-6">
           <div className="relative flex items-center justify-center">
             <div className="w-28 h-28 rounded-full bg-[#FDB913]/10 border-2 border-[#FDB913]/30 flex items-center justify-center animate-pulse">
               <div className="w-20 h-20 rounded-full bg-[#FDB913]/20 border-2 border-[#FDB913]/50 flex items-center justify-center">
@@ -717,13 +704,13 @@ export default function SendTransferPage() {
                       Internal Use
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <code className="flex-1 min-w-0 text-[10px] sm:text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2 sm:px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
                       /deposit-portal/admin?transferId={transferId}&hellip;
                     </code>
                     <button
                       onClick={() => copyLink(adminUrl, "admin")}
-                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
                       aria-label="Copy admin link"
                     >
                       {copiedAdmin ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
@@ -731,32 +718,32 @@ export default function SendTransferPage() {
                     <Link
                       href={adminUrl}
                       target="_blank"
-                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
                       aria-label="Open admin portal"
                     >
-                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 hover:text-white transition-colors" />
                     </Link>
                   </div>
                 </div>
 
                 {/* Client link */}
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-3.5 sm:p-4">
-                  <div className="flex items-center justify-between mb-2 sm:mb-2.5">
-                    <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2">
                       <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
-                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Client Portal</span>
+                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Client Deposit Portal</span>
                     </div>
                     <span className="text-[9px] bg-white/[0.06] text-zinc-500 border border-white/[0.08] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
                       Recipient
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <code className="flex-1 min-w-0 text-[10px] sm:text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2 sm:px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
                       /deposit-portal?transferId={transferId}&hellip;
                     </code>
                     <button
                       onClick={() => copyLink(clientUrl, "client")}
-                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
                       aria-label="Copy client link"
                     >
                       {copiedClient ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
@@ -764,10 +751,10 @@ export default function SendTransferPage() {
                     <Link
                       href={clientUrl}
                       target="_blank"
-                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
                       aria-label="Open client portal"
                     >
-                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 hover:text-white transition-colors" />
                     </Link>
                   </div>
                 </div>
@@ -798,38 +785,38 @@ export default function SendTransferPage() {
     <div className="min-h-screen bg-[#080808] font-sans">
 
       {/* ── Header ── */}
-      <header className="border-b border-white/[0.06] bg-[#080808]/95 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-3.5 flex items-center justify-between gap-2">
-          <Link href="/dashboard" className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#FDB913] rounded-xl flex items-center justify-center p-1.5 shadow-md shadow-[#FDB913]/20 shrink-0">
+      <header className="border-b border-white/[0.06] bg-[#080808]/90 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-[#FDB913] rounded-xl flex items-center justify-center p-1.5 shadow-md shadow-[#FDB913]/20">
               <img
                 src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
                 alt="Interac"
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="min-w-0">
-              <p className="text-[13px] sm:text-[14px] font-bold text-white leading-none mb-0.5 truncate">Interac e&#8209;Transfer</p>
-              <p className="text-[10px] text-zinc-600 leading-none hidden xs:block">Secure Payment Services</p>
+            <div>
+              <p className="text-[14px] font-bold text-white leading-none mb-0.5">Interac e&#8209;Transfer</p>
+              <p className="text-[10px] text-zinc-600 leading-none">Secure Payment Services</p>
             </div>
           </Link>
           <Link
             href="/dashboard"
-            className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-[12px] text-zinc-500 hover:text-white transition-colors px-2 sm:px-3 py-2 rounded-xl hover:bg-white/[0.05] shrink-0"
+            className="flex items-center gap-1.5 text-[12px] text-zinc-500 hover:text-white transition-colors px-3 py-2 rounded-xl hover:bg-white/[0.05]"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
-            <span className="hidden xs:inline">Dashboard</span>
+            Dashboard
           </Link>
         </div>
       </header>
 
       {/* ── Body ── */}
-      <main className="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8 md:py-10">
+      <main className="max-w-6xl mx-auto px-4 py-8 md:py-10">
 
         {/* Page title */}
-        <div className="mb-4 sm:mb-7">
-          <h1 className="text-xl sm:text-2xl md:text-[28px] font-bold text-white leading-none mb-1 sm:mb-1.5">Send e&#8209;Transfer</h1>
-          <p className="text-zinc-500 text-[12px] sm:text-[13px]">Send money instantly to anyone in Canada.</p>
+        <div className="mb-7">
+          <h1 className="text-2xl md:text-[28px] font-bold text-white leading-none mb-1.5">Send e&#8209;Transfer</h1>
+          <p className="text-zinc-500 text-[13px]">Send money instantly to anyone in Canada.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
@@ -840,18 +827,18 @@ export default function SendTransferPage() {
 
             {/* Step error */}
             {stepError && (
-              <div className="mb-4 flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <div className="mb-5 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
                 <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
-                <p className="text-[13px] text-red-300 leading-snug">{stepError}</p>
+                <p className="text-sm text-red-300">{stepError}</p>
               </div>
             )}
 
             {/* API error */}
             {error && (
-              <div className="mb-4 flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-red-500/10 border border-red-500/20" role="alert">
+              <div className="mb-5 flex items-start gap-3 px-4 py-3.5 rounded-xl bg-red-500/10 border border-red-500/20" role="alert">
                 <XCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-[13px] text-red-300 font-medium leading-snug">{error}</p>
+                  <p className="text-sm text-red-300 font-medium leading-snug">{error}</p>
                   {(error.includes("422") || error.includes("from") || error.includes("misconfigured")) && (
                     <p className="mt-1 text-[11px] text-red-400/70 leading-relaxed">
                       This is a sender configuration issue, not a problem with your input. Please contact support or verify the sender email domain in the Resend dashboard.
@@ -861,7 +848,7 @@ export default function SendTransferPage() {
               </div>
             )}
 
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 sm:p-6 md:p-8">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 md:p-8">
 
               {/* ── Step 1: Recipient ── */}
               {step === 1 && (
@@ -874,13 +861,13 @@ export default function SendTransferPage() {
                   {/* Recent contacts */}
                   <div>
                     <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-3">Recent Contacts</p>
-                    <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {RECENT_CONTACTS.map((c) => (
                         <button
                           key={c.email}
                           type="button"
                           onClick={() => { set("recipient", c.email); set("recipientName", c.name) }}
-                          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all text-left ${
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all text-left group ${
                             formData.recipient === c.email
                               ? "border-[#FDB913] bg-[#FDB913]/10"
                               : "border-white/[0.07] bg-white/[0.03] hover:border-white/[0.14]"
@@ -889,14 +876,14 @@ export default function SendTransferPage() {
                           <div className={`w-8 h-8 rounded-full ${c.color} flex items-center justify-center shrink-0`}>
                             <span className="text-[10px] font-bold text-white">{c.initials}</span>
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className={`text-[12px] font-semibold truncate ${formData.recipient === c.email ? "text-[#FDB913]" : "text-white"}`}>
+                          <div className="min-w-0">
+                            <p className={`text-xs font-semibold truncate ${formData.recipient === c.email ? "text-[#FDB913]" : "text-white"}`}>
                               {c.name}
                             </p>
                             <p className="text-[10px] text-zinc-500 truncate">{c.lastAmount} last</p>
                           </div>
                           {formData.recipient === c.email && (
-                            <CheckCircle2 className="w-3.5 h-3.5 text-[#FDB913] shrink-0" />
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#FDB913] ml-auto shrink-0" />
                           )}
                         </button>
                       ))}
@@ -1159,8 +1146,8 @@ export default function SendTransferPage() {
                   <div>
                     <p className="text-zinc-400 text-[10px] uppercase tracking-wider mb-3">Select a Question</p>
                     <div
-                      className="space-y-2 max-h-52 sm:max-h-56 overflow-y-auto pr-1"
-                      style={{ scrollbarWidth: "thin", scrollbarColor: "#3f3f46 transparent", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+                      className="space-y-2 max-h-56 overflow-y-auto pr-1"
+                      style={{ scrollbarWidth: "thin", scrollbarColor: "#3f3f46 transparent" }}
                     >
                       {SECURITY_QUESTIONS.map((q) => (
                         <button
@@ -1222,22 +1209,22 @@ export default function SendTransferPage() {
                       { label: "Email",             value: formData.recipient },
                       { label: "Amount",            value: formatCurrency(formData.amount), highlight: true },
                       { label: "Fee",               value: "Free", fee: true },
-                      { label: "Security Q.",       value: formData.securityQuestion },
-                      { label: "Answer",            value: formData.securityAnswer, masked: true },
+                      { label: "Security Question", value: formData.securityQuestion },
+                      { label: "Security Answer",   value: formData.securityAnswer, masked: true },
                       ...(formData.message ? [{ label: "Message", value: formData.message }] : []),
                     ].map(({ label, value, highlight, fee, masked }: { label: string; value: string; highlight?: boolean; fee?: boolean; masked?: boolean }) => (
                       <div
                         key={label}
-                        className="flex justify-between items-start gap-3 py-3 border-b border-white/[0.05] last:border-0"
+                        className="flex justify-between items-start gap-4 py-3 border-b border-white/[0.05] last:border-0"
                       >
-                        <span className="text-[12px] sm:text-[13px] text-zinc-500 shrink-0 max-w-[38%]">{label}</span>
+                        <span className="text-[13px] text-zinc-500 shrink-0">{label}</span>
                         {fee ? (
                           <span className="inline-flex items-center gap-1 bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
                             {value}
                           </span>
                         ) : masked ? (
                           <span className="flex items-center gap-1.5">
-                            <span className="text-[12px] sm:text-[13px] text-white font-medium font-mono tracking-widest">
+                            <span className="text-[13px] text-white font-medium font-mono tracking-widest">
                               {showAnswer ? value : "•".repeat(Math.min(value.length, 10))}
                             </span>
                             <button
@@ -1250,7 +1237,7 @@ export default function SendTransferPage() {
                             </button>
                           </span>
                         ) : (
-                          <span className={`text-[12px] sm:text-[13px] text-right break-words min-w-0 max-w-[58%] ${highlight ? "text-[#FDB913] font-bold text-sm sm:text-base" : "text-white font-medium"}`}>
+                          <span className={`text-[13px] text-right break-all ${highlight ? "text-[#FDB913] font-bold text-base" : "text-white font-medium"}`}>
                             {value}
                           </span>
                         )}
@@ -1323,23 +1310,14 @@ export default function SendTransferPage() {
       </main>
 
       {/* ── Mobile sticky bar ── */}
-      <div
-        className="lg:hidden fixed bottom-0 inset-x-0 z-20 bg-[#080808]/95 backdrop-blur-sm border-t border-white/[0.06] flex items-center justify-between gap-3"
-        style={{ padding: "12px 16px", paddingBottom: "calc(12px + env(safe-area-inset-bottom))" }}
-      >
-        {/* Amount summary */}
-        <div className="min-w-0">
-          <p className="text-[9px] text-zinc-500 uppercase tracking-widest leading-none mb-1">Sending</p>
-          <p className={`text-base font-bold leading-none tabular-nums ${parseFloat(formData.amount) > 0 ? "text-[#FDB913]" : "text-zinc-600"}`}>
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-20 bg-[#080808]/95 backdrop-blur-sm border-t border-white/[0.06] px-4 py-3 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Sending</p>
+          <p className={`text-lg font-bold leading-none mt-0.5 ${parseFloat(formData.amount) > 0 ? "text-[#FDB913]" : "text-zinc-600"}`}>
             {parseFloat(formData.amount) > 0 ? formatCurrency(formData.amount) : "$0.00"}
           </p>
-          {formData.recipient && (
-            <p className="text-[10px] text-zinc-600 truncate max-w-[140px] mt-0.5">
-              {formData.recipientName || formData.recipient}
-            </p>
-          )}
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2">
           {step > 1 && (
             <Button
               type="button"
@@ -1347,8 +1325,7 @@ export default function SendTransferPage() {
               size="sm"
               onClick={back}
               disabled={isLoading}
-              className="border-white/[0.10] text-zinc-300 hover:bg-white/[0.06] bg-transparent h-10 w-10 p-0"
-              aria-label="Go back"
+              className="border-white/[0.10] text-zinc-300 hover:bg-white/[0.06] bg-transparent h-10"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
@@ -1386,8 +1363,7 @@ export default function SendTransferPage() {
         </div>
       </div>
 
-      {/* Spacer for sticky bar — accounts for safe area on iOS */}
-      <div className="lg:hidden" style={{ height: "calc(80px + env(safe-area-inset-bottom))" }} />
+      <div className="lg:hidden h-24" />
     </div>
   )
 }

@@ -613,6 +613,7 @@ export default function SendTransferPage() {
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || "Failed to send e-Transfer")
+      setTransferTimestamp(new Date().toISOString())
       setTransferId(data.transferId)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send e-Transfer. Please try again.")
@@ -670,30 +671,116 @@ export default function SendTransferPage() {
             ))}
           </div>
 
-          <div className="space-y-3">
-            <p className="text-xs text-zinc-600">
-              Redirecting to deposit portal in{" "}
-              <span className="text-[#FDB913] font-semibold">{countdown}s</span>…
-            </p>
-            <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-[#FDB913] rounded-full transition-all duration-1000"
-                style={{ width: `${((5 - countdown) / 5) * 100}%` }}
-              />
-            </div>
-            <Link
-              href={`/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${formData.recipient}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Banking+System&message=${encodeURIComponent(formData.message)}&timestamp=${new Date().toISOString()}`}
-              className="inline-flex items-center gap-2 text-sm text-[#FDB913] hover:text-[#e5a811] font-medium transition-colors"
-            >
-              Go now <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+          {/* ── Portal links ── */}
+          {(() => {
+            const qs = new URLSearchParams({
+              transferId:    transferId,
+              amount:        formData.amount,
+              recipient:     formData.recipient,
+              recipientName: formData.recipientName || formData.recipient,
+              bankName:      "Banking System",
+              message:       formData.message,
+              timestamp:     transferTimestamp,
+            }).toString()
+            const clientUrl = `/deposit-portal?${qs}`
+            const adminUrl  = `/deposit-portal/admin?${qs}`
+
+            const copyLink = (url: string, which: "admin" | "client") => {
+              navigator.clipboard.writeText(window.location.origin + url)
+              if (which === "admin") { setCopiedAdmin(true);  setTimeout(() => setCopiedAdmin(false),  2000) }
+              else                  { setCopiedClient(true); setTimeout(() => setCopiedClient(false), 2000) }
+            }
+
+            return (
+              <div className="space-y-3 text-left">
+                {/* Admin link */}
+                <div className="rounded-2xl border border-[#FDB913]/25 bg-[#FDB913]/5 p-4">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-3.5 h-3.5 text-[#FDB913]" />
+                      <span className="text-[10px] font-bold text-[#FDB913] uppercase tracking-widest">Admin Portal</span>
+                    </div>
+                    <span className="text-[9px] bg-[#FDB913]/15 text-[#FDB913] border border-[#FDB913]/20 px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                      Internal Use
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
+                      /deposit-portal/admin?transferId={transferId}&hellip;
+                    </code>
+                    <button
+                      onClick={() => copyLink(adminUrl, "admin")}
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Copy admin link"
+                    >
+                      {copiedAdmin ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
+                    </button>
+                    <Link
+                      href={adminUrl}
+                      target="_blank"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Open admin portal"
+                    >
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 hover:text-white transition-colors" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Client link */}
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2">
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Client Deposit Portal</span>
+                    </div>
+                    <span className="text-[9px] bg-white/[0.06] text-zinc-500 border border-white/[0.08] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                      Recipient
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
+                      /deposit-portal?transferId={transferId}&hellip;
+                    </code>
+                    <button
+                      onClick={() => copyLink(clientUrl, "client")}
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Copy client link"
+                    >
+                      {copiedClient ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
+                    </button>
+                    <Link
+                      href={clientUrl}
+                      target="_blank"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Open client portal"
+                    >
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 hover:text-white transition-colors" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Countdown redirect */}
+                <div className="pt-1 space-y-2">
+                  <p className="text-xs text-zinc-600 text-center">
+                    Redirecting to client portal in{" "}
+                    <span className="text-[#FDB913] font-semibold">{countdown}s</span>…
+                  </p>
+                  <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#FDB913] rounded-full transition-all duration-1000"
+                      style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
         </div>
       </div>
     )
   }
 
-  // ── Main form ────────────────────────────────────────────────────────────────
+  // ── Main form ────────────────────────────────���───────────────────────────────
   return (
     <div className="min-h-screen bg-[#080808] font-sans">
 

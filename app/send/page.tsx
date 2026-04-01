@@ -522,24 +522,27 @@ export default function SendTransferPage() {
     securityQuestion: SECURITY_QUESTIONS[0],
     securityAnswer:   "",
   })
-  const [showAnswer, setShowAnswer]   = useState(false)
-  const [isLoading, setIsLoading]     = useState(false)
-  const [error, setError]             = useState("")
-  const [transferId, setTransferId]   = useState("")
-  const [copied, setCopied]           = useState(false)
-  const [countdown, setCountdown]     = useState(5)
-  const [stepError, setStepError]     = useState("")
+  const [showAnswer, setShowAnswer]       = useState(false)
+  const [isLoading, setIsLoading]         = useState(false)
+  const [error, setError]                 = useState("")
+  const [transferId, setTransferId]       = useState("")
+  const [transferTimestamp, setTransferTimestamp] = useState("")
+  const [copied, setCopied]               = useState(false)
+  const [copiedAdmin, setCopiedAdmin]     = useState(false)
+  const [copiedClient, setCopiedClient]   = useState(false)
+  const [countdown, setCountdown]         = useState(5)
+  const [stepError, setStepError]         = useState("")
 
-  // Countdown after success
+  // Countdown after success — redirect to CLIENT deposit-portal page
   useEffect(() => {
-    if (transferId) {
+    if (transferId && transferTimestamp) {
+      const clientUrl = `/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${encodeURIComponent(formData.recipient)}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Banking+System&message=${encodeURIComponent(formData.message)}&timestamp=${transferTimestamp}`
+      
       const t = setInterval(() => {
         setCountdown((c) => {
           if (c <= 1) {
             clearInterval(t)
-            router.push(
-              `/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${formData.recipient}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Banking+System&message=${encodeURIComponent(formData.message)}&timestamp=${new Date().toISOString()}`,
-            )
+            router.push(clientUrl)
             return 0
           }
           return c - 1
@@ -547,7 +550,7 @@ export default function SendTransferPage() {
       }, 1000)
       return () => clearInterval(t)
     }
-  }, [transferId])
+  }, [transferId, transferTimestamp, formData, router])
 
   const set = (field: keyof FormData, value: string) =>
     setFormData((prev) => ({ ...prev, [field]: value }))

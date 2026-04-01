@@ -440,7 +440,7 @@ function getGreeting() {
 }
 
 function DashboardContent() {
-  const { user, logout } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -450,8 +450,8 @@ function DashboardContent() {
     return () => clearInterval(timer)
   }, [])
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await signOut()
     router.push("/login")
   }
 
@@ -510,7 +510,7 @@ function DashboardContent() {
         {/* User + logout */}
         <div className="flex items-center gap-2.5 sm:gap-3">
           <div className="hidden sm:block text-right">
-            <p className="text-[13px] font-semibold text-white leading-none mb-0.5 truncate max-w-[140px]">{user?.name}</p>
+            <p className="text-[13px] font-semibold text-white leading-none mb-0.5 truncate max-w-[140px]">{user?.user_metadata?.full_name || "User"}</p>
             <p className="text-[11px] text-zinc-600 leading-none truncate max-w-[140px]">{user?.email}</p>
           </div>
           <button
@@ -537,7 +537,7 @@ function DashboardContent() {
         {/* Welcome */}
         <div className="w-full max-w-3xl mx-auto mb-5 sm:mb-6">
           <h2 className="text-lg sm:text-xl font-bold text-white leading-none mb-0.5">
-            Good {getGreeting()}, {user?.name?.split(" ")[0]}
+            Good {getGreeting()}, {(user?.user_metadata?.full_name as string)?.split(" ")[0] || "there"}
           </h2>
           <p className="text-[13px] text-zinc-600">Here&apos;s an overview of your account</p>
         </div>

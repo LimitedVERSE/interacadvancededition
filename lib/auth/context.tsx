@@ -1,63 +1,71 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-
-interface User {
-  id: string
-  email: string
-  name: string
-}
+import { createContext, useContext, useState, useEffect, type ReactNode, useCallback } from "react"
+import { createClient } from "@/lib/supabase/client"
+import type { User, Session } from "@supabase/supabase-js"
 
 interface AuthContextType {
   user: User | null
+  session: Session | null
   isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
+  signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  
+  const supabase = createClient()
 
-  // Load user from localStorage on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("interac-user")
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
+    // Get initial session
+    const getInitialSession = async () => {
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession()
+        setSession(initialSession)
+        setUser(initialSession?.user ?? null)
+      } catch (error) {
+        console.error("Error getting session:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
-    setIsLoading(false)
-  }, [])
 
-  const login = async (email: string, password: string) => {
+    getInitialSession()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, currentSession) => {
+        setSession(currentSession)
+        setUser(currentSession?.user ?? null)
+        setIsLoading(false)
+      }
+    )
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase.auth])
+
+  const signOut = useCallback(async () => {
     setIsLoading(true)
     try {
-      if (email !== "admin@quantumyield.exchange") {
-        throw new Error("Unauthorized email address")
-      }
-
-      // Simulate login - in production, call your auth API
-      const newUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name: "Admin",
-      }
-      setUser(newUser)
-      localStorage.setItem("interac-user", JSON.stringify(newUser))
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Login failed")
+      await supabase.auth.signOut()
+      setUser(null)
+      setSession(null)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [supabase.auth])
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem("interac-user")
-  }
-
-  return <AuthContext.Provider value={{ user, isLoading, login, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, session, isLoading, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

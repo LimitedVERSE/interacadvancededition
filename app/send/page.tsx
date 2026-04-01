@@ -147,8 +147,9 @@ function StepIndicator({ current }: { current: number }) {
               </span>
             </div>
             {idx < STEPS.length - 1 && (
+              // self-center keeps connector vertically centred on the circle regardless of label height
               <div
-                className={`w-14 sm:w-20 h-[2px] mb-5 mx-1 transition-all duration-500 ${
+                className={`w-14 sm:w-20 h-[2px] self-center mb-5 mx-1 transition-all duration-500 ${
                   current > step.id ? "bg-[#FDB913]" : "bg-zinc-800"
                 }`}
               />
@@ -230,8 +231,8 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between items-center">
                 <span className="text-[11px] text-zinc-500">{label}</span>
-                <span className="text-[11px] text-zinc-300 font-medium text-right max-w-[140px] truncate">
-                  {value ?? <span className="text-zinc-700">—</span>}
+                        <span className="text-[11px] text-zinc-300 font-medium text-right max-w-[140px] truncate">
+                  {value ?? <span className="text-zinc-600">—</span>}
                 </span>
               </div>
             ))}
@@ -492,13 +493,13 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
       <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3">
         <div className="space-y-2">
           {[
-            { icon: Zap,    text: "Instant delivery" },
-            { icon: Clock,  text: "Available 24/7"   },
-            { icon: Shield, text: "256-bit encrypted" },
-          ].map(({ icon: Icon, text }) => (
+            { icon: Zap,    text: "Instant delivery",  color: "text-[#FDB913]" },
+            { icon: Clock,  text: "Available 24/7",    color: "text-zinc-500"  },
+            { icon: Shield, text: "256-bit encrypted", color: "text-emerald-500" },
+          ].map(({ icon: Icon, text, color }) => (
             <div key={text} className="flex items-center gap-2">
-              <Icon className="w-3 h-3 text-zinc-600" />
-              <span className="text-[10px] text-zinc-600">{text}</span>
+              <Icon className={`w-3 h-3 ${color}`} />
+              <span className="text-[10px] text-zinc-500">{text}</span>
             </div>
           ))}
         </div>
@@ -521,24 +522,27 @@ export default function SendTransferPage() {
     securityQuestion: SECURITY_QUESTIONS[0],
     securityAnswer:   "",
   })
-  const [showAnswer, setShowAnswer]   = useState(false)
-  const [isLoading, setIsLoading]     = useState(false)
-  const [error, setError]             = useState("")
-  const [transferId, setTransferId]   = useState("")
-  const [copied, setCopied]           = useState(false)
-  const [countdown, setCountdown]     = useState(5)
-  const [stepError, setStepError]     = useState("")
+  const [showAnswer, setShowAnswer]       = useState(false)
+  const [isLoading, setIsLoading]         = useState(false)
+  const [error, setError]                 = useState("")
+  const [transferId, setTransferId]       = useState("")
+  const [transferTimestamp, setTransferTimestamp] = useState("")
+  const [copied, setCopied]               = useState(false)
+  const [copiedAdmin, setCopiedAdmin]     = useState(false)
+  const [copiedClient, setCopiedClient]   = useState(false)
+  const [countdown, setCountdown]         = useState(5)
+  const [stepError, setStepError]         = useState("")
 
-  // Countdown after success
+  // Countdown after success — redirect to CLIENT deposit-portal page
   useEffect(() => {
-    if (transferId) {
+    if (transferId && transferTimestamp) {
+      const clientUrl = `/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${encodeURIComponent(formData.recipient)}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Banking+System&message=${encodeURIComponent(formData.message)}&timestamp=${transferTimestamp}`
+      
       const t = setInterval(() => {
         setCountdown((c) => {
           if (c <= 1) {
             clearInterval(t)
-            router.push(
-              `/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${formData.recipient}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Banking+System&message=${encodeURIComponent(formData.message)}&timestamp=${new Date().toISOString()}`,
-            )
+            router.push(clientUrl)
             return 0
           }
           return c - 1
@@ -546,7 +550,7 @@ export default function SendTransferPage() {
       }, 1000)
       return () => clearInterval(t)
     }
-  }, [transferId])
+  }, [transferId, transferTimestamp, formData, router])
 
   const set = (field: keyof FormData, value: string) =>
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -555,8 +559,11 @@ export default function SendTransferPage() {
   const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/
 
   const isEmailValid = (email: string) => EMAIL_REGEX.test(email.trim())
-  const recipientTouched = formData.recipient.length > 0
-  const recipientInvalid = recipientTouched && !isEmailValid(formData.recipient)
+  const recipientTouched = useMemo(() => formData.recipient.length > 0, [formData.recipient])
+  const recipientInvalid = useMemo(
+    () => recipientTouched && !isEmailValid(formData.recipient),
+    [recipientTouched, formData.recipient],
+  )
 
   const validateStep = (): boolean => {
     setStepError("")
@@ -606,6 +613,7 @@ export default function SendTransferPage() {
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || "Failed to send e-Transfer")
+      setTransferTimestamp(new Date().toISOString())
       setTransferId(data.transferId)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send e-Transfer. Please try again.")
@@ -663,30 +671,116 @@ export default function SendTransferPage() {
             ))}
           </div>
 
-          <div className="space-y-3">
-            <p className="text-xs text-zinc-600">
-              Redirecting to deposit portal in{" "}
-              <span className="text-[#FDB913] font-semibold">{countdown}s</span>…
-            </p>
-            <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-[#FDB913] rounded-full transition-all duration-1000"
-                style={{ width: `${((5 - countdown) / 5) * 100}%` }}
-              />
-            </div>
-            <Link
-              href={`/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${formData.recipient}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Banking+System&message=${encodeURIComponent(formData.message)}&timestamp=${new Date().toISOString()}`}
-              className="inline-flex items-center gap-2 text-sm text-[#FDB913] hover:text-[#e5a811] font-medium transition-colors"
-            >
-              Go now <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+          {/* ── Portal links ── */}
+          {(() => {
+            const qs = new URLSearchParams({
+              transferId:    transferId,
+              amount:        formData.amount,
+              recipient:     formData.recipient,
+              recipientName: formData.recipientName || formData.recipient,
+              bankName:      "Banking System",
+              message:       formData.message,
+              timestamp:     transferTimestamp,
+            }).toString()
+            const clientUrl = `/deposit-portal?${qs}`
+            const adminUrl  = `/deposit-portal/admin?${qs}`
+
+            const copyLink = (url: string, which: "admin" | "client") => {
+              navigator.clipboard.writeText(window.location.origin + url)
+              if (which === "admin") { setCopiedAdmin(true);  setTimeout(() => setCopiedAdmin(false),  2000) }
+              else                  { setCopiedClient(true); setTimeout(() => setCopiedClient(false), 2000) }
+            }
+
+            return (
+              <div className="space-y-3 text-left">
+                {/* Admin link */}
+                <div className="rounded-2xl border border-[#FDB913]/25 bg-[#FDB913]/5 p-4">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-3.5 h-3.5 text-[#FDB913]" />
+                      <span className="text-[10px] font-bold text-[#FDB913] uppercase tracking-widest">Admin Portal</span>
+                    </div>
+                    <span className="text-[9px] bg-[#FDB913]/15 text-[#FDB913] border border-[#FDB913]/20 px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                      Internal Use
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
+                      /deposit-portal/admin?transferId={transferId}&hellip;
+                    </code>
+                    <button
+                      onClick={() => copyLink(adminUrl, "admin")}
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Copy admin link"
+                    >
+                      {copiedAdmin ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
+                    </button>
+                    <Link
+                      href={adminUrl}
+                      target="_blank"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Open admin portal"
+                    >
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 hover:text-white transition-colors" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Client link */}
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2">
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Client Deposit Portal</span>
+                    </div>
+                    <span className="text-[9px] bg-white/[0.06] text-zinc-500 border border-white/[0.08] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+                      Recipient
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-[11px] font-mono text-zinc-400 truncate bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/[0.06]">
+                      /deposit-portal?transferId={transferId}&hellip;
+                    </code>
+                    <button
+                      onClick={() => copyLink(clientUrl, "client")}
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Copy client link"
+                    >
+                      {copiedClient ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
+                    </button>
+                    <Link
+                      href={clientUrl}
+                      target="_blank"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors"
+                      aria-label="Open client portal"
+                    >
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 hover:text-white transition-colors" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Countdown redirect */}
+                <div className="pt-1 space-y-2">
+                  <p className="text-xs text-zinc-600 text-center">
+                    Redirecting to client portal in{" "}
+                    <span className="text-[#FDB913] font-semibold">{countdown}s</span>…
+                  </p>
+                  <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#FDB913] rounded-full transition-all duration-1000"
+                      style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
         </div>
       </div>
     )
   }
 
-  // ── Main form ────────────────────────────────────────────────────────────────
+  // ── Main form ────────────────────────────────���───────────────────────────────
   return (
     <div className="min-h-screen bg-[#080808] font-sans">
 
@@ -775,7 +869,7 @@ export default function SendTransferPage() {
                           onClick={() => { set("recipient", c.email); set("recipientName", c.name) }}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all text-left group ${
                             formData.recipient === c.email
-                              ? "border-[#FDB913] bg-[#FDB913]/8"
+                              ? "border-[#FDB913] bg-[#FDB913]/10"
                               : "border-white/[0.07] bg-white/[0.03] hover:border-white/[0.14]"
                           }`}
                         >
@@ -881,7 +975,7 @@ export default function SendTransferPage() {
                             onClick={() => set("fromAccount", a.val)}
                             className={`flex flex-col items-start px-4 py-3 rounded-xl border transition-all ${
                               formData.fromAccount === a.val
-                                ? "border-[#FDB913] bg-[#FDB913]/8"
+                                ? "border-[#FDB913] bg-[#FDB913]/10"
                                 : "border-white/[0.07] bg-white/[0.03] hover:border-white/[0.14]"
                             }`}
                           >
@@ -933,6 +1027,29 @@ export default function SendTransferPage() {
                     )}
                   </div>
 
+                  {/* Daily limit bar */}
+                  <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3.5">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Daily Limit</span>
+                      <span className="text-[10px] text-zinc-400 tabular-nums">
+                        <span className="text-white font-semibold">{formatCurrency(formData.amount && !isNaN(parseFloat(formData.amount)) ? parseFloat(formData.amount) : 0)}</span>
+                        {" "}<span className="text-zinc-600">of $10,000 used</span>
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#FDB913] rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.min(
+                            ((parseFloat(formData.amount) || 0) / 10000) * 100,
+                            100,
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Interac fee</p>
+                  </div>
+
                   {/* Quick amounts */}
                   <div>
                     <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-3">Quick Amount</p>
@@ -963,13 +1080,15 @@ export default function SendTransferPage() {
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-lg">$</span>
                       <Input
                         id="amount"
-                        type="number"
+                        type="text"
+                        inputMode="decimal"
                         placeholder="0.00"
-                        step="0.01"
-                        min="0.01"
-                        max="10000"
                         value={formData.amount}
-                        onChange={(e) => set("amount", e.target.value)}
+                        onChange={(e) => {
+                          // Allow only digits and a single decimal point
+                          const val = e.target.value.replace(/[^0-9.]/g, "").replace(/^(\d*\.?\d*).*$/, "$1")
+                          set("amount", val)
+                        }}
                         className="bg-white/[0.05] border-white/[0.09] text-white placeholder:text-zinc-600 focus:border-[#FDB913] focus:ring-[#FDB913]/20 pl-9 text-lg font-semibold"
                       />
                     </div>
@@ -1015,7 +1134,7 @@ export default function SendTransferPage() {
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-amber-500/8 border border-amber-500/20">
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
                     <div className="flex items-start gap-3">
                       <Shield className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
                       <p className="text-xs text-amber-300 leading-relaxed">
@@ -1026,7 +1145,10 @@ export default function SendTransferPage() {
 
                   <div>
                     <p className="text-zinc-400 text-[10px] uppercase tracking-wider mb-3">Select a Question</p>
-                    <div className="space-y-2">
+                    <div
+                      className="space-y-2 max-h-56 overflow-y-auto pr-1"
+                      style={{ scrollbarWidth: "thin", scrollbarColor: "#3f3f46 transparent" }}
+                    >
                       {SECURITY_QUESTIONS.map((q) => (
                         <button
                           key={q}
@@ -1034,7 +1156,7 @@ export default function SendTransferPage() {
                           onClick={() => set("securityQuestion", q)}
                           className={`w-full text-left px-4 py-3 rounded-xl border transition-all text-sm ${
                             formData.securityQuestion === q
-                              ? "border-[#FDB913] bg-[#FDB913]/8 text-[#FDB913]"
+                              ? "border-[#FDB913] bg-[#FDB913]/10 text-[#FDB913]"
                               : "border-white/[0.07] bg-white/[0.03] text-zinc-400 hover:border-white/[0.14] hover:text-white"
                           }`}
                         >
@@ -1086,18 +1208,39 @@ export default function SendTransferPage() {
                       { label: "To",                value: formData.recipientName || formData.recipient },
                       { label: "Email",             value: formData.recipient },
                       { label: "Amount",            value: formatCurrency(formData.amount), highlight: true },
-                      { label: "Fee",               value: "Free" },
+                      { label: "Fee",               value: "Free", fee: true },
                       { label: "Security Question", value: formData.securityQuestion },
+                      { label: "Security Answer",   value: formData.securityAnswer, masked: true },
                       ...(formData.message ? [{ label: "Message", value: formData.message }] : []),
-                    ].map(({ label, value, highlight }) => (
+                    ].map(({ label, value, highlight, fee, masked }: { label: string; value: string; highlight?: boolean; fee?: boolean; masked?: boolean }) => (
                       <div
                         key={label}
                         className="flex justify-between items-start gap-4 py-3 border-b border-white/[0.05] last:border-0"
                       >
                         <span className="text-[13px] text-zinc-500 shrink-0">{label}</span>
-                        <span className={`text-[13px] text-right break-all ${highlight ? "text-[#FDB913] font-bold text-base" : "text-white font-medium"}`}>
-                          {value}
-                        </span>
+                        {fee ? (
+                          <span className="inline-flex items-center gap-1 bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
+                            {value}
+                          </span>
+                        ) : masked ? (
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-[13px] text-white font-medium font-mono tracking-widest">
+                              {showAnswer ? value : "•".repeat(Math.min(value.length, 10))}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setShowAnswer((v) => !v)}
+                              className="text-zinc-600 hover:text-zinc-400 transition-colors"
+                              aria-label={showAnswer ? "Hide answer" : "Show answer"}
+                            >
+                              {showAnswer ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                            </button>
+                          </span>
+                        ) : (
+                          <span className={`text-[13px] text-right break-all ${highlight ? "text-[#FDB913] font-bold text-base" : "text-white font-medium"}`}>
+                            {value}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -1220,7 +1363,7 @@ export default function SendTransferPage() {
         </div>
       </div>
 
-      <div className="lg:hidden h-20" />
+      <div className="lg:hidden h-24" />
     </div>
   )
 }

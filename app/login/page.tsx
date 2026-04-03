@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useTransition, Suspense } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { signIn } from "@/lib/actions/auth"
 import {
   AlertCircle,
@@ -45,26 +45,23 @@ function LoginForm() {
   const [showPassword, setShowPw] = useState(false)
   const [error, setError] = useState("")
   const [isPending, startTransition] = useTransition()
-  const router = useRouter()
   const searchParams = useSearchParams()
-  
-  // Check for auth callback errors
   const authError = searchParams.get("error")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError("")
-    
+
     const formData = new FormData(e.currentTarget)
-    
+
     startTransition(async () => {
       const result = await signIn(formData)
       if (result?.error) {
         setError(result.error)
       } else if (result?.success && result?.redirectTo) {
-        // Client-side redirect after successful login
-        router.push(result.redirectTo)
-        router.refresh()
+        // Hard navigation — browser re-requests the page with the new
+        // Supabase session cookies, so the proxy sees an authenticated user.
+        window.location.href = result.redirectTo
       }
     })
   }

@@ -11,34 +11,31 @@ export interface AuthResult {
 }
 
 /**
- * Sign in with email and password
+ * Sign in with email and password.
+ * Returns a result object — the client is responsible for the final redirect
+ * so that window.location.href causes a full navigation and cookies are sent.
  */
 export async function signIn(formData: FormData): Promise<AuthResult> {
   const supabase = await createClient()
 
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  const email    = (formData.get('email')    as string | null)?.trim() ?? ''
+  const password = (formData.get('password') as string | null) ?? ''
 
   if (!email || !password) {
-    return { error: 'Email and password are required' }
+    return { error: 'Email and password are required.' }
   }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
     return { error: error.message }
   }
 
   if (!data.session) {
-    return { error: 'Failed to create session' }
+    return { error: 'Authentication succeeded but no session was created.' }
   }
 
   revalidatePath('/', 'layout')
-  
-  // Return success with redirect path - client handles the redirect
   return { success: true, redirectTo: '/dashboard' }
 }
 

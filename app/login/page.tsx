@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useTransition } from "react"
+import { useState, useTransition, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "@/lib/actions/auth"
 import {
@@ -20,6 +20,7 @@ import {
   Shield,
   Zap,
   Lock,
+  Loader2,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -40,7 +41,7 @@ const trustItems = [
   { icon: Lock,   label: "2-step verification"    },
 ]
 
-export default function LoginPage() {
+function LoginForm() {
   const [showPassword, setShowPw] = useState(false)
   const [error, setError] = useState("")
   const [isPending, startTransition] = useTransition()
@@ -57,11 +58,17 @@ export default function LoginPage() {
     const formData = new FormData(e.currentTarget)
     
     startTransition(async () => {
-      const result = await signIn(formData)
-      if (result?.error) {
-        setError(result.error)
+      try {
+        const result = await signIn(formData)
+        if (result?.error) {
+          setError(result.error)
+        } else if (result?.redirectTo) {
+          // Fallback client-side redirect
+          router.push(result.redirectTo)
+        }
+      } catch {
+        // redirect() throws NEXT_REDIRECT which is expected - the redirect will happen
       }
-      // If successful, the server action will redirect
     })
   }
 
@@ -307,5 +314,21 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
+  )
+}
+
+function LoginLoading() {
+  return (
+    <div className="min-h-screen bg-[#080808] flex items-center justify-center">
+      <Loader2 className="w-8 h-8 text-[#FDB913] animate-spin" />
+    </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginLoading />}>
+      <LoginForm />
+    </Suspense>
   )
 }

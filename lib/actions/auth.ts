@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache'
 export interface AuthResult {
   error?: string
   success?: boolean
+  redirectTo?: string
 }
 
 /**
@@ -22,13 +23,17 @@ export async function signIn(formData: FormData): Promise<AuthResult> {
     return { error: 'Email and password are required' }
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
   if (error) {
     return { error: error.message }
+  }
+
+  if (!data.session) {
+    return { error: 'Failed to create session' }
   }
 
   revalidatePath('/', 'layout')

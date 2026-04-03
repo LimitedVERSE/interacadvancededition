@@ -37,7 +37,9 @@ export async function signIn(formData: FormData): Promise<AuthResult> {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  
+  // Return success with redirect path - client handles the redirect
+  return { success: true, redirectTo: '/dashboard' }
 }
 
 /**

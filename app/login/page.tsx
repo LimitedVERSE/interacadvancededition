@@ -58,16 +58,13 @@ function LoginForm() {
     const formData = new FormData(e.currentTarget)
     
     startTransition(async () => {
-      try {
-        const result = await signIn(formData)
-        if (result?.error) {
-          setError(result.error)
-        } else if (result?.redirectTo) {
-          // Fallback client-side redirect
-          router.push(result.redirectTo)
-        }
-      } catch {
-        // redirect() throws NEXT_REDIRECT which is expected - the redirect will happen
+      const result = await signIn(formData)
+      if (result?.error) {
+        setError(result.error)
+      } else if (result?.success && result?.redirectTo) {
+        // Client-side redirect after successful login
+        router.push(result.redirectTo)
+        router.refresh()
       }
     })
   }

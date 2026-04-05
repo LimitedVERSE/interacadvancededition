@@ -45,18 +45,18 @@ export async function POST(request: Request) {
     const transferId = `INTC-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
     const timestamp = Date.now()
 
-    // Build deposit link
+    // Build deposit link — always points to /deposit-portal/client with ISO timestamp
     const depositBaseUrl = "https://interac.quantumyield.digital"
     const depositParams = new URLSearchParams({
       transferId,
       amount: amountNum.toString(),
       recipient: recipientEmail,
       recipientName,
-      bankName: "QuantumYield",
+      bankName: "Banking System",
       message: message || "",
-      timestamp: timestamp.toString(),
+      timestamp: new Date(timestamp).toISOString(),
     })
-    const depositLink = `${depositBaseUrl}/deposit-portal?${depositParams.toString()}`
+    const depositLink = `${depositBaseUrl}/deposit-portal/client?${depositParams.toString()}`
 
     // Resolve template ID — fall back to transfer-received for /send page
     const resolvedBase = templateId || "transfer-received"

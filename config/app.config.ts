@@ -1,12 +1,12 @@
 /**
  * Application configuration
- * Centralized settings for the Interac Money Transfer Interface
+ * Centralized settings for the Zelle Disbursement Platform
  */
 
 export const appConfig = {
   // Application metadata
-  name: "Interac Money Transfer",
-  description: "Secure money transfer via Interac Network",
+  name: "Zelle Disbursement Platform",
+  description: "Secure money transfer via Zelle Network",
   version: "1.0.0",
 
   // API simulation settings
@@ -20,7 +20,7 @@ export const appConfig = {
     itemsPerPage: 16,
     searchDebounceMs: 300,
     colors: {
-      primary: "#FDB913", // Interac yellow
+      primary: "#6D1ED4", // Zelle purple
       secondary: "#000000", // Black
       background: "#FFFFFF", // White
     },

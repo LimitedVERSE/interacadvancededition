@@ -34,7 +34,7 @@ const getEmailStyles = () => `
     .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
     .detail-row:last-child { border-bottom: none; }
     .detail-label { color: #666666; font-size: 14px; }
-    .detail-value { color: #000000; font-size: 14px; font-weight: 500; text-align: right; }
+    .detail-value { color: #000000; font-size: 14px; font-weight: 500; }
     .button-section { text-align: center; margin: 32px 0; }
     .action-button { display: inline-block; background-color: #FDB913; color: #000000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; }
     .action-button:hover { background-color: #e5a811; }

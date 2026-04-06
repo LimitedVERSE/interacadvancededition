@@ -13,9 +13,9 @@ export const delay = (ms: number): Promise<void> => {
 /**
  * Formats currency for display
  * @param amount - Numeric amount
- * @param currency - Currency code (default: CAD)
+ * @param currency - Currency code (default: USD)
  */
-export const formatCurrency = (amount: number | string, currency = "CAD"): string => {
+export const formatCurrency = (amount: number | string, currency = "USD"): string => {
   const numAmount = typeof amount === "string" ? Number.parseFloat(amount) : amount
   return `$${numAmount.toFixed(2)} ${currency}`
 }
@@ -26,7 +26,7 @@ export const formatCurrency = (amount: number | string, currency = "CAD"): strin
  */
 export const formatDate = (date: string | Date): string => {
   const dateObj = typeof date === "string" ? new Date(date) : date
-  return dateObj.toLocaleDateString("en-CA", {
+  return dateObj.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",

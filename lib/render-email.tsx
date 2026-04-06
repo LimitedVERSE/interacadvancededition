@@ -18,7 +18,7 @@ export function renderInteracEmail(data: EmailData): string {
       <MessageSection
         recipientName={data.recipientName}
         greeting={`Hi ${data.recipientName},`}
-        description="You've received a secure Interac e-Transfer."
+        description="You've received a secure Zelle payment."
       />
 
       <TransferCard
@@ -41,7 +41,7 @@ export function renderInteracEmail(data: EmailData): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Interac e-Transfer</title>
+  <title>Zelle Payment</title>
   <style>
     body { margin: 0; padding: 0; }
     img { border: 0; display: block; }

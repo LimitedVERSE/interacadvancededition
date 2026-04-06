@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { buildInteracMock } from "@/lib/mockInteracService"
+import { buildZelleMock } from "@/lib/mockZelleService"
 
 export async function GET() {
-  const mock = buildInteracMock()
+  const mock = buildZelleMock()
   return NextResponse.json(mock)
 }

@@ -41,7 +41,7 @@ interface DepositRecord {
 function formatAmount(val: string | number) {
   const n = typeof val === "string" ? parseFloat(val) : val
   if (isNaN(n)) return "0.00"
-  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 function timeAgo(iso: string) {

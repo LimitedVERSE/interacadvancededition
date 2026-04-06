@@ -70,12 +70,16 @@ function HistoryContent() {
               Back
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#6D1ED4] rounded-lg flex items-center justify-center shrink-0">
-                <span className="text-white font-black text-2xl leading-none">Z</span>
+              <div className="w-12 h-12 bg-[#FDB913] rounded-lg flex items-center justify-center p-2">
+                <img
+                  src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
+                  alt="Interac Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Transfer History</h1>
-                <p className="text-sm text-zinc-400">View and manage your Zelle transfer history</p>
+                <h1 className="text-2xl font-bold text-white">Depository History</h1>
+                <p className="text-sm text-zinc-400">View and manage your transfer history</p>
               </div>
             </div>
           </div>
@@ -114,7 +118,7 @@ function HistoryContent() {
                 onClick={() => setFilter(status as any)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === status
-                    ? "bg-[#6D1ED4] text-white"
+                    ? "bg-[#FDB913] text-black"
                     : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 border border-zinc-800"
                 }`}
               >
@@ -138,7 +142,7 @@ function HistoryContent() {
             {filteredDeposits.map((deposit) => (
               <Card
                 key={deposit.id}
-                className="border-2 border-zinc-800 hover:border-[#6D1ED4] transition-colors bg-zinc-900/50 backdrop-blur-sm cursor-pointer"
+                className="border-2 border-zinc-800 hover:border-[#FDB913] transition-colors bg-zinc-900/50 backdrop-blur-sm cursor-pointer"
                 onClick={() =>
                   router.push(
                     `/deposit-portal?transferId=${deposit.transferId}&amount=${deposit.amount}&recipient=${deposit.recipient}&recipientName=${encodeURIComponent(deposit.recipientName)}&bankName=${encodeURIComponent(deposit.bankName)}&message=${encodeURIComponent(deposit.message)}&timestamp=${deposit.timestamp}`,
@@ -163,7 +167,7 @@ function HistoryContent() {
                       <p className="text-2xl font-bold text-white">
                         {showAmounts ? `$${Number.parseFloat(deposit.amount).toFixed(2)}` : "••••••"}
                       </p>
-                      <p className="text-sm text-zinc-400">USD</p>
+                      <p className="text-sm text-zinc-400">CAD</p>
                     </div>
                   </div>
                 </CardHeader>

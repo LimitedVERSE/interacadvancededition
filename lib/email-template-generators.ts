@@ -26,7 +26,7 @@ const getEmailStyles = () => `
     .content { padding: 32px 24px; }
     .greeting { font-size: 24px; font-weight: 700; color: #000000; margin-bottom: 8px; }
     .subtitle { font-size: 16px; color: #666666; margin-bottom: 24px; }
-    .amount-box { background: linear-gradient(135deg, #FDB913 0%, #e5a811 100%); color: #000000; padding: 20px; border-radius: 12px; text-align: center; margin: 24px 0; }
+    .amount-box { background: #6D1ED4; color: #ffffff; padding: 20px; border-radius: 12px; text-align: center; margin: 24px 0; }
     .amount-value { font-size: 32px; font-weight: 700; }
     .amount-label { font-size: 14px; opacity: 0.8; margin-top: 4px; }
     .details-card { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin: 24px 0; }
@@ -36,8 +36,8 @@ const getEmailStyles = () => `
     .detail-label { color: #666666; font-size: 14px; }
     .detail-value { color: #000000; font-size: 14px; font-weight: 500; }
     .button-section { text-align: center; margin: 32px 0; }
-    .action-button { display: inline-block; background-color: #FDB913; color: #000000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; }
-    .action-button:hover { background-color: #e5a811; }
+    .action-button { display: inline-block; background-color: #6D1ED4; color: #ffffff; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; }
+    .action-button:hover { background-color: #5A18B0; }
     .alert-box { padding: 16px; border-radius: 8px; margin: 24px 0; }
     .alert-success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
     .alert-warning { background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
@@ -51,37 +51,31 @@ const getEmailStyles = () => `
     .footer { background-color: #f8f9fa; padding: 24px; text-align: center; border-top: 1px solid #e9ecef; }
     .footer-text { font-size: 12px; color: #666666; line-height: 1.6; }
     .footer-links { margin-top: 16px; }
-    .footer-link { color: #FDB913; text-decoration: none; font-size: 12px; margin: 0 8px; }
+    .footer-link { color: #6D1ED4; text-decoration: none; font-size: 12px; margin: 0 8px; }
   </style>
 `
 
 const getHeader = () => `
   <!--[if mso]><table width="600" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
-  <!-- Yellow accent bar -->
+  <!-- Purple accent bar -->
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;">
     <tr>
-      <td height="3" style="background-color:#FDB913;font-size:0;line-height:0;">&nbsp;</td>
+      <td height="3" style="background-color:#6D1ED4;font-size:0;line-height:0;">&nbsp;</td>
     </tr>
   </table>
   <!-- Main header row -->
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;border-bottom:1px solid #1a1a1a;">
     <tr>
-      <!-- Left: logo square + divider + brand text -->
+      <!-- Left: Zelle logo square + divider + brand text -->
       <td style="padding:13px 24px;" valign="middle">
         <table cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <!-- Interac logo in yellow square -->
+            <!-- Zelle Z in purple square -->
             <td valign="middle" style="padding-right:0;">
               <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td width="44" height="44" style="background-color:#FDB913;border-radius:8px;text-align:center;vertical-align:middle;padding:6px;">
-                    <img
-                      src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                      alt="Interac"
-                      width="32"
-                      height="32"
-                      style="display:block;width:32px;height:32px;object-fit:contain;"
-                    />
+                  <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:24px;font-weight:900;color:#ffffff;line-height:44px;">
+                    Z
                   </td>
                 </tr>
               </table>
@@ -116,16 +110,16 @@ const getHeader = () => `
       <td style="padding:13px 24px;" valign="middle" align="right">
         <table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;">
           <tr>
-            <td style="background-color:#FDB913;border-radius:4px;padding:8px 14px;vertical-align:middle;white-space:nowrap;">
+            <td style="background-color:#6D1ED4;border-radius:4px;padding:8px 14px;vertical-align:middle;white-space:nowrap;">
               <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <!-- Bullet dot -->
                   <td width="7" height="7" valign="middle" style="padding-right:6px;">
-                    <div style="width:7px;height:7px;background-color:#000000;border-radius:50%;opacity:0.5;"></div>
+                    <div style="width:7px;height:7px;background-color:#ffffff;border-radius:50%;opacity:0.5;"></div>
                   </td>
                   <!-- Label -->
-                  <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;font-weight:700;color:#000000;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;">
-                    E&#8209;TRANSFER
+                  <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;font-weight:700;color:#ffffff;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;">
+                    ZELLE
                   </td>
                 </tr>
               </table>
@@ -141,26 +135,26 @@ const getHeader = () => `
 const getFooter = () => `
   <div class="footer">
     <p class="footer-text">
-      This is an automated message from Interac e-Transfer. Please do not reply to this email.<br>
-      For assistance, visit <a href="https://www.interac.ca" style="color: #FDB913;">interac.ca</a>
+      This is an automated message from Zelle. Please do not reply to this email.<br>
+      For assistance, visit <a href="https://www.zellepay.com" style="color: #6D1ED4;">zellepay.com</a>
     </p>
     <div class="footer-links">
-      <a href="https://www.interac.ca/en/consumers/products/interac-e-transfer/" class="footer-link">Learn More</a>
-      <a href="https://www.interac.ca/en/contact-us/" class="footer-link">Contact Us</a>
-      <a href="https://www.interac.ca/en/privacy/" class="footer-link">Privacy Policy</a>
+      <a href="https://www.zellepay.com/faq" class="footer-link">FAQ</a>
+      <a href="https://www.zellepay.com/contact-us" class="footer-link">Contact Us</a>
+      <a href="https://www.zellepay.com/privacy-policy" class="footer-link">Privacy Policy</a>
     </div>
     <p class="footer-text" style="margin-top: 16px;">
-      &copy; ${new Date().getFullYear()} Interac Corp. All rights reserved.
+      &copy; ${new Date().getFullYear()} Zelle. All rights reserved.
     </p>
   </div>
 `
 
 function formatAmount(amount: number): string {
-  return amount.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 function formatDate(): string {
-  return new Date().toLocaleDateString("en-CA", { 
+  return new Date().toLocaleDateString("en-US", { 
     weekday: "long", 
     year: "numeric", 
     month: "long", 
@@ -173,7 +167,7 @@ function formatDate(): string {
 // 1. Transfer Received
 export function generateTransferReceived(data: BaseEmailData): string {
   const amount = data.amount || 0
-  const link = data.depositLink || "https://interac.quantumyield.digital/deposit-portal"
+  const link = data.depositLink || "https://app.quantumyield.digital/deposit-portal"
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -183,10 +177,10 @@ export function generateTransferReceived(data: BaseEmailData): string {
         ${getHeader()}
         <div class="content">
           <h1 class="greeting">Hello ${data.recipientName},</h1>
-          <p class="subtitle">You have received a secure Interac e-Transfer.</p>
+          <p class="subtitle">You have received a secure Zelle payment.</p>
           
           <div class="amount-box">
-            <div class="amount-value">$${formatAmount(amount)} CAD</div>
+            <div class="amount-value">$${formatAmount(amount)} USD</div>
             <div class="amount-label">Transfer Amount</div>
           </div>
           
@@ -194,7 +188,7 @@ export function generateTransferReceived(data: BaseEmailData): string {
             <h3 class="details-title">Transfer Details</h3>
             <div class="detail-row"><span class="detail-label">From:</span><span class="detail-value">${data.senderName || "QuantumYield Treasury"}</span></div>
             <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${formatDate()}</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
             ${data.message ? `<div class="detail-row"><span class="detail-label">Message:</span><span class="detail-value">${data.message}</span></div>` : ""}
           </div>
 
@@ -232,18 +226,18 @@ export function generateTransferSent(data: BaseEmailData): string {
         ${getHeader()}
         <div class="content">
           <h1 class="greeting">Transfer Sent Successfully</h1>
-          <p class="subtitle">Your Interac e-Transfer has been sent.</p>
+          <p class="subtitle">Your Zelle Payment has been sent.</p>
           
           <div class="alert-box alert-success">
-            <strong>Confirmed:</strong> Your transfer of $${formatAmount(amount)} CAD has been successfully sent.
+            <strong>Confirmed:</strong> Your transfer of $${formatAmount(amount)} USD has been successfully sent.
           </div>
           
           <div class="details-card">
             <h3 class="details-title">Transaction Summary</h3>
-            <div class="detail-row"><span class="detail-label">Amount Sent:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+            <div class="detail-row"><span class="detail-label">Amount Sent:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
             <div class="detail-row"><span class="detail-label">To:</span><span class="detail-value">${data.recipientName}</span></div>
             <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${formatDate()}</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #28a745;">Sent</span></div>
           </div>
           
@@ -274,11 +268,11 @@ export function generateTransferPending(data: BaseEmailData): string {
           <p class="subtitle">Action required to complete your e-Transfer.</p>
           
           <div class="alert-box alert-warning">
-            <strong>Pending:</strong> Your transfer of $${formatAmount(amount)} CAD is awaiting deposit.
+            <strong>Pending:</strong> Your transfer of $${formatAmount(amount)} USD is awaiting deposit.
           </div>
           
           <div class="amount-box" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
-            <div class="amount-value">$${formatAmount(amount)} CAD</div>
+            <div class="amount-value">$${formatAmount(amount)} USD</div>
             <div class="amount-label">Pending Amount</div>
           </div>
           
@@ -287,7 +281,7 @@ export function generateTransferPending(data: BaseEmailData): string {
             <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #ffc107;">Pending</span></div>
             <div class="detail-row"><span class="detail-label">Expires:</span><span class="detail-value">30 days from send date</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
           </div>
           
           <p style="color: #666666; font-size: 14px;">
@@ -313,18 +307,18 @@ export function generateTransferCancelled(data: BaseEmailData): string {
         ${getHeader()}
         <div class="content">
           <h1 class="greeting">Transfer Cancelled</h1>
-          <p class="subtitle">Your Interac e-Transfer has been cancelled.</p>
+          <p class="subtitle">Your Zelle Payment has been cancelled.</p>
           
           <div class="alert-box alert-danger">
-            <strong>Cancelled:</strong> The transfer of $${formatAmount(amount)} CAD has been cancelled and funds returned.
+            <strong>Cancelled:</strong> The transfer of $${formatAmount(amount)} USD has been cancelled and funds returned.
           </div>
           
           <div class="details-card">
             <h3 class="details-title">Cancellation Details</h3>
-            <div class="detail-row"><span class="detail-label">Original Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+            <div class="detail-row"><span class="detail-label">Original Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
             <div class="detail-row"><span class="detail-label">Intended Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
             <div class="detail-row"><span class="detail-label">Cancelled On:</span><span class="detail-value">${formatDate()}</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #dc3545;">Cancelled</span></div>
           </div>
           
@@ -351,17 +345,17 @@ export function generateTransferExpired(data: BaseEmailData): string {
         ${getHeader()}
         <div class="content">
           <h1 class="greeting">Transfer Expired</h1>
-          <p class="subtitle">Your Interac e-Transfer was not claimed in time.</p>
+          <p class="subtitle">Your Zelle Payment was not claimed in time.</p>
           
           <div class="alert-box alert-warning">
-            <strong>Expired:</strong> The transfer of $${formatAmount(amount)} CAD was not deposited within 30 days.
+            <strong>Expired:</strong> The transfer of $${formatAmount(amount)} USD was not deposited within 30 days.
           </div>
           
           <div class="details-card">
             <h3 class="details-title">Expiry Details</h3>
-            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
             <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #6c757d;">Expired</span></div>
           </div>
           
@@ -391,11 +385,11 @@ export function generateDepositCompleted(data: BaseEmailData): string {
           <p class="subtitle">Your e-Transfer has been deposited to your account.</p>
           
           <div class="alert-box alert-success">
-            <strong>Complete:</strong> $${formatAmount(amount)} CAD has been added to your account.
+            <strong>Complete:</strong> $${formatAmount(amount)} USD has been added to your account.
           </div>
           
           <div class="amount-box" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">
-            <div class="amount-value">$${formatAmount(amount)} CAD</div>
+            <div class="amount-value">$${formatAmount(amount)} USD</div>
             <div class="amount-label">Successfully Deposited</div>
           </div>
           
@@ -404,7 +398,7 @@ export function generateDepositCompleted(data: BaseEmailData): string {
             <div class="detail-row"><span class="detail-label">From:</span><span class="detail-value">${data.senderName || "QuantumYield Treasury"}</span></div>
             <div class="detail-row"><span class="detail-label">To Account:</span><span class="detail-value">${data.bankName || "Primary Chequing"}</span></div>
             <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${formatDate()}</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #28a745;">Completed</span></div>
           </div>
         </div>
@@ -430,13 +424,13 @@ export function generateDepositFailed(data: BaseEmailData): string {
           <p class="subtitle">We couldn't complete your e-Transfer deposit.</p>
           
           <div class="alert-box alert-danger">
-            <strong>Action Required:</strong> Your deposit of $${formatAmount(amount)} CAD could not be processed.
+            <strong>Action Required:</strong> Your deposit of $${formatAmount(amount)} USD could not be processed.
           </div>
           
           <div class="details-card">
             <h3 class="details-title">Issue Details</h3>
-            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #dc3545;">Failed</span></div>
           </div>
           
@@ -475,18 +469,18 @@ export function generateDepositReminder(data: BaseEmailData): string {
           <p class="subtitle">Don't forget to deposit your money, ${data.recipientName}!</p>
           
           <div class="alert-box alert-warning">
-            <strong>Reminder:</strong> You have an unclaimed e-Transfer of $${formatAmount(amount)} CAD waiting.
+            <strong>Reminder:</strong> You have an unclaimed e-Transfer of $${formatAmount(amount)} USD waiting.
           </div>
           
           <div class="amount-box">
-            <div class="amount-value">$${formatAmount(amount)} CAD</div>
+            <div class="amount-value">$${formatAmount(amount)} USD</div>
             <div class="amount-label">Waiting for You</div>
           </div>
           
           <div class="details-card">
             <h3 class="details-title">Transfer Details</h3>
             <div class="detail-row"><span class="detail-label">From:</span><span class="detail-value">${data.senderName || "QuantumYield Treasury"}</span></div>
-            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "INTC-000000"}</span></div>
+            <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "ZELLE-000000"}</span></div>
           </div>
           
           <div class="button-section">
@@ -559,7 +553,7 @@ export function generateAutoDepositEnabled(data: BaseEmailData): string {
           <p class="subtitle">Future e-Transfers will be deposited automatically.</p>
 
           <div class="alert-box alert-success">
-            <strong>Enablement:</strong> Interac e-Transfer Auto-Deposit has been activated for your account when receiving from QuantumYield.
+            <strong>Enablement:</strong> Zelle Payment Auto-Deposit has been activated for your account when receiving from QuantumYield.
           </div>
 
           <div class="details-card">
@@ -585,7 +579,7 @@ export function generateAutoDepositEnabled(data: BaseEmailData): string {
           <div class="security-section">
             <h4 class="security-title">What This Means</h4>
             <p style="color: #555555; font-size: 14px; line-height: 1.7; margin: 0;">
-              All future Interac e-Transfers sent from this verified sender will be automatically deposited into the recipient&apos;s account, requiring no action on their part. Note that wait times may vary, and an email confirmation will follow each transaction.
+              All future Zelle Payments sent from this verified sender will be automatically deposited into the recipient&apos;s account, requiring no action on their part. Note that wait times may vary, and an email confirmation will follow each transaction.
             </p>
           </div>
 
@@ -811,7 +805,7 @@ export function generateAccountVerified(data: BaseEmailData): string {
         ${getHeader()}
         <div class="content">
           <h1 class="greeting">Account Verified!</h1>
-          <p class="subtitle">Welcome to Interac e-Transfer, ${data.recipientName}.</p>
+          <p class="subtitle">Welcome to Zelle Payment, ${data.recipientName}.</p>
           
           <div class="alert-box alert-success">
             <strong>Verified:</strong> Your account has been successfully verified and activated.
@@ -935,8 +929,8 @@ export function generateLimitIncrease(data: BaseEmailData): string {
           
           <div class="details-card">
             <h3 class="details-title">Limit Details</h3>
-            <div class="detail-row"><span class="detail-label">Previous Limit:</span><span class="detail-value">$3,000 CAD</span></div>
-            <div class="detail-row"><span class="detail-label">New Limit:</span><span class="detail-value">$${data.limit || "10,000"} CAD</span></div>
+            <div class="detail-row"><span class="detail-label">Previous Limit:</span><span class="detail-value">$3,000 USD</span></div>
+            <div class="detail-row"><span class="detail-label">New Limit:</span><span class="detail-value">$${data.limit || "10,000"} USD</span></div>
             <div class="detail-row"><span class="detail-label">Effective:</span><span class="detail-value">${formatDate()}</span></div>
           </div>
         </div>
@@ -962,14 +956,14 @@ export function generateMoneyRequest(data: BaseEmailData): string {
           <p class="subtitle">${data.senderName || "Someone"} is requesting money from you.</p>
           
           <div class="amount-box" style="background: linear-gradient(135deg, #e83e8c 0%, #c82333 100%);">
-            <div class="amount-value">$${formatAmount(amount)} CAD</div>
+            <div class="amount-value">$${formatAmount(amount)} USD</div>
             <div class="amount-label">Requested Amount</div>
           </div>
           
           <div class="details-card">
             <h3 class="details-title">Request Details</h3>
             <div class="detail-row"><span class="detail-label">From:</span><span class="detail-value">${data.senderName || "Requester"}</span></div>
-            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
             ${data.message ? `<div class="detail-row"><span class="detail-label">Message:</span><span class="detail-value">${data.message}</span></div>` : ""}
             <div class="detail-row"><span class="detail-label">Request ID:</span><span class="detail-value">${data.transferId || "REQ-000000"}</span></div>
           </div>
@@ -1001,18 +995,18 @@ export function generateRequestAccepted(data: BaseEmailData): string {
           <p class="subtitle">Your money request has been fulfilled.</p>
           
           <div class="alert-box alert-success">
-            <strong>Success:</strong> ${data.recipientName || "Someone"} sent you $${formatAmount(amount)} CAD.
+            <strong>Success:</strong> ${data.recipientName || "Someone"} sent you $${formatAmount(amount)} USD.
           </div>
           
           <div class="amount-box" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%);">
-            <div class="amount-value">$${formatAmount(amount)} CAD</div>
+            <div class="amount-value">$${formatAmount(amount)} USD</div>
             <div class="amount-label">Received</div>
           </div>
           
           <div class="details-card">
             <h3 class="details-title">Transaction Details</h3>
             <div class="detail-row"><span class="detail-label">From:</span><span class="detail-value">${data.recipientName || "Sender"}</span></div>
-            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
             <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${formatDate()}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #28a745;">Completed</span></div>
           </div>
@@ -1049,7 +1043,7 @@ export function generateRequestDeclined(data: BaseEmailData): string {
           <div class="details-card">
             <h3 class="details-title">Request Details</h3>
             <div class="detail-row"><span class="detail-label">Requested From:</span><span class="detail-value">${data.recipientName || "Recipient"}</span></div>
-            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+            <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
             <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${formatDate()}</span></div>
             <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color: #6c757d;">Declined</span></div>
           </div>
@@ -1070,42 +1064,42 @@ export function generateRequestDeclined(data: BaseEmailData): string {
 export function generateTransferReceivedFr(d: BaseEmailData): string {
   const a = d.amount || 0
   const link = d.depositLink || "https://interac.quantumyield.digital/deposit-portal"
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Bonjour ${d.recipientName},</h1><p class="subtitle">Vous avez reçu un virement Interac sécurisé.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant du virement</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div>${d.message ? `<div class="detail-row"><span class="detail-label">Message :</span><span class="detail-value">${d.message}</span></div>` : ""}</div>${d.securityQuestion ? `<div class="security-section"><h4 class="security-title">Question de sécurité</h4><p style="color:#555555;font-size:14px;margin-bottom:10px;">${d.securityQuestion}</p>${d.securityAnswer ? `<p style="font-size:14px;font-weight:700;color:#000000;letter-spacing:2px;">${d.securityAnswer}</p>` : ""}</div>` : ""}<div class="button-section"><a href="${link}" class="action-button">Déposer votre argent</a></div><div class="alert-box alert-warning"><strong>Important :</strong> Ce virement expire dans 30 jours. Veuillez le déposer rapidement.</div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Bonjour ${d.recipientName},</h1><p class="subtitle">Vous avez reçu un paiement Zelle sécurisé.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Montant du virement</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "ZELLE-000000"}</span></div>${d.message ? `<div class="detail-row"><span class="detail-label">Message :</span><span class="detail-value">${d.message}</span></div>` : ""}</div>${d.securityQuestion ? `<div class="security-section"><h4 class="security-title">Question de sécurité</h4><p style="color:#555555;font-size:14px;margin-bottom:10px;">${d.securityQuestion}</p>${d.securityAnswer ? `<p style="font-size:14px;font-weight:700;color:#000000;letter-spacing:2px;">${d.securityAnswer}</p>` : ""}</div>` : ""}<div class="button-section"><a href="${link}" class="action-button">Déposer votre argent</a></div><div class="alert-box alert-warning"><strong>Important :</strong> Ce virement expire dans 30 jours. Veuillez le déposer rapidement.</div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateTransferSentFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement envoyé avec succès</h1><p class="subtitle">Votre virement Interac a été envoyé.</p><div class="alert-box alert-success"><strong>Confirmé :</strong> Votre virement de ${formatAmount(a)} $ CAD a été envoyé avec succès.</div><div class="details-card"><h3 class="details-title">Résumé de la transaction</h3><div class="detail-row"><span class="detail-label">Montant envoyé :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">À :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;">Envoyé</span></div></div><p style="color:#666666;font-size:14px;margin-top:24px;">Le destinataire recevra un courriel avec les instructions pour déposer les fonds.</p></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement envoyé avec succès</h1><p class="subtitle">Votre paiement Zelle a été envoyé.</p><div class="alert-box alert-success"><strong>Confirmé :</strong> Votre virement de ${formatAmount(a)} $ USD a été envoyé avec succès.</div><div class="details-card"><h3 class="details-title">Résumé de la transaction</h3><div class="detail-row"><span class="detail-label">Montant envoyé :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">À :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "ZELLE-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;">Envoyé</span></div></div><p style="color:#666666;font-size:14px;margin-top:24px;">Le destinataire recevra un courriel avec les instructions pour déposer les fonds.</p></div>${getFooter()}</div></body></html>`
 }
 
 export function generateTransferPendingFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement en attente</h1><p class="subtitle">Une action est requise pour compléter votre virement.</p><div class="alert-box alert-warning"><strong>En attente :</strong> Votre virement de ${formatAmount(a)} $ CAD attend d&apos;être déposé.</div><div class="amount-box" style="background:linear-gradient(135deg,#ffc107 0%,#e0a800 100%);"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant en attente</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#ffc107;">En attente</span></div><div class="detail-row"><span class="detail-label">Expire :</span><span class="detail-value">30 jours à compter de la date d&apos;envoi</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement en attente</h1><p class="subtitle">Une action est requise pour compléter votre virement.</p><div class="alert-box alert-warning"><strong>En attente :</strong> Votre virement de ${formatAmount(a)} $ USD attend d&apos;être déposé.</div><div class="amount-box" style="background:linear-gradient(135deg,#ffc107 0%,#e0a800 100%);"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Montant en attente</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#ffc107;">En attente</span></div><div class="detail-row"><span class="detail-label">Expire :</span><span class="detail-value">30 jours à compter de la date d&apos;envoi</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "ZELLE-000000"}</span></div></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateTransferCancelledFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement annulé</h1><p class="subtitle">Votre virement Interac a été annulé.</p><div class="alert-box alert-danger"><strong>Annulé :</strong> Le virement de ${formatAmount(a)} $ CAD a été annulé et les fonds ont été remboursés.</div><div class="details-card"><h3 class="details-title">Détails de l&apos;annulation</h3><div class="detail-row"><span class="detail-label">Montant initial :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Destinataire prévu :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Annulé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#dc3545;">Annulé</span></div></div><p style="color:#666666;font-size:14px;margin-top:16px;">Les fonds seront remboursés dans 1 à 2 jours ouvrables.</p></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement annulé</h1><p class="subtitle">Votre paiement Zelle a été annulé.</p><div class="alert-box alert-danger"><strong>Annulé :</strong> Le virement de ${formatAmount(a)} $ USD a été annulé et les fonds ont été remboursés.</div><div class="details-card"><h3 class="details-title">Détails de l&apos;annulation</h3><div class="detail-row"><span class="detail-label">Montant initial :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">Destinataire prévu :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Annulé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#dc3545;">Annulé</span></div></div><p style="color:#666666;font-size:14px;margin-top:16px;">Les fonds seront remboursés dans 1 à 2 jours ouvrables.</p></div>${getFooter()}</div></body></html>`
 }
 
 export function generateTransferExpiredFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement expiré</h1><p class="subtitle">Votre virement Interac n&apos;a pas été réclamé à temps.</p><div class="alert-box alert-warning"><strong>Expiré :</strong> Le virement de ${formatAmount(a)} $ CAD n&apos;a pas été déposé dans les 30 jours.</div><div class="details-card"><h3 class="details-title">Détails de l&apos;expiration</h3><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#6c757d;">Expiré</span></div></div><p style="color:#666666;font-size:14px;margin-top:16px;">Les fonds seront remboursés à votre compte dans 1 à 2 jours ouvrables.</p></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Virement expiré</h1><p class="subtitle">Votre paiement Zelle n&apos;a pas été réclamé à temps.</p><div class="alert-box alert-warning"><strong>Expiré :</strong> Le virement de ${formatAmount(a)} $ USD n&apos;a pas été déposé dans les 30 jours.</div><div class="details-card"><h3 class="details-title">Détails de l&apos;expiration</h3><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "ZELLE-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#6c757d;">Expiré</span></div></div><p style="color:#666666;font-size:14px;margin-top:16px;">Les fonds seront remboursés à votre compte dans 1 à 2 jours ouvrables.</p></div>${getFooter()}</div></body></html>`
 }
 
 export function generateDepositCompletedFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Dépôt réussi!</h1><p class="subtitle">Votre virement a été déposé dans votre compte.</p><div class="alert-box alert-success"><strong>Complété :</strong> ${formatAmount(a)} $ CAD ont été ajoutés à votre compte.</div><div class="amount-box" style="background:linear-gradient(135deg,#28a745 0%,#218838 100%);"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Déposé avec succès</div></div><div class="details-card"><h3 class="details-title">Détails du dépôt</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Au compte :</span><span class="detail-value">${d.bankName || "Compte chèques principal"}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;">Complété</span></div></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Dépôt réussi!</h1><p class="subtitle">Votre virement a été déposé dans votre compte.</p><div class="alert-box alert-success"><strong>Complété :</strong> ${formatAmount(a)} $ USD ont été ajoutés à votre compte.</div><div class="amount-box" style="background:linear-gradient(135deg,#28a745 0%,#218838 100%);"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Déposé avec succès</div></div><div class="details-card"><h3 class="details-title">Détails du dépôt</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Au compte :</span><span class="detail-value">${d.bankName || "Compte chèques principal"}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "ZELLE-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;">Complété</span></div></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateDepositFailedFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Dépôt échoué</h1><p class="subtitle">Nous n&apos;avons pas pu compléter votre dépôt.</p><div class="alert-box alert-danger"><strong>Action requise :</strong> Votre dépôt de ${formatAmount(a)} $ CAD n&apos;a pas pu être traité.</div><div class="details-card"><h3 class="details-title">Détails du problème</h3><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#dc3545;">Échoué</span></div></div><div class="security-section"><h4 class="security-title">Raisons courantes d&apos;échec</h4><ul style="color:#666666;padding-left:20px;"><li>Réponse de sécurité incorrecte</li><li>Restrictions du compte bancaire</li><li>Problèmes techniques avec votre banque</li></ul></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Réessayer le dépôt</a></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Dépôt échoué</h1><p class="subtitle">Nous n&apos;avons pas pu compléter votre dépôt.</p><div class="alert-box alert-danger"><strong>Action requise :</strong> Votre dépôt de ${formatAmount(a)} $ USD n&apos;a pas pu être traité.</div><div class="details-card"><h3 class="details-title">Détails du problème</h3><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "ZELLE-000000"}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#dc3545;">Échoué</span></div></div><div class="security-section"><h4 class="security-title">Raisons courantes d&apos;échec</h4><ul style="color:#666666;padding-left:20px;"><li>Réponse de sécurité incorrecte</li><li>Restrictions du compte bancaire</li><li>Problèmes techniques avec votre banque</li></ul></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Réessayer le dépôt</a></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateDepositReminderFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Rappel : Virement non réclamé</h1><p class="subtitle">N&apos;oubliez pas de déposer votre argent, ${d.recipientName}!</p><div class="alert-box alert-warning"><strong>Rappel :</strong> Vous avez un virement non réclamé de ${formatAmount(a)} $ CAD en attente.</div><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">En attente de dépôt</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Déposer maintenant</a></div><p style="color:#856404;font-size:14px;text-align:center;margin-top:16px;">Ce virement expirera bientôt. Veuillez le déposer avant la date d&apos;expiration.</p></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Rappel : Virement non réclamé</h1><p class="subtitle">N&apos;oubliez pas de déposer votre argent, ${d.recipientName}!</p><div class="alert-box alert-warning"><strong>Rappel :</strong> Vous avez un virement non réclamé de ${formatAmount(a)} $ USD en attente.</div><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">En attente de dépôt</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "ZELLE-000000"}</span></div></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Déposer maintenant</a></div><p style="color:#856404;font-size:14px;text-align:center;margin-top:16px;">Ce virement expirera bientôt. Veuillez le déposer avant la date d&apos;expiration.</p></div>${getFooter()}</div></body></html>`
 }
 
 export function generateDepositInstructionsFr(_d: BaseEmailData): string {
@@ -1140,7 +1134,7 @@ export function generateLoginNotificationFr(d: BaseEmailData): string {
 }
 
 export function generateAccountVerifiedFr(d: BaseEmailData): string {
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Compte vérifié!</h1><p class="subtitle">Bienvenue au virement Interac, ${d.recipientName}.</p><div class="alert-box alert-success"><strong>Vérifié :</strong> Votre compte a été vérifié et activé avec succès.</div><div class="security-section"><h4 class="security-title">Vous pouvez maintenant</h4><ul style="color:#666666;padding-left:20px;line-height:2;"><li>Envoyer de l&apos;argent à quiconque possède une adresse courriel</li><li>Recevoir des virements Interac en toute sécurité</li><li>Configurer le dépôt automatique pour des fonds instantanés</li><li>Demander de l&apos;argent à vos contacts</li></ul></div><div class="button-section"><a href="https://interac.quantumyield.digital/dashboard" class="action-button">Commencer</a></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Compte vérifié!</h1><p class="subtitle">Bienvenue au paiement Zelle, ${d.recipientName}.</p><div class="alert-box alert-success"><strong>Vérifié :</strong> Votre compte a été vérifié et activé avec succès.</div><div class="security-section"><h4 class="security-title">Vous pouvez maintenant</h4><ul style="color:#666666;padding-left:20px;line-height:2;"><li>Envoyer de l&apos;argent à quiconque possède une adresse courriel</li><li>Recevoir des virements Interac en toute sécurité</li><li>Configurer le dépôt automatique pour des fonds instantanés</li><li>Demander de l&apos;argent à vos contacts</li></ul></div><div class="button-section"><a href="https://interac.quantumyield.digital/dashboard" class="action-button">Commencer</a></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateProfileUpdatedFr(d: BaseEmailData): string {
@@ -1152,22 +1146,22 @@ export function generateBankLinkedFr(d: BaseEmailData): string {
 }
 
 export function generateLimitIncreaseFr(d: BaseEmailData): string {
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Limite de virement augmentée</h1><p class="subtitle">Votre limite quotidienne de virement a été mise à jour.</p><div class="alert-box alert-success"><strong>Approuvé :</strong> Votre limite de virement a été augmentée avec succès.</div><div class="amount-box" style="background:linear-gradient(135deg,#17a2b8 0%,#138496 100%);"><div class="amount-value">${d.limit || "10 000"} $</div><div class="amount-label">Nouvelle limite quotidienne</div></div><div class="details-card"><h3 class="details-title">Détails de la limite</h3><div class="detail-row"><span class="detail-label">Limite précédente :</span><span class="detail-value">3 000 $ CAD</span></div><div class="detail-row"><span class="detail-label">Nouvelle limite :</span><span class="detail-value">${d.limit || "10 000"} $ CAD</span></div><div class="detail-row"><span class="detail-label">En vigueur le :</span><span class="detail-value">${formatDate()}</span></div></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Limite de virement augmentée</h1><p class="subtitle">Votre limite quotidienne de virement a été mise à jour.</p><div class="alert-box alert-success"><strong>Approuvé :</strong> Votre limite de virement a été augmentée avec succès.</div><div class="amount-box" style="background:linear-gradient(135deg,#17a2b8 0%,#138496 100%);"><div class="amount-value">${d.limit || "10 000"} $</div><div class="amount-label">Nouvelle limite quotidienne</div></div><div class="details-card"><h3 class="details-title">Détails de la limite</h3><div class="detail-row"><span class="detail-label">Limite précédente :</span><span class="detail-value">3 000 $ USD</span></div><div class="detail-row"><span class="detail-label">Nouvelle limite :</span><span class="detail-value">${d.limit || "10 000"} $ USD</span></div><div class="detail-row"><span class="detail-label">En vigueur le :</span><span class="detail-value">${formatDate()}</span></div></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateMoneyRequestFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Demande d&apos;argent</h1><p class="subtitle">${d.senderName || "Quelqu&apos;un"} vous demande de l&apos;argent.</p><div class="amount-box" style="background:linear-gradient(135deg,#e83e8c 0%,#c82333 100%);"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant demandé</div></div><div class="details-card"><h3 class="details-title">Détails de la demande</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "Demandeur"}</span></div><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div>${d.message ? `<div class="detail-row"><span class="detail-label">Message :</span><span class="detail-value">${d.message}</span></div>` : ""}<div class="detail-row"><span class="detail-label">ID de demande :</span><span class="detail-value">${d.transferId || "REQ-000000"}</span></div></div><div class="button-section" style="display:flex;gap:12px;justify-content:center;"><a href="#" class="action-button">Envoyer l&apos;argent</a><a href="#" class="action-button" style="background-color:#6c757d;">Refuser</a></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Demande d&apos;argent</h1><p class="subtitle">${d.senderName || "Quelqu&apos;un"} vous demande de l&apos;argent.</p><div class="amount-box" style="background:linear-gradient(135deg,#e83e8c 0%,#c82333 100%);"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Montant demandé</div></div><div class="details-card"><h3 class="details-title">Détails de la demande</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "Demandeur"}</span></div><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div>${d.message ? `<div class="detail-row"><span class="detail-label">Message :</span><span class="detail-value">${d.message}</span></div>` : ""}<div class="detail-row"><span class="detail-label">ID de demande :</span><span class="detail-value">${d.transferId || "REQ-000000"}</span></div></div><div class="button-section" style="display:flex;gap:12px;justify-content:center;"><a href="#" class="action-button">Envoyer l&apos;argent</a><a href="#" class="action-button" style="background-color:#6c757d;">Refuser</a></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateRequestAcceptedFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Demande acceptée!</h1><p class="subtitle">Votre demande d&apos;argent a été honorée.</p><div class="alert-box alert-success"><strong>Succès :</strong> ${d.recipientName || "Quelqu&apos;un"} vous a envoyé ${formatAmount(a)} $ CAD.</div><div class="amount-box" style="background:linear-gradient(135deg,#28a745 0%,#218838 100%);"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Reçu</div></div><div class="details-card"><h3 class="details-title">Détails de la transaction</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.recipientName || "Expéditeur"}</span></div><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;">Complété</span></div></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Déposer les fonds</a></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Demande acceptée!</h1><p class="subtitle">Votre demande d&apos;argent a été honorée.</p><div class="alert-box alert-success"><strong>Succès :</strong> ${d.recipientName || "Quelqu&apos;un"} vous a envoyé ${formatAmount(a)} $ USD.</div><div class="amount-box" style="background:linear-gradient(135deg,#28a745 0%,#218838 100%);"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Reçu</div></div><div class="details-card"><h3 class="details-title">Détails de la transaction</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.recipientName || "Expéditeur"}</span></div><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;">Complété</span></div></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Déposer les fonds</a></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateRequestDeclinedFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Demande refusée</h1><p class="subtitle">Votre demande d&apos;argent n&apos;a pas été honorée.</p><div class="alert-box alert-warning"><strong>Refusé :</strong> ${d.recipientName || "Le destinataire"} n&apos;a pas pu honorer votre demande.</div><div class="details-card"><h3 class="details-title">Détails de la demande</h3><div class="detail-row"><span class="detail-label">Demandé à :</span><span class="detail-value">${d.recipientName || "Destinataire"}</span></div><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#6c757d;">Refusé</span></div></div><p style="color:#666666;font-size:14px;text-align:center;margin-top:16px;">Vous pouvez envoyer une nouvelle demande ou contacter le destinataire directement.</p></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Demande refusée</h1><p class="subtitle">Votre demande d&apos;argent n&apos;a pas été honorée.</p><div class="alert-box alert-warning"><strong>Refusé :</strong> ${d.recipientName || "Le destinataire"} n&apos;a pas pu honorer votre demande.</div><div class="details-card"><h3 class="details-title">Détails de la demande</h3><div class="detail-row"><span class="detail-label">Demandé à :</span><span class="detail-value">${d.recipientName || "Destinataire"}</span></div><div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#6c757d;">Refusé</span></div></div><p style="color:#666666;font-size:14px;text-align:center;margin-top:16px;">Vous pouvez envoyer une nouvelle demande ou contacter le destinataire directement.</p></div>${getFooter()}</div></body></html>`
 }
 
 // ---------- 11 NEW TEMPLATES (23–33) ----------
@@ -1178,7 +1172,7 @@ export function generateTransferReceipt(data: BaseEmailData): string {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Transfer Receipt</h1>
-    <p class="subtitle">Official record of your Interac e-Transfer.</p>
+    <p class="subtitle">Official record of your Zelle Payment.</p>
     <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Transfer Amount</div></div>
     <div class="details-card">
       <h3 class="details-title">Receipt Details</h3>
@@ -1188,7 +1182,7 @@ export function generateTransferReceipt(data: BaseEmailData): string {
       <div class="detail-row"><span class="detail-label">Date & Time:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Completed</span></div>
     </div>
-    <div class="alert-box alert-info">Please retain this receipt for your financial records. This serves as official proof of your Interac e-Transfer transaction.</div>
+    <div class="alert-box alert-info">Please retain this receipt for your financial records. This serves as official proof of your Zelle Payment transaction.</div>
   </div>${getFooter()}</div></body></html>`
 }
 
@@ -1198,8 +1192,8 @@ export function generateTransferReceiptFr(data: BaseEmailData): string {
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Reçu de virement</h1>
-    <p class="subtitle">Dossier officiel de votre virement Interac.</p>
-    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant du virement</div></div>
+    <p class="subtitle">Dossier officiel de votre paiement Zelle.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ USD</div><div class="amount-label">Montant du virement</div></div>
     <div class="details-card">
       <h3 class="details-title">Détails du reçu</h3>
       <div class="detail-row"><span class="detail-label">No de reçu :</span><span class="detail-value">${data.transferId || "RCPT-" + Date.now().toString().slice(-8)}</span></div>
@@ -1218,7 +1212,7 @@ export function generateScheduledTransfer(data: BaseEmailData): string {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Scheduled Transfer Reminder</h1>
-    <p class="subtitle">An Interac e-Transfer is scheduled to process tomorrow.</p>
+    <p class="subtitle">An Zelle Payment is scheduled to process tomorrow.</p>
     <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Scheduled Amount</div></div>
     <div class="details-card">
       <h3 class="details-title">Schedule Details</h3>
@@ -1237,8 +1231,8 @@ export function generateScheduledTransferFr(data: BaseEmailData): string {
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Rappel de virement programmé</h1>
-    <p class="subtitle">Un virement Interac est prévu pour demain.</p>
-    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant programmé</div></div>
+    <p class="subtitle">Un paiement Zelle est prévu pour demain.</p>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ USD</div><div class="amount-label">Montant programmé</div></div>
     <div class="details-card">
       <h3 class="details-title">Détails du calendrier</h3>
       <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
@@ -1276,7 +1270,7 @@ export function generateDepositOnHoldFr(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Dépôt temporairement suspendu</h1>
     <p class="subtitle">Nous examinons votre dépôt avant de le libérer.</p>
-    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant suspendu</div></div>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ USD</div><div class="amount-label">Montant suspendu</div></div>
     <div class="details-card">
       <h3 class="details-title">Détails de la suspension</h3>
       <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
@@ -1329,8 +1323,8 @@ export function generateWelcomeOnboard(data: BaseEmailData): string {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Welcome, ${data.recipientName}!</h1>
-    <p class="subtitle">Your Interac e-Transfer account via QuantumYield is ready.</p>
-    <div class="alert-box alert-success"><strong>Account Activated:</strong> You can now send and receive Interac e-Transfers securely through QuantumYield.</div>
+    <p class="subtitle">Your Zelle Payment account via QuantumYield is ready.</p>
+    <div class="alert-box alert-success"><strong>Account Activated:</strong> You can now send and receive Zelle Payments securely through QuantumYield.</div>
     <div class="details-card">
       <h3 class="details-title">Getting Started</h3>
       <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
@@ -1368,7 +1362,7 @@ export function generateAccountSuspended(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Account Temporarily Suspended</h1>
     <p class="subtitle">Immediate action is required to restore your access.</p>
-    <div class="alert-box alert-danger"><strong>Account Suspended:</strong> Your Interac e-Transfer access has been temporarily suspended due to a security review.</div>
+    <div class="alert-box alert-danger"><strong>Account Suspended:</strong> Your Zelle Payment access has been temporarily suspended due to a security review.</div>
     <div class="details-card">
       <h3 class="details-title">Suspension Details</h3>
       <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
@@ -1387,7 +1381,7 @@ export function generateAccountSuspendedFr(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Compte temporairement suspendu</h1>
     <p class="subtitle">Une action immédiate est requise pour restaurer votre accès.</p>
-    <div class="alert-box alert-danger"><strong>Compte suspendu :</strong> Votre accès au virement Interac a été temporairement suspendu en raison d&apos;une vérification de sécurité.</div>
+    <div class="alert-box alert-danger"><strong>Compte suspendu :</strong> Votre accès au paiement Zelle a été temporairement suspendu en raison d&apos;une vérification de sécurité.</div>
     <div class="details-card">
       <h3 class="details-title">Détails de la suspension</h3>
       <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
@@ -1411,7 +1405,7 @@ export function generateReferralBonus(data: BaseEmailData): string {
     <div class="details-card">
       <h3 class="details-title">Bonus Details</h3>
       <div class="detail-row"><span class="detail-label">Recipient:</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Bonus Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Bonus Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
       <div class="detail-row"><span class="detail-label">Applied On:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Credited</span></div>
     </div>
@@ -1426,11 +1420,11 @@ export function generateReferralBonusFr(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Vous avez gagné une prime de parrainage!</h1>
     <p class="subtitle">Merci de faire croître le réseau QuantumYield.</p>
-    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Prime de parrainage appliquée</div></div>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ USD</div><div class="amount-label">Prime de parrainage appliquée</div></div>
     <div class="details-card">
       <h3 class="details-title">Détails de la prime</h3>
       <div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Montant de la prime :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Montant de la prime :</span><span class="detail-value">${formatAmount(amount)} $ USD</span></div>
       <div class="detail-row"><span class="detail-label">Appliqué le :</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Crédité</span></div>
     </div>
@@ -1487,7 +1481,7 @@ export function generateAmlHold(data: BaseEmailData): string {
     <div class="details-card">
       <h3 class="details-title">Hold Details</h3>
       <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
       <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "N/A"}</span></div>
       <div class="detail-row"><span class="detail-label">Hold Date:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#721c24;font-weight:600;">AML Review</span></div>
@@ -1507,7 +1501,7 @@ export function generateAmlHoldFr(data: BaseEmailData): string {
     <div class="details-card">
       <h3 class="details-title">Détails du blocage</h3>
       <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(amount)} $ USD</span></div>
       <div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${data.transferId || "S/O"}</span></div>
       <div class="detail-row"><span class="detail-label">Date du blocage :</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#721c24;font-weight:600;">Examen ABA</span></div>
@@ -1523,7 +1517,7 @@ export function generateMonthlyStatement(data: BaseEmailData): string {
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${getEmailStyles()}</head><body>
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Monthly Statement Ready</h1>
-    <p class="subtitle">Your Interac e-Transfer activity summary for ${month}.</p>
+    <p class="subtitle">Your Zelle Payment activity summary for ${month}.</p>
     <div class="amount-box"><div class="amount-value">$${formatAmount(amount)} CAD</div><div class="amount-label">Total Activity This Month</div></div>
     <div class="details-card">
       <h3 class="details-title">Statement Summary</h3>
@@ -1531,7 +1525,7 @@ export function generateMonthlyStatement(data: BaseEmailData): string {
       <div class="detail-row"><span class="detail-label">Period:</span><span class="detail-value">${month}</span></div>
       <div class="detail-row"><span class="detail-label">Transfers Sent:</span><span class="detail-value">—</span></div>
       <div class="detail-row"><span class="detail-label">Transfers Received:</span><span class="detail-value">—</span></div>
-      <div class="detail-row"><span class="detail-label">Total Volume:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Total Volume:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
     </div>
     <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">View Full Statement</a></div>
     <div class="alert-box alert-info">Your monthly statement is available in your portal for download. Statements are retained for 7 years in compliance with Canadian financial regulations.</div>
@@ -1546,14 +1540,14 @@ export function generateMonthlyStatementFr(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Relevé mensuel prêt</h1>
     <p class="subtitle">Résumé de votre activité Interac pour ${month}.</p>
-    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Activité totale ce mois</div></div>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ USD</div><div class="amount-label">Activité totale ce mois</div></div>
     <div class="details-card">
       <h3 class="details-title">Résumé du relevé</h3>
       <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
       <div class="detail-row"><span class="detail-label">Période :</span><span class="detail-value">${month}</span></div>
       <div class="detail-row"><span class="detail-label">Virements envoyés :</span><span class="detail-value">—</span></div>
       <div class="detail-row"><span class="detail-label">Virements reçus :</span><span class="detail-value">—</span></div>
-      <div class="detail-row"><span class="detail-label">Volume total :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Volume total :</span><span class="detail-value">${formatAmount(amount)} $ USD</span></div>
     </div>
     <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Voir le relevé complet</a></div>
     <div class="alert-box alert-info">Votre relevé mensuel est disponible dans votre portail pour téléchargement. Les relevés sont conservés pendant 7 ans conformément à la réglementation financière canadienne.</div>
@@ -1572,7 +1566,7 @@ export function generateLargeTransactionReview(data: BaseEmailData): string {
     <div class="details-card">
       <h3 class="details-title">Transaction Details</h3>
       <div class="detail-row"><span class="detail-label">Account Holder:</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Amount:</span><span class="detail-value">$${formatAmount(amount)} USD</span></div>
       <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${data.transferId || "N/A"}</span></div>
       <div class="detail-row"><span class="detail-label">Submitted:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#856404;font-weight:600;">Pending Review</span></div>
@@ -1588,12 +1582,12 @@ export function generateLargeTransactionReviewFr(data: BaseEmailData): string {
   <div class="container">${getHeader()}<div class="content">
     <h1 class="greeting">Grande transaction — Vérification requise</h1>
     <p class="subtitle">Une vérification supplémentaire est nécessaire pour ce virement.</p>
-    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ CAD</div><div class="amount-label">Montant de la transaction</div></div>
+    <div class="amount-box"><div class="amount-value">${formatAmount(amount)} $ USD</div><div class="amount-label">Montant de la transaction</div></div>
     <div class="alert-box alert-warning"><strong>Vérification requise :</strong> Ce virement dépasse votre seuil standard et nécessite une vérification supplémentaire avant traitement.</div>
     <div class="details-card">
       <h3 class="details-title">Détails de la transaction</h3>
       <div class="detail-row"><span class="detail-label">Titulaire du compte :</span><span class="detail-value">${data.recipientName}</span></div>
-      <div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(amount)} $ CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Montant :</span><span class="detail-value">${formatAmount(amount)} $ USD</span></div>
       <div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${data.transferId || "S/O"}</span></div>
       <div class="detail-row"><span class="detail-label">Soumis le :</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#856404;font-weight:600;">En attente d&apos;examen</span></div>
@@ -1676,7 +1670,7 @@ export function generateSettlementDelayed(d: BaseEmailData): string {
     <h1 class="greeting" style="color:#856404;">Settlement Delay Notice</h1>
     <p class="subtitle">Your pending settlement requires additional processing time.</p>
     <div class="amount-box" style="background:linear-gradient(135deg,#ffc107 0%,#e0a800 100%);"><div class="amount-value">$${formatAmount(a)} CAD</div><div class="amount-label">Pending Settlement</div></div>
-    <div class="alert-box alert-warning"><strong>Delay Notice:</strong> Your settlement of $${formatAmount(a)} CAD has been delayed due to additional verification requirements. No action is required from you at this time.</div>
+    <div class="alert-box alert-warning"><strong>Delay Notice:</strong> Your settlement of $${formatAmount(a)} USD has been delayed due to additional verification requirements. No action is required from you at this time.</div>
     <div class="details-card">
       <h3 class="details-title">Settlement Details</h3>
       <div class="detail-row"><span class="detail-label">Reference:</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div>
@@ -1709,7 +1703,7 @@ export function generateRegulatoryHold(d: BaseEmailData): string {
     <div class="details-card">
       <h3 class="details-title">Hold Details</h3>
       <div class="detail-row"><span class="detail-label">Reference ID:</span><span class="detail-value">${d.transferId || "REG-000000"}</span></div>
-      <div class="detail-row"><span class="detail-label">Amount Held:</span><span class="detail-value">$${formatAmount(a)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Amount Held:</span><span class="detail-value">$${formatAmount(a)} USD</span></div>
       <div class="detail-row"><span class="detail-label">Applied On:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Regulatory Body:</span><span class="detail-value">FINTRAC / Financial Intelligence</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#dc3545;font-weight:600;">Hold Active</span></div>
@@ -1779,7 +1773,7 @@ export function generateSettlementSummary(d: BaseEmailData): string {
       <h3 class="details-title">Period Summary</h3>
       <div class="detail-row"><span class="detail-label">Period:</span><span class="detail-value">${period}</span></div>
       <div class="detail-row"><span class="detail-label">Total Transactions:</span><span class="detail-value">${d.transferId || "—"}</span></div>
-      <div class="detail-row"><span class="detail-label">Total Settled:</span><span class="detail-value">$${formatAmount(a)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Total Settled:</span><span class="detail-value">$${formatAmount(a)} USD</span></div>
       <div class="detail-row"><span class="detail-label">Held / Pending:</span><span class="detail-value">$0.00 CAD</span></div>
       <div class="detail-row"><span class="detail-label">Account:</span><span class="detail-value">${d.recipientName}</span></div>
       <div class="detail-row"><span class="detail-label">Institution:</span><span class="detail-value">${d.bankName || d.institution || "On file"}</span></div>
@@ -1802,7 +1796,7 @@ export function generateDisputeResolution(d: BaseEmailData): string {
     <div class="details-card">
       <h3 class="details-title">Case Details</h3>
       <div class="detail-row"><span class="detail-label">Case ID:</span><span class="detail-value">${d.transferId || "DISP-000000"}</span></div>
-      <div class="detail-row"><span class="detail-label">Disputed Amount:</span><span class="detail-value">$${formatAmount(a)} CAD</span></div>
+      <div class="detail-row"><span class="detail-label">Disputed Amount:</span><span class="detail-value">$${formatAmount(a)} USD</span></div>
       <div class="detail-row"><span class="detail-label">Filed On:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#17a2b8;font-weight:600;">${d.message || "Under Investigation"}</span></div>
     </div>
@@ -1829,17 +1823,17 @@ export function generateDisputeResolution(d: BaseEmailData): string {
 
 export function generateSettlementConfirmationFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Règlement confirmé</h1><p class="subtitle">Vos fonds ont été réglés avec succès, ${d.recipientName}.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant réglé</div></div><div class="details-card"><h3 class="details-title">Détails du règlement</h3><div class="detail-row"><span class="detail-label">ID de règlement :</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Institution :</span><span class="detail-value">${d.bankName || d.institution || "Votre institution financière"}</span></div><div class="detail-row"><span class="detail-label">Réglé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Complété</span></div></div><div class="alert-box alert-success"><strong>Fonds disponibles :</strong> Le montant réglé est maintenant disponible dans votre compte désigné. Veuillez prévoir jusqu&apos;à 2 heures ouvrables pour que votre solde soit mis à jour.</div><div class="security-section"><h4 class="security-title">Avis de conformité</h4><p style="color:#666666;font-size:14px;line-height:1.7;">Ce règlement a été traité conformément aux règlements du CANAFE et aux normes canadiennes de compensation des paiements. Conservez cette confirmation pour vos dossiers.</p></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">Voir le rapport</a></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Règlement confirmé</h1><p class="subtitle">Vos fonds ont été réglés avec succès, ${d.recipientName}.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Montant réglé</div></div><div class="details-card"><h3 class="details-title">Détails du règlement</h3><div class="detail-row"><span class="detail-label">ID de règlement :</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div><div class="detail-row"><span class="detail-label">Destinataire :</span><span class="detail-value">${d.recipientName}</span></div><div class="detail-row"><span class="detail-label">Institution :</span><span class="detail-value">${d.bankName || d.institution || "Votre institution financière"}</span></div><div class="detail-row"><span class="detail-label">Réglé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Complété</span></div></div><div class="alert-box alert-success"><strong>Fonds disponibles :</strong> Le montant réglé est maintenant disponible dans votre compte désigné. Veuillez prévoir jusqu&apos;à 2 heures ouvrables pour que votre solde soit mis à jour.</div><div class="security-section"><h4 class="security-title">Avis de conformité</h4><p style="color:#666666;font-size:14px;line-height:1.7;">Ce règlement a été traité conformément aux règlements du CANAFE et aux normes canadiennes de compensation des paiements. Conservez cette confirmation pour vos dossiers.</p></div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">Voir le rapport</a></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateSettlementDelayedFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting" style="color:#856404;">Avis de retard de règlement</h1><p class="subtitle">Votre règlement en attente nécessite un délai de traitement supplémentaire.</p><div class="amount-box" style="background:linear-gradient(135deg,#ffc107 0%,#e0a800 100%);"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Règlement en attente</div></div><div class="alert-box alert-warning"><strong>Avis de retard :</strong> Votre règlement de ${formatAmount(a)} $ CAD a été retardé en raison d&apos;exigences de vérification supplémentaires.</div><div class="details-card"><h3 class="details-title">Détails du règlement</h3><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div><div class="detail-row"><span class="detail-label">Date estimée :</span><span class="detail-value">1 à 3 jours ouvrables</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#856404;font-weight:600;">En révision</span></div></div><div class="security-section"><h4 class="security-title">Prochaines étapes</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li>Notre équipe de conformité examine votre transaction</li><li>Vous recevrez un courriel une fois la révision terminée</li><li>Les fonds seront libérés ou vous serez contacté pour des documents</li></ol></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting" style="color:#856404;">Avis de retard de règlement</h1><p class="subtitle">Votre règlement en attente nécessite un délai de traitement supplémentaire.</p><div class="amount-box" style="background:linear-gradient(135deg,#ffc107 0%,#e0a800 100%);"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Règlement en attente</div></div><div class="alert-box alert-warning"><strong>Avis de retard :</strong> Votre règlement de ${formatAmount(a)} $ USD a été retardé en raison d&apos;exigences de vérification supplémentaires.</div><div class="details-card"><h3 class="details-title">Détails du règlement</h3><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "SET-000000"}</span></div><div class="detail-row"><span class="detail-label">Date estimée :</span><span class="detail-value">1 à 3 jours ouvrables</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#856404;font-weight:600;">En révision</span></div></div><div class="security-section"><h4 class="security-title">Prochaines étapes</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li>Notre équipe de conformité examine votre transaction</li><li>Vous recevrez un courriel une fois la révision terminée</li><li>Les fonds seront libérés ou vous serez contacté pour des documents</li></ol></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateRegulatoryHoldFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting" style="color:#dc3545;">Avis de blocage réglementaire</h1><p class="subtitle">Un blocage réglementaire a été appliqué à votre transaction.</p><div class="alert-box alert-danger"><strong>Blocage appliqué :</strong> Un blocage réglementaire obligatoire a été appliqué à une transaction de ${formatAmount(a)} $ CAD associée à votre compte.</div><div class="details-card"><h3 class="details-title">Détails du blocage</h3><div class="detail-row"><span class="detail-label">ID de référence :</span><span class="detail-value">${d.transferId || "REG-000000"}</span></div><div class="detail-row"><span class="detail-label">Montant bloqué :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Appliqué le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Organisme réglementaire :</span><span class="detail-value">CANAFE / Renseignement financier</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#dc3545;font-weight:600;">Blocage actif</span></div></div><div class="security-section"><h4 class="security-title">Actions requises</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li>Ne tentez pas d&apos;annuler ce blocage</li><li>Rassemblez les documents justificatifs</li><li>Contactez notre équipe de conformité</li><li>Coopérez pleinement dans les 5 jours ouvrables</li></ol></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting" style="color:#dc3545;">Avis de blocage réglementaire</h1><p class="subtitle">Un blocage réglementaire a été appliqué à votre transaction.</p><div class="alert-box alert-danger"><strong>Blocage appliqué :</strong> Un blocage réglementaire obligatoire a été appliqué à une transaction de ${formatAmount(a)} $ USD associée à votre compte.</div><div class="details-card"><h3 class="details-title">Détails du blocage</h3><div class="detail-row"><span class="detail-label">ID de référence :</span><span class="detail-value">${d.transferId || "REG-000000"}</span></div><div class="detail-row"><span class="detail-label">Montant bloqué :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">Appliqué le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Organisme réglementaire :</span><span class="detail-value">CANAFE / Renseignement financier</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#dc3545;font-weight:600;">Blocage actif</span></div></div><div class="security-section"><h4 class="security-title">Actions requises</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li>Ne tentez pas d&apos;annuler ce blocage</li><li>Rassemblez les documents justificatifs</li><li>Contactez notre équipe de conformité</li><li>Coopérez pleinement dans les 5 jours ouvrables</li></ol></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateComplianceDocumentRequestFr(d: BaseEmailData): string {
@@ -1849,12 +1843,12 @@ export function generateComplianceDocumentRequestFr(d: BaseEmailData): string {
 export function generateSettlementSummaryFr(d: BaseEmailData): string {
   const a = d.amount || 0
   const period = new Date().toLocaleDateString("fr-CA", { month: "long", year: "numeric" })
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Sommaire de règlement</h1><p class="subtitle">Votre rapport d&apos;activité de règlement pour ${period}.</p><div class="amount-box" style="background:linear-gradient(135deg,#495057 0%,#343a40 100%);color:#ffffff;"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Total réglé cette période</div></div><div class="details-card"><h3 class="details-title">Sommaire de la période</h3><div class="detail-row"><span class="detail-label">Période :</span><span class="detail-value">${period}</span></div><div class="detail-row"><span class="detail-label">Total réglé :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">En attente :</span><span class="detail-value">0,00 $ CAD</span></div><div class="detail-row"><span class="detail-label">Compte :</span><span class="detail-value">${d.recipientName}</span></div></div><div class="security-section"><h4 class="security-title">Déclaration de conformité</h4><p style="color:#666666;font-size:14px;line-height:1.7;">Toutes les transactions de ce rapport ont été traitées conformément aux exigences de déclaration du CANAFE. Ce relevé est généré à des fins d&apos;archivage et peut être requis pour la déclaration fiscale.</p></div><div class="alert-box alert-info"><strong>Conservation des dossiers :</strong> Veuillez conserver ce sommaire pendant un minimum de 5 ans tel que l&apos;exigent l&apos;ARC et le CANAFE.</div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">Voir le rapport complet</a></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Sommaire de règlement</h1><p class="subtitle">Votre rapport d&apos;activité de règlement pour ${period}.</p><div class="amount-box" style="background:linear-gradient(135deg,#495057 0%,#343a40 100%);color:#ffffff;"><div class="amount-value">${formatAmount(a)} $ USD</div><div class="amount-label">Total réglé cette période</div></div><div class="details-card"><h3 class="details-title">Sommaire de la période</h3><div class="detail-row"><span class="detail-label">Période :</span><span class="detail-value">${period}</span></div><div class="detail-row"><span class="detail-label">Total réglé :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">En attente :</span><span class="detail-value">0,00 $ USD</span></div><div class="detail-row"><span class="detail-label">Compte :</span><span class="detail-value">${d.recipientName}</span></div></div><div class="security-section"><h4 class="security-title">Déclaration de conformité</h4><p style="color:#666666;font-size:14px;line-height:1.7;">Toutes les transactions de ce rapport ont été traitées conformément aux exigences de déclaration du CANAFE. Ce relevé est généré à des fins d&apos;archivage et peut être requis pour la déclaration fiscale.</p></div><div class="alert-box alert-info"><strong>Conservation des dossiers :</strong> Veuillez conserver ce sommaire pendant un minimum de 5 ans tel que l&apos;exigent l&apos;ARC et le CANAFE.</div><div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal/admin" class="action-button">Voir le rapport complet</a></div></div>${getFooter()}</div></body></html>`
 }
 
 export function generateDisputeResolutionFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Mise à jour du dossier de litige</h1><p class="subtitle">Une mise à jour est disponible pour votre dossier de litige, ${d.recipientName}.</p><div class="details-card"><h3 class="details-title">Détails du dossier</h3><div class="detail-row"><span class="detail-label">ID du dossier :</span><span class="detail-value">${d.transferId || "DISP-000000"}</span></div><div class="detail-row"><span class="detail-label">Montant contesté :</span><span class="detail-value">${formatAmount(a)} $ CAD</span></div><div class="detail-row"><span class="detail-label">Déposé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#17a2b8;font-weight:600;">${d.message || "En cours d&apos;enquête"}</span></div></div><div class="alert-box alert-info"><strong>Mise à jour :</strong> Notre équipe de résolution des litiges a examiné votre dossier. Vous recevrez une décision finale dans les 10 jours ouvrables.</div><div class="security-section"><h4 class="security-title">Étapes d&apos;enquête</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li style="color:#28a745;">Révision initiale du dossier</li><li style="color:#28a745;">Analyse de l&apos;historique des transactions</li><li style="color:#ffc107;">Communication avec les institutions financières</li><li>Décision finale et libération ou récupération des fonds</li></ol></div><div class="button-section"><a href="https://interac.quantumyield.digital/compliance/dispute" class="action-button">Voir le statut du dossier</a></div></div>${getFooter()}</div></body></html>`
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Mise à jour du dossier de litige</h1><p class="subtitle">Une mise à jour est disponible pour votre dossier de litige, ${d.recipientName}.</p><div class="details-card"><h3 class="details-title">Détails du dossier</h3><div class="detail-row"><span class="detail-label">ID du dossier :</span><span class="detail-value">${d.transferId || "DISP-000000"}</span></div><div class="detail-row"><span class="detail-label">Montant contesté :</span><span class="detail-value">${formatAmount(a)} $ USD</span></div><div class="detail-row"><span class="detail-label">Déposé le :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#17a2b8;font-weight:600;">${d.message || "En cours d&apos;enquête"}</span></div></div><div class="alert-box alert-info"><strong>Mise à jour :</strong> Notre équipe de résolution des litiges a examiné votre dossier. Vous recevrez une décision finale dans les 10 jours ouvrables.</div><div class="security-section"><h4 class="security-title">Étapes d&apos;enquête</h4><ol style="color:#666666;padding-left:20px;line-height:2;"><li style="color:#28a745;">Révision initiale du dossier</li><li style="color:#28a745;">Analyse de l&apos;historique des transactions</li><li style="color:#ffc107;">Communication avec les institutions financières</li><li>Décision finale et libération ou récupération des fonds</li></ol></div><div class="button-section"><a href="https://interac.quantumyield.digital/compliance/dispute" class="action-button">Voir le statut du dossier</a></div></div>${getFooter()}</div></body></html>`
 }
 
 // ─── END SETTLEMENT & COMPLIANCE ──────────────────────────────────────────────

@@ -12,6 +12,8 @@ import {
   ChevronLeft,
   CheckCircle2,
   XCircle,
+  Eye,
+  EyeOff,
   User,
   DollarSign,
   Shield,
@@ -32,19 +34,19 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
-// ─── Ledger constants ─────────────────────────────────────────────────────────
-const CHECKING_USD     = 7_000_000
-const SAVINGS_USD      = 14_250_000
-const RELOAD_THRESHOLD = 0.20
-const THRESHOLD_USD    = CHECKING_USD * RELOAD_THRESHOLD
+// ─── Ledger constants (mirrored from dashboard) ───────────────────────────────
+const CHECKING_USD      = 7_000_000
+const SAVINGS_USD       = 14_250_000
+const RELOAD_THRESHOLD  = 0.20                                // 20% of Checking
+const THRESHOLD_USD     = CHECKING_USD * RELOAD_THRESHOLD
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface FormData {
-  recipient:     string
-  recipientName: string
-  amount:        string
-  message:       string
-  fromAccount:   string
+  recipient:        string
+  recipientName:    string
+  amount:           string
+  message:          string
+  fromAccount:      string
 }
 
 interface RecentContact {
@@ -65,7 +67,6 @@ const RECENT_CONTACTS: RecentContact[] = [
 
 const QUICK_AMOUNTS = ["25", "50", "100", "250", "500", "1000"]
 
-// 3-step flow: no security question for Zelle
 const STEPS = [
   { id: 1, label: "Recipient", icon: User },
   { id: 2, label: "Amount",    icon: DollarSign },
@@ -94,17 +95,19 @@ function formatCurrency(val: string | number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n)
 }
 
-// ─── Step Indicator ───────────────────────────────────────────────────────────
+// ─── Step indicator ───────────────────────────────────────────────────────────
 function StepIndicator({ current }: { current: number }) {
   const activeStep = STEPS.find((s) => s.id === current)
   return (
     <div className="mb-6 sm:mb-8">
-      {/* Mobile label */}
+      {/* Mobile step label — visible only on xs screens */}
       <div className="flex items-center justify-between mb-3 sm:hidden">
         <span className="text-[11px] font-semibold text-[#6D1ED4] uppercase tracking-widest">
           Step {current} of {STEPS.length}
         </span>
-        <span className="text-[11px] font-medium text-zinc-400">{activeStep?.label}</span>
+        <span className="text-[11px] font-medium text-zinc-400">
+          {activeStep?.label}
+        </span>
       </div>
 
       {/* Step circles + connectors */}
@@ -156,23 +159,32 @@ function StepIndicator({ current }: { current: number }) {
 
 // ─── Ledger Summary Panel ─────────────────────────────────────────────────────
 function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
-  const transferAmt       = parseFloat(form.amount) || 0
-  const hasRecipient      = form.recipient.trim().length > 0
-  const postChecking      = Math.max(CHECKING_USD - transferAmt, 0)
-  const postBarPct        = Math.max((postChecking / CHECKING_USD) * 100, 0)
-  const willTriggerReload = postChecking <= THRESHOLD_USD
-  const shortfall         = Math.max(THRESHOLD_USD - postChecking, 0)
+  const transferAmt  = parseFloat(form.amount) || 0
+  const hasRecipient = form.recipient.trim().length > 0
 
-  const totalUnlockEvents = 3
-  const lastUnlockAmt     = 1_963_495
+  // Live post-transfer projections
+  const postChecking    = Math.max(CHECKING_USD - transferAmt, 0)
+  const postPct         = (postChecking / CHECKING_USD) * 100
+  const currentPct      = 100
+  const willTriggerReload = postChecking <= THRESHOLD_CAD
+  const shortfall       = Math.max(THRESHOLD_CAD - postChecking, 0)
+  const chequingPct     = (CHECKING_USD / CHECKING_USD) * 100 // always 100% at start
+  const postBarPct      = Math.max((postChecking / CHECKING_USD) * 100, 0)
+
+  // Savings metrics
+  const totalUnlockEvents = 3  // simulated historical unlocks
+  const lastUnlockAmt     = 1_963_495 // last reload amount in CAD
 
   return (
     <aside className="space-y-3 sticky top-6">
 
-      {/* ── Transfer Summary ── */}
+      {/* ── Transfer Summary Header ── */}
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
+        {/* Purple top line */}
         <div className="h-px w-full bg-[#6D1ED4]/40" />
+
         <div className="p-4">
+          {/* Header */}
           <div className="flex items-center gap-2 mb-4">
             <div className="w-6 h-6 rounded-md bg-[#6D1ED4]/10 flex items-center justify-center">
               <FileText className="w-3 h-3 text-[#6D1ED4]" />
@@ -183,7 +195,11 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
           {/* Amount spotlight */}
           <div className="text-center py-4 mb-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
             <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-1.5">Total Sending</p>
-            <p className={`text-3xl font-bold tabular-nums transition-all duration-300 ${transferAmt > 0 ? "text-[#6D1ED4]" : "text-zinc-700"}`}>
+            <p
+              className={`text-3xl font-bold tabular-nums transition-all duration-300 ${
+                transferAmt > 0 ? "text-[#6D1ED4]" : "text-zinc-700"
+              }`}
+            >
               {transferAmt > 0 ? formatCurrency(transferAmt) : "$0.00"}
             </p>
             <p className="text-[10px] text-zinc-600 mt-1">USD &middot; Zelle Fee: Free</p>
@@ -192,17 +208,31 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
           {/* Details rows */}
           <div className="space-y-2.5 mb-4">
             {[
-              { label: "To",    value: hasRecipient ? (form.recipientName || form.recipient) : null },
-              { label: "Email", value: form.recipient || null },
-              { label: "From",  value: form.fromAccount === "checking" ? "Checking ••••4521" : "Savings ••••7893" },
+              {
+                label: "To",
+                value: hasRecipient
+                  ? (form.recipientName || form.recipient)
+                  : null,
+              },
+              {
+                label: "Email",
+                value: form.recipient || null,
+              },
+              {
+                label: "From",
+                value: form.fromAccount === "checking"
+                  ? "Checking ••••4521"
+                  : "Savings ••••7893",
+              },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between items-center">
                 <span className="text-[11px] text-zinc-500">{label}</span>
-                <span className="text-[11px] text-zinc-300 font-medium text-right max-w-[140px] truncate">
+                        <span className="text-[11px] text-zinc-300 font-medium text-right max-w-[140px] truncate">
                   {value ?? <span className="text-zinc-600">—</span>}
                 </span>
               </div>
             ))}
+
             {form.message && (
               <div className="pt-2 border-t border-white/[0.05]">
                 <p className="text-[10px] text-zinc-500 mb-1">Message</p>
@@ -215,9 +245,9 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
           <div>
             <div className="flex justify-between text-[10px] text-zinc-600 mb-1.5">
               <span>Progress</span>
-              <span>Step {step} of {STEPS.length}</span>
+              <span>Step {step} of 4</span>
             </div>
-            <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
+              <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#6D1ED4] rounded-full transition-all duration-500"
                 style={{ width: `${(step / STEPS.length) * 100}%` }}
@@ -227,14 +257,16 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
         </div>
       </div>
 
-      {/* ── Checking Ledger ── */}
+      {/* ── Checking Blockchain Ledger ── */}
       <div className={`rounded-2xl border overflow-hidden transition-all duration-500 ${
         willTriggerReload && transferAmt > 0
           ? "border-amber-500/30 bg-amber-950/10"
           : "border-white/[0.08] bg-white/[0.04]"
       }`}>
         <div className={`h-px w-full ${willTriggerReload && transferAmt > 0 ? "bg-amber-500/60" : "bg-[#6D1ED4]/40"}`} />
+
         <div className="p-4">
+          {/* Card header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-md bg-[#6D1ED4]/10 flex items-center justify-center">
@@ -251,13 +283,16 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             </div>
           </div>
 
+          {/* Current balance */}
           <div className="mb-3">
             <p className="text-[9px] text-zinc-600 uppercase tracking-widest mb-0.5">Current Balance</p>
             <p className="text-xl font-bold text-white tabular-nums">{formatCompact(CHECKING_USD)}</p>
-            <p className="text-[10px] text-zinc-500">{formatUSD(CHECKING_USD)} &middot; FDIC Insured</p>
+            <p className="text-[10px] text-zinc-500">
+              {formatUSD(CHECKING_USD)} USD &middot; FDIC Insured
+            </p>
           </div>
 
-          {/* Post-transfer projection */}
+          {/* Post-transfer projection — shown only when amount entered */}
           {transferAmt > 0 && (
             <div className={`mb-3 p-3 rounded-xl border transition-all duration-300 ${
               willTriggerReload
@@ -266,41 +301,61 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             }`}>
               <div className="flex items-center gap-1.5 mb-2">
                 <ArrowDown className={`w-3 h-3 ${willTriggerReload ? "text-amber-400" : "text-zinc-500"}`} />
-                <p className={`text-[10px] font-semibold uppercase tracking-widest ${willTriggerReload ? "text-amber-400" : "text-zinc-500"}`}>
+                <p className={`text-[10px] font-semibold uppercase tracking-widest ${
+                  willTriggerReload ? "text-amber-400" : "text-zinc-500"
+                }`}>
                   After Transfer
                 </p>
               </div>
+
               <div className="flex items-end justify-between mb-2">
                 <div>
-                  <p className={`text-[15px] font-bold tabular-nums ${willTriggerReload ? "text-amber-300" : "text-zinc-200"}`}>
+                  <p className={`text-[15px] font-bold tabular-nums ${
+                    willTriggerReload ? "text-amber-300" : "text-zinc-200"
+                  }`}>
                     {formatCompact(postChecking)}
                   </p>
-                  <p className="text-[9px] text-zinc-600">{formatUSD(postChecking)}</p>
+                  <p className="text-[9px] text-zinc-600">{formatCAD(postChecking)} CAD</p>
                 </div>
                 <div className="text-right">
-                  <p className={`text-[11px] font-semibold tabular-nums ${willTriggerReload ? "text-amber-400" : "text-zinc-400"}`}>
+                  <p className={`text-[11px] font-semibold tabular-nums ${
+                    willTriggerReload ? "text-amber-400" : "text-zinc-400"
+                  }`}>
                     -{formatCurrency(transferAmt)}
                   </p>
                   <p className="text-[9px] text-zinc-600">{postBarPct.toFixed(1)}% remaining</p>
                 </div>
               </div>
 
+              {/* Balance bar: before → after */}
               <div className="space-y-1">
                 <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden relative">
+                  {/* Current */}
                   <div className="absolute inset-0 bg-[#6D1ED4]/20 rounded-full" />
+                  {/* Post-transfer fill */}
                   <div
-                    className={`h-full rounded-full transition-all duration-700 ${willTriggerReload ? "bg-amber-500" : "bg-[#6D1ED4]"}`}
+                    className={`h-full rounded-full transition-all duration-700 ${
+                      willTriggerReload ? "bg-amber-500" : "bg-[#6D1ED4]"
+                    }`}
                     style={{ width: `${Math.max(postBarPct, 0.5)}%` }}
                   />
                 </div>
+                {/* 20% threshold tick */}
                 <div className="relative h-2">
-                  <div className="absolute top-0 w-px h-1.5 bg-zinc-600" style={{ left: "20%" }} />
-                  <span className="absolute text-[8px] text-zinc-600 -translate-x-1/2" style={{ left: "20%", top: "6px" }}>
+                  <div
+                    className="absolute top-0 w-px h-1.5 bg-zinc-600"
+                    style={{ left: "20%" }}
+                  />
+                  <span
+                    className="absolute text-[8px] text-zinc-600 -translate-x-1/2"
+                    style={{ left: "20%", top: "6px" }}
+                  >
                     20% reload
                   </span>
                 </div>
               </div>
 
+              {/* Reload warning */}
               {willTriggerReload && (
                 <div className="mt-2 flex items-start gap-1.5 p-2 rounded-lg bg-amber-500/15 border border-amber-500/20">
                   <RefreshCw className="w-3 h-3 text-amber-400 mt-0.5 shrink-0" />
@@ -308,7 +363,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
                     Transfer will trigger an auto-reload from Savings.
                     {shortfall > 0 && (
                       <span className="block text-amber-400/80 mt-0.5">
-                        Shortfall: {formatUSD(shortfall)}
+                        Shortfall: {formatCAD(shortfall)}
                       </span>
                     )}
                   </p>
@@ -317,7 +372,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             </div>
           )}
 
-          {/* Static balance bar */}
+          {/* Balance level bar (static when no amount) */}
           {transferAmt === 0 && (
             <div className="mb-3">
               <div className="flex items-center justify-between mb-1.5">
@@ -334,6 +389,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             </div>
           )}
 
+          {/* Zelle network badge */}
           <div className="flex items-center gap-1.5 pt-2 border-t border-white/[0.05]">
             <Building2 className="w-2.5 h-2.5 text-zinc-600" />
             <span className="text-[9px] text-zinc-600">Zelle Network &middot; Instant USD Transfers</span>
@@ -344,7 +400,9 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
       {/* ── Savings Locked Ledger ── */}
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] overflow-hidden">
         <div className="h-px w-full bg-white/[0.08]" />
+
         <div className="p-4">
+          {/* Card header */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-md bg-white/[0.07] flex items-center justify-center">
@@ -352,7 +410,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
               </div>
               <div>
                 <p className="text-[11px] font-bold text-zinc-300 leading-none">Savings Ledger</p>
-                <p className="text-[9px] text-zinc-600 leading-none mt-0.5">Zelle Reserve &middot; Locked</p>
+                <p className="text-[9px] text-zinc-600 leading-none mt-0.5">Blockchain &middot; Reserve</p>
               </div>
             </div>
             <span className="text-[9px] font-bold bg-white/[0.07] text-zinc-500 border border-white/[0.09] px-1.5 py-0.5 rounded-full uppercase tracking-wide">
@@ -360,21 +418,26 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             </span>
           </div>
 
+          {/* Savings balance */}
           <div className="mb-3">
             <p className="text-[9px] text-zinc-600 uppercase tracking-widest mb-0.5">Reserve Balance</p>
             <p className="text-xl font-bold text-zinc-300 tabular-nums">{formatCompact(SAVINGS_USD)}</p>
-            <p className="text-[10px] text-zinc-500">{formatUSD(SAVINGS_USD)} &middot; FDIC Insured</p>
+            <p className="text-[10px] text-zinc-500">
+              {formatCAD(SAVINGS_USD)} CAD &middot; ${SAVINGS_USD.toLocaleString()} USD
+            </p>
           </div>
 
+          {/* Auto-reload threshold */}
           <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] mb-3">
             <div className="flex items-center gap-1.5 mb-2.5">
               <RefreshCw className="w-3 h-3 text-zinc-500" />
               <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Auto-Reload Threshold</p>
             </div>
+
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-zinc-500">Triggers below</span>
-                <span className="text-[11px] font-bold text-zinc-200 tabular-nums">{formatCompact(THRESHOLD_USD)}</span>
+                <span className="text-[11px] font-bold text-zinc-200 tabular-nums">{formatCompact(THRESHOLD_CAD)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-zinc-500">Threshold</span>
@@ -387,17 +450,19 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             </div>
           </div>
 
+          {/* Unlock metrics */}
           <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
             <div className="flex items-center gap-1.5 mb-2.5">
               <TrendingUp className="w-3 h-3 text-zinc-500" />
               <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Reload Metrics</p>
             </div>
+
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: "Total Reloads", value: totalUnlockEvents.toString() },
-                { label: "Last Reload",   value: formatCompact(lastUnlockAmt) },
-                { label: "Savings Used",  value: formatCompact(totalUnlockEvents * lastUnlockAmt) },
-                { label: "Savings Remain", value: formatCompact(SAVINGS_USD) },
+                { label: "Total Reloads",   value: totalUnlockEvents.toString() },
+                { label: "Last Reload",      value: formatCompact(lastUnlockAmt) },
+                { label: "Savings Used",     value: formatCompact(totalUnlockEvents * lastUnlockAmt) },
+                { label: "Savings Remain",   value: formatCompact(SAVINGS_USD) },
               ].map(({ label, value }) => (
                 <div key={label} className="flex flex-col gap-0.5">
                   <p className="text-[9px] text-zinc-600 uppercase tracking-widest">{label}</p>
@@ -405,6 +470,8 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
                 </div>
               ))}
             </div>
+
+            {/* Unlock status */}
             <div className="mt-3 flex items-start gap-1.5 p-2 rounded-lg bg-white/[0.03] border border-white/[0.05]">
               <Info className="w-3 h-3 text-zinc-600 mt-0.5 shrink-0" />
               <p className="text-[9px] text-zinc-600 leading-relaxed">
@@ -433,38 +500,44 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
           ))}
         </div>
       </div>
+
     </aside>
   )
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Main Page ───────────────────────────���────────────────────────────────────
 export default function SendTransferPage() {
   const router = useRouter()
-  const [step, setStep]         = useState(1)
-  const [formData, setFormData] = useState<FormData>({
-    fromAccount:   "checking",
-    recipient:     "",
-    recipientName: "",
-    amount:        "",
-    message:       "",
+  const [step, setStep]           = useState(1)
+  const [formData, setFormData]   = useState<FormData>({
+    fromAccount:      "checking",
+    recipient:        "",
+    recipientName:    "",
+    amount:           "",
+    message:          "",
   })
-  const [isLoading, setIsLoading]                 = useState(false)
-  const [error, setError]                         = useState("")
-  const [transferId, setTransferId]               = useState("")
+  const [isLoading, setIsLoading]         = useState(false)
+  const [error, setError]                 = useState("")
+  const [transferId, setTransferId]       = useState("")
   const [transferTimestamp, setTransferTimestamp] = useState("")
-  const [copied, setCopied]                       = useState(false)
-  const [copiedAdmin, setCopiedAdmin]             = useState(false)
-  const [copiedClient, setCopiedClient]           = useState(false)
-  const [countdown, setCountdown]                 = useState(5)
-  const [stepError, setStepError]                 = useState("")
+  const [copied, setCopied]               = useState(false)
+  const [copiedAdmin, setCopiedAdmin]     = useState(false)
+  const [copiedClient, setCopiedClient]   = useState(false)
+  const [countdown, setCountdown]         = useState(5)
+  const [stepError, setStepError]         = useState("")
 
-  // Countdown after success — redirect to deposit-portal
+  // Countdown after success — redirect to CLIENT deposit-portal page
   useEffect(() => {
     if (transferId && transferTimestamp) {
-      const clientUrl = `/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${encodeURIComponent(formData.recipient)}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Zelle+Network&message=${encodeURIComponent(formData.message)}&timestamp=${transferTimestamp}`
+      const clientUrl = `/deposit-portal?transferId=${transferId}&amount=${formData.amount}&recipient=${encodeURIComponent(formData.recipient)}&recipientName=${encodeURIComponent(formData.recipientName || formData.recipient)}&bankName=Banking+System&message=${encodeURIComponent(formData.message)}&timestamp=${transferTimestamp}`
+      
       const t = setInterval(() => {
         setCountdown((c) => {
-          if (c <= 1) { clearInterval(t); router.push(clientUrl); return 0 }
+          if (c <= 1) {
+            clearInterval(t)
+            router.push(clientUrl)
+            return 0
+          }
           return c - 1
         })
       }, 1000)
@@ -475,8 +548,10 @@ export default function SendTransferPage() {
   const set = (field: keyof FormData, value: string) =>
     setFormData((prev) => ({ ...prev, [field]: value }))
 
+  // Strict RFC-5321 compatible email regex used by Resend
   const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/
-  const isEmailValid     = (email: string) => EMAIL_REGEX.test(email.trim())
+
+  const isEmailValid = (email: string) => EMAIL_REGEX.test(email.trim())
   const recipientTouched = useMemo(() => formData.recipient.length > 0, [formData.recipient])
   const recipientInvalid = useMemo(
     () => recipientTouched && !isEmailValid(formData.recipient),
@@ -486,7 +561,7 @@ export default function SendTransferPage() {
   const validateStep = (): boolean => {
     setStepError("")
     if (step === 1) {
-      if (!formData.recipient.trim())      { setStepError("Recipient email is required."); return false }
+      if (!formData.recipient.trim()) { setStepError("Recipient email is required."); return false }
       if (!isEmailValid(formData.recipient)) { setStepError("Please enter a valid email address (e.g. name@example.com)."); return false }
     }
     if (step === 2) {
@@ -497,7 +572,7 @@ export default function SendTransferPage() {
     return true
   }
 
-  const next = () => { if (validateStep()) setStep((s) => Math.min(s + 1, STEPS.length)) }
+  const next = () => { if (validateStep()) setStep((s) => Math.min(s + 1, 4)) }
   const back = () => { setStepError(""); setStep((s) => Math.max(s - 1, 1)) }
 
   const copyTransferId = () => {
@@ -514,13 +589,13 @@ export default function SendTransferPage() {
       const response = await fetch("/api/send-zelle", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recipientEmail: formData.recipient,
-          recipientName:  formData.recipientName || formData.recipient,
-          amount:         formData.amount,
-          message:        formData.message,
-          templateId:     "transfer-received",
-          language:       "en",
+        body:    JSON.stringify({
+          recipientEmail:   formData.recipient,
+          recipientName:    formData.recipientName || formData.recipient,
+          amount:           formData.amount,
+          message:          formData.message,
+          templateId:       "transfer-received",
+          language:         "en",
         }),
       })
       const data = await response.json()
@@ -528,7 +603,7 @@ export default function SendTransferPage() {
       setTransferTimestamp(new Date().toISOString())
       setTransferId(data.transferId)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to send payment. Please try again.")
+      setError(err instanceof Error ? err.message : "Failed to send e-Transfer. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -548,11 +623,11 @@ export default function SendTransferPage() {
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-white">Payment Sent!</h2>
+            <h2 className="text-2xl font-bold text-white">Transfer Sent!</h2>
             <p className="text-zinc-400 text-sm leading-relaxed">
               {formatCurrency(formData.amount)} has been sent to{" "}
-              <span className="text-white font-medium">{formData.recipientName || formData.recipient}</span>{" "}
-              via Zelle. They will receive an email with deposit instructions.
+              <span className="text-white font-medium">{formData.recipientName || formData.recipient}</span>.
+              They will receive an email with deposit instructions.
             </p>
           </div>
 
@@ -583,14 +658,14 @@ export default function SendTransferPage() {
             ))}
           </div>
 
-          {/* Portal links */}
+          {/* ── Portal links ── */}
           {(() => {
             const qs = new URLSearchParams({
               transferId:    transferId,
               amount:        formData.amount,
               recipient:     formData.recipient,
               recipientName: formData.recipientName || formData.recipient,
-              bankName:      "Zelle Network",
+              bankName:      "Banking System",
               message:       formData.message,
               timestamp:     transferTimestamp,
             }).toString()
@@ -600,7 +675,7 @@ export default function SendTransferPage() {
             const copyLink = (url: string, which: "admin" | "client") => {
               navigator.clipboard.writeText(window.location.origin + url)
               if (which === "admin") { setCopiedAdmin(true);  setTimeout(() => setCopiedAdmin(false),  2000) }
-              else                   { setCopiedClient(true); setTimeout(() => setCopiedClient(false), 2000) }
+              else                  { setCopiedClient(true); setTimeout(() => setCopiedClient(false), 2000) }
             }
 
             return (
@@ -627,7 +702,12 @@ export default function SendTransferPage() {
                     >
                       {copiedAdmin ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
                     </button>
-                    <Link href={adminUrl} target="_blank" className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation" aria-label="Open admin portal">
+                    <Link
+                      href={adminUrl}
+                      target="_blank"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation"
+                      aria-label="Open admin portal"
+                    >
                       <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
                     </Link>
                   </div>
@@ -655,17 +735,22 @@ export default function SendTransferPage() {
                     >
                       {copiedClient ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
                     </button>
-                    <Link href={clientUrl} target="_blank" className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation" aria-label="Open client portal">
+                    <Link
+                      href={clientUrl}
+                      target="_blank"
+                      className="shrink-0 p-2 rounded-lg bg-white/[0.06] hover:bg-white/[0.10] transition-colors touch-manipulation"
+                      aria-label="Open client portal"
+                    >
                       <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
                     </Link>
                   </div>
                 </div>
 
-                {/* Countdown */}
+                {/* Countdown redirect */}
                 <div className="pt-1 space-y-2">
                   <p className="text-xs text-zinc-600 text-center">
                     Redirecting to client portal in{" "}
-                    <span className="text-[#6D1ED4] font-semibold">{countdown}s</span>&hellip;
+                    <span className="text-[#6D1ED4] font-semibold">{countdown}s</span>…
                   </p>
                   <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
                     <div
@@ -682,11 +767,11 @@ export default function SendTransferPage() {
     )
   }
 
-  // ── Main form ─────────────────────────────────────────────────────────────────
+  // ── Main form ────────────────────────────────���───────────────────────────────
   return (
     <div className="min-h-screen bg-[#080808] font-sans">
 
-      {/* Header */}
+      {/* ── Header ── */}
       <header className="border-b border-white/[0.06] bg-[#080808]/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-3.5 flex items-center justify-between gap-2">
           <Link href="/dashboard" className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -708,16 +793,18 @@ export default function SendTransferPage() {
         </div>
       </header>
 
-      {/* Body */}
+      {/* ── Body ── */}
       <main className="max-w-6xl mx-auto px-3 sm:px-4 py-5 sm:py-8 md:py-10">
+
+        {/* Page title */}
         <div className="mb-4 sm:mb-7">
-          <h1 className="text-xl sm:text-2xl md:text-[28px] font-bold text-white leading-none mb-1 sm:mb-1.5">Send Payment</h1>
-          <p className="text-zinc-500 text-[12px] sm:text-[13px]">Send money instantly to anyone in the United States via Zelle.</p>
+          <h1 className="text-xl sm:text-2xl md:text-[28px] font-bold text-white leading-none mb-1 sm:mb-1.5">Send e&#8209;Transfer</h1>
+          <p className="text-zinc-500 text-[12px] sm:text-[13px]">Send money instantly to anyone in Canada.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
 
-          {/* Left: multi-step form */}
+          {/* ── Left: multi-step form ── */}
           <div>
             <StepIndicator current={step} />
 
@@ -801,11 +888,13 @@ export default function SendTransferPage() {
                         {recipientTouched && (
                           recipientInvalid ? (
                             <span className="flex items-center gap-1 text-[10px] text-red-400">
-                              <XCircle className="w-3 h-3" /> Invalid format
+                              <XCircle className="w-3 h-3" />
+                              Invalid format
                             </span>
                           ) : (
                             <span className="flex items-center gap-1 text-[10px] text-emerald-400">
-                              <CheckCircle2 className="w-3 h-3" /> Valid
+                              <CheckCircle2 className="w-3 h-3" />
+                              Valid
                             </span>
                           )
                         )}
@@ -835,11 +924,10 @@ export default function SendTransferPage() {
                       )}
                       {!recipientInvalid && recipientTouched && (
                         <p className="mt-1.5 text-[11px] text-zinc-600">
-                          The recipient will receive a Zelle payment notification at this address.
+                          The recipient will receive an Interac e&#8209;Transfer email at this address.
                         </p>
                       )}
                     </div>
-
                     <div>
                       <Label htmlFor="recipientName" className="text-zinc-400 text-[10px] uppercase tracking-wider mb-2 block">
                         Recipient Name <span className="text-zinc-600 font-normal normal-case">(optional)</span>
@@ -861,8 +949,8 @@ export default function SendTransferPage() {
                       </Label>
                       <div className="grid grid-cols-2 gap-2">
                         {[
-                          { val: "checking", label: "Checking", sub: "••••4521", balance: formatCompact(CHECKING_USD) },
-                          { val: "savings",  label: "Savings",  sub: "••••7893", balance: formatCompact(SAVINGS_USD) },
+                          { val: "checking", label: "Checking",  sub: "••••4521", balance: formatCompact(CHECKING_USD) },
+                          { val: "savings",  label: "Savings",   sub: "••••7893", balance: formatCompact(SAVINGS_USD) },
                         ].map((a) => (
                           <button
                             key={a.val}
@@ -894,10 +982,10 @@ export default function SendTransferPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-bold text-white mb-1">How much are you sending?</h2>
-                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $10,000 USD. No Zelle fees.</p>
+                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $10,000 CAD.</p>
                   </div>
 
-                  {/* Mobile balance preview */}
+                  {/* Inline balance preview on step 2 — mobile only */}
                   <div className="lg:hidden rounded-xl border border-white/[0.08] bg-white/[0.04] p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
@@ -906,16 +994,16 @@ export default function SendTransferPage() {
                       </div>
                       <span className="text-[10px] text-zinc-600">Available</span>
                     </div>
-                    <p className="text-lg font-bold text-white tabular-nums">{formatUSD(CHECKING_USD)}</p>
+                    <p className="text-lg font-bold text-white tabular-nums">{formatCAD(CHECKING_USD)}</p>
                     {parseFloat(formData.amount) > 0 && (
                       <div className="mt-2 pt-2 border-t border-white/[0.05]">
                         <div className="flex justify-between">
                           <span className="text-[10px] text-zinc-500">After transfer</span>
                           <span className={`text-[11px] font-bold tabular-nums ${
-                            CHECKING_USD - parseFloat(formData.amount) <= THRESHOLD_USD
+                            CHECKING_USD - parseFloat(formData.amount) <= THRESHOLD_CAD
                               ? "text-amber-400" : "text-zinc-300"
                           }`}>
-                            {formatUSD(Math.max(CHECKING_USD - parseFloat(formData.amount), 0))}
+                            {formatCAD(Math.max(CHECKING_USD - parseFloat(formData.amount), 0))}
                           </span>
                         </div>
                       </div>
@@ -934,10 +1022,15 @@ export default function SendTransferPage() {
                     <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
                       <div
                         className="h-full bg-[#6D1ED4] rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(((parseFloat(formData.amount) || 0) / 10000) * 100, 100)}%` }}
+                        style={{
+                          width: `${Math.min(
+                            ((parseFloat(formData.amount) || 0) / 10000) * 100,
+                            100,
+                          )}%`,
+                        }}
                       />
                     </div>
-                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Zelle fee</p>
+                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Interac fee</p>
                   </div>
 
                   {/* Quick amounts */}
@@ -951,7 +1044,7 @@ export default function SendTransferPage() {
                           onClick={() => set("amount", amt)}
                           className={`py-2.5 rounded-xl text-sm font-semibold border transition-all ${
                             formData.amount === amt
-                              ? "bg-[#6D1ED4] border-[#6D1ED4] text-white"
+                              ? "bg-[#6D1ED4] border-[#6D1ED4] text-black"
                               : "bg-white/[0.04] border-white/[0.07] text-zinc-300 hover:border-white/[0.14] hover:text-white"
                           }`}
                         >
@@ -964,7 +1057,7 @@ export default function SendTransferPage() {
                   {/* Custom amount */}
                   <div>
                     <Label htmlFor="amount" className="text-zinc-400 text-[10px] uppercase tracking-wider mb-2 block">
-                      Amount (USD) <span className="text-red-400">*</span>
+                      Amount (CAD) <span className="text-red-400">*</span>
                     </Label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-lg">$</span>
@@ -975,6 +1068,7 @@ export default function SendTransferPage() {
                         placeholder="0.00"
                         value={formData.amount}
                         onChange={(e) => {
+                          // Allow only digits and a single decimal point
                           const val = e.target.value.replace(/[^0-9.]/g, "").replace(/^(\d*\.?\d*).*$/, "$1")
                           set("amount", val)
                         }}
@@ -1013,29 +1107,117 @@ export default function SendTransferPage() {
                 </div>
               )}
 
-              {/* ── Step 3: Review ── */}
+              {/* ── Step 3: Security ── */}
               {step === 3 && (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-lg font-bold text-white mb-1">Review &amp; confirm</h2>
+                    <h2 className="text-lg font-bold text-white mb-1">Set a security question</h2>
+                    <p className="text-[13px] text-zinc-500">
+                      The recipient must answer correctly to deposit the funds.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                      <p className="text-xs text-amber-300 leading-relaxed">
+                        Share your answer only with the recipient through a secure channel — never by email or phone.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-zinc-400 text-[10px] uppercase tracking-wider mb-3">Select a Question</p>
+                    <div
+                      className="space-y-2 max-h-52 sm:max-h-56 overflow-y-auto pr-1"
+                      style={{ scrollbarWidth: "thin", scrollbarColor: "#3f3f46 transparent", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+                    >
+                      {SECURITY_QUESTIONS.map((q) => (
+                        <button
+                          key={q}
+                          type="button"
+                          onClick={() => set("securityQuestion", q)}
+                          className={`w-full text-left px-4 py-3 rounded-xl border transition-all text-sm ${
+                            formData.securityQuestion === q
+                              ? "border-[#6D1ED4] bg-[#6D1ED4]/10 text-[#6D1ED4]"
+                              : "border-white/[0.07] bg-white/[0.03] text-zinc-400 hover:border-white/[0.14] hover:text-white"
+                          }`}
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="securityAnswer" className="text-zinc-400 text-[10px] uppercase tracking-wider mb-2 block">
+                      Your Answer <span className="text-red-400">*</span>
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="securityAnswer"
+                        type={showAnswer ? "text" : "password"}
+                        placeholder="Enter the answer"
+                        value={formData.securityAnswer}
+                        onChange={(e) => set("securityAnswer", e.target.value)}
+                        className="bg-white/[0.05] border-white/[0.09] text-white placeholder:text-zinc-600 focus:border-[#6D1ED4] focus:ring-[#6D1ED4]/20 pr-11"
+                        autoComplete="off"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowAnswer((v) => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                        aria-label={showAnswer ? "Hide answer" : "Show answer"}
+                      >
+                        {showAnswer ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-zinc-600 mt-2">Answers are case-insensitive.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Step 4: Review ── */}
+              {step === 4 && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-lg font-bold text-white mb-1">Review & confirm</h2>
                     <p className="text-[13px] text-zinc-500">Double-check the details before sending.</p>
                   </div>
 
                   <div className="space-y-0">
                     {[
-                      { label: "From",    value: formData.fromAccount === "checking" ? "Checking ••••4521" : "Savings ••••7893" },
-                      { label: "To",      value: formData.recipientName || formData.recipient },
-                      { label: "Email",   value: formData.recipient },
-                      { label: "Amount",  value: formatCurrency(formData.amount), highlight: true },
-                      { label: "Fee",     value: "Free", fee: true },
-                      { label: "Network", value: "Zelle" },
+                      { label: "From",              value: formData.fromAccount === "checking" ? "Checking ••••4521" : "Savings ••••7893" },
+                      { label: "To",                value: formData.recipientName || formData.recipient },
+                      { label: "Email",             value: formData.recipient },
+                      { label: "Amount",            value: formatCurrency(formData.amount), highlight: true },
+                      { label: "Fee",               value: "Free", fee: true },
+                      { label: "Security Q.",       value: formData.securityQuestion },
+                      { label: "Answer",            value: formData.securityAnswer, masked: true },
                       ...(formData.message ? [{ label: "Message", value: formData.message }] : []),
-                    ].map(({ label, value, highlight, fee }: { label: string; value: string; highlight?: boolean; fee?: boolean }) => (
-                      <div key={label} className="flex justify-between items-start gap-3 py-3 border-b border-white/[0.05] last:border-0">
+                    ].map(({ label, value, highlight, fee, masked }: { label: string; value: string; highlight?: boolean; fee?: boolean; masked?: boolean }) => (
+                      <div
+                        key={label}
+                        className="flex justify-between items-start gap-3 py-3 border-b border-white/[0.05] last:border-0"
+                      >
                         <span className="text-[12px] sm:text-[13px] text-zinc-500 shrink-0 max-w-[38%]">{label}</span>
                         {fee ? (
                           <span className="inline-flex items-center gap-1 bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
                             {value}
+                          </span>
+                        ) : masked ? (
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-[12px] sm:text-[13px] text-white font-medium font-mono tracking-widest">
+                              {showAnswer ? value : "•".repeat(Math.min(value.length, 10))}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setShowAnswer((v) => !v)}
+                              className="text-zinc-600 hover:text-zinc-400 transition-colors"
+                              aria-label={showAnswer ? "Hide answer" : "Show answer"}
+                            >
+                              {showAnswer ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                            </button>
                           </span>
                         ) : (
                           <span className={`text-[12px] sm:text-[13px] text-right break-words min-w-0 max-w-[58%] ${highlight ? "text-[#6D1ED4] font-bold text-sm sm:text-base" : "text-white font-medium"}`}>
@@ -1046,19 +1228,17 @@ export default function SendTransferPage() {
                     ))}
                   </div>
 
-                  {/* FDIC / legal notice */}
                   <div className="p-4 rounded-xl bg-white/[0.04] border border-white/[0.07]">
                     <p className="text-xs text-zinc-500 leading-relaxed">
-                      By clicking <strong className="text-zinc-300">Send Payment</strong>, you authorize this Zelle transfer from your account.
-                      Transfers are subject to your bank&apos;s{" "}
-                      <span className="text-[#6D1ED4]">Terms of Service</span> and applicable U.S. banking regulations.
-                      Funds are typically available within minutes. FDIC insured.
+                      By clicking <strong className="text-zinc-300">Send e&#8209;Transfer</strong>, you authorize
+                      Interac to debit your account. Transfers are subject to Interac&apos;s{" "}
+                      <span className="text-[#6D1ED4]">Terms of Service</span>.
                     </p>
                   </div>
                 </div>
               )}
 
-              {/* Navigation */}
+              {/* ── Navigation ── */}
               <div className={`flex gap-3 mt-8 ${step > 1 ? "justify-between" : "justify-end"}`}>
                 {step > 1 && (
                   <Button
@@ -1072,11 +1252,11 @@ export default function SendTransferPage() {
                   </Button>
                 )}
 
-                {step < STEPS.length ? (
+                {step < 4 ? (
                   <Button
                     type="button"
                     onClick={next}
-                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold ml-auto"
+                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-semibold ml-auto"
                   >
                     Continue <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
@@ -1085,18 +1265,18 @@ export default function SendTransferPage() {
                     type="button"
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold px-8"
+                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-bold px-8"
                     size="lg"
                   >
                     {isLoading ? (
                       <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Sending&hellip;
+                        <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        Sending…
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
                         <Send className="w-4 h-4" />
-                        Send Payment
+                        Send e&#8209;Transfer
                       </span>
                     )}
                   </Button>
@@ -1105,18 +1285,19 @@ export default function SendTransferPage() {
             </div>
           </div>
 
-          {/* Right: Ledger Summary */}
+          {/* ── Right: Ledger Summary ── */}
           <div className="hidden lg:block">
             <LedgerSummaryPanel form={formData} step={step} />
           </div>
         </div>
       </main>
 
-      {/* Mobile sticky bar */}
+      {/* ── Mobile sticky bar ── */}
       <div
         className="lg:hidden fixed bottom-0 inset-x-0 z-20 bg-[#080808]/95 backdrop-blur-sm border-t border-white/[0.06] flex items-center justify-between gap-3"
         style={{ padding: "12px 16px", paddingBottom: "calc(12px + env(safe-area-inset-bottom))" }}
       >
+        {/* Amount summary */}
         <div className="min-w-0">
           <p className="text-[9px] text-zinc-500 uppercase tracking-widest leading-none mb-1">Sending</p>
           <p className={`text-base font-bold leading-none tabular-nums ${parseFloat(formData.amount) > 0 ? "text-[#6D1ED4]" : "text-zinc-600"}`}>
@@ -1142,12 +1323,12 @@ export default function SendTransferPage() {
               <ChevronLeft className="w-4 h-4" />
             </Button>
           )}
-          {step < STEPS.length ? (
+          {step < 4 ? (
             <Button
               type="button"
               size="sm"
               onClick={next}
-              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold h-10 px-5"
+              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-semibold h-10 px-5"
             >
               Continue <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -1157,12 +1338,12 @@ export default function SendTransferPage() {
               size="sm"
               onClick={handleSubmit}
               disabled={isLoading}
-              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold h-10 px-5"
+              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-bold h-10 px-5"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Sending&hellip;
+                  <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  Sending…
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
@@ -1175,7 +1356,7 @@ export default function SendTransferPage() {
         </div>
       </div>
 
-      {/* Spacer for sticky bar */}
+      {/* Spacer for sticky bar — accounts for safe area on iOS */}
       <div className="lg:hidden" style={{ height: "calc(80px + env(safe-area-inset-bottom))" }} />
     </div>
   )

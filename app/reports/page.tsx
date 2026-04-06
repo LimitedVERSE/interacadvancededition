@@ -44,7 +44,7 @@ function triggerDownload(filename: string, content: string, mimeType: string) {
 }
 
 function downloadTransactionHistory(transactions: DepositHistory[]) {
-  const header = "Transfer ID,Recipient Name,Recipient Email,Amount (CAD),Bank,Status,Date,Time,Message"
+  const header = "Transfer ID,Recipient Name,Recipient Email,Amount (USD),Bank,Status,Date,Time,Message"
   const rows = transactions.map((t) => {
     const date = new Date(t.timestamp)
     return [
@@ -54,13 +54,13 @@ function downloadTransactionHistory(transactions: DepositHistory[]) {
       Number.parseFloat(t.amount).toFixed(2),
       `"${t.bankName}"`,
       t.status,
-      date.toLocaleDateString("en-CA"),
-      date.toLocaleTimeString("en-CA"),
+      date.toLocaleDateString("en-US"),
+      date.toLocaleTimeString("en-US"),
       `"${(t.message || "").replace(/"/g, '""')}"`,
     ].join(",")
   })
   const csv = [header, ...rows].join("\n")
-  triggerDownload(`interac-transaction-history-${new Date().toISOString().slice(0, 10)}.csv`, csv, "text/csv")
+  triggerDownload(`zelle-transaction-history-${new Date().toISOString().slice(0, 10)}.csv`, csv, "text/csv")
 }
 
 function downloadMonthlySummary(transactions: DepositHistory[]) {
@@ -80,11 +80,11 @@ function downloadMonthlySummary(transactions: DepositHistory[]) {
   }
 
   const sortedKeys = Object.keys(months).sort()
-  const header = "Month,Transactions,Total (CAD),Completed (CAD),Pending (CAD),Failed (CAD)"
+  const header = "Month,Transactions,Total (USD),Completed (USD),Pending (USD),Failed (USD)"
   const rows = sortedKeys.map((k) => {
     const m = months[k]
     const [year, month] = k.split("-")
-    const label = new Date(Number(year), Number(month) - 1, 1).toLocaleString("en-CA", {
+    const label = new Date(Number(year), Number(month) - 1, 1).toLocaleString("en-US", {
       month: "long",
       year: "numeric",
     })
@@ -102,7 +102,7 @@ function downloadMonthlySummary(transactions: DepositHistory[]) {
   const footer = `"TOTAL",${transactions.length},${grandTotal.toFixed(2)},,,`
   const csv = [header, ...rows, "", footer].join("\n")
   triggerDownload(
-    `interac-monthly-summary-${new Date().toISOString().slice(0, 10)}.csv`,
+    `zelle-monthly-summary-${new Date().toISOString().slice(0, 10)}.csv`,
     csv,
     "text/csv",
   )
@@ -147,8 +147,8 @@ function downloadAnnualReport(transactions: DepositHistory[]) {
   }
 
   const lines: string[] = []
-  lines.push("INTERAC E-TRANSFER — ANNUAL FINANCIAL REPORT")
-  lines.push(`Generated: ${new Date().toLocaleString("en-CA")}`)
+  lines.push("ZELLE PAYMENT NETWORK — ANNUAL FINANCIAL REPORT")
+  lines.push(`Generated: ${new Date().toLocaleString("en-US")}`)
   lines.push("")
 
   for (const year of Object.keys(years).sort()) {
@@ -159,10 +159,10 @@ function downloadAnnualReport(transactions: DepositHistory[]) {
     lines.push(`  YEAR: ${year}`)
     lines.push(`══════════════════════════════`)
     lines.push(`  Total Transactions : ${totalCount}`)
-    lines.push(`  Total Volume       : $${totalAmt.toFixed(2)} CAD`)
-    lines.push(`  Completed          : ${y.completed.count} txns — $${y.completed.total.toFixed(2)} CAD`)
-    lines.push(`  Pending            : ${y.pending.count} txns — $${y.pending.total.toFixed(2)} CAD`)
-    lines.push(`  Failed             : ${y.failed.count} txns — $${y.failed.total.toFixed(2)} CAD`)
+    lines.push(`  Total Volume       : $${totalAmt.toFixed(2)} USD`)
+    lines.push(`  Completed          : ${y.completed.count} txns — $${y.completed.total.toFixed(2)} USD`)
+    lines.push(`  Pending            : ${y.pending.count} txns — $${y.pending.total.toFixed(2)} USD`)
+    lines.push(`  Failed             : ${y.failed.count} txns — $${y.failed.total.toFixed(2)} USD`)
     lines.push("")
     lines.push("  Monthly Breakdown:")
 
@@ -174,7 +174,7 @@ function downloadAnnualReport(transactions: DepositHistory[]) {
       const mk = String(m).padStart(2, "0")
       const val = y.months[mk] || 0
       if (val > 0) {
-        lines.push(`    ${MONTH_NAMES[m - 1].padEnd(12)} $${val.toFixed(2)} CAD`)
+        lines.push(`    ${MONTH_NAMES[m - 1].padEnd(12)} $${val.toFixed(2)} USD`)
       }
     }
     lines.push("")
@@ -186,12 +186,12 @@ function downloadAnnualReport(transactions: DepositHistory[]) {
     lines.push(`  ALL-TIME SUMMARY`)
     lines.push(`══════════════════════════════`)
     lines.push(`  Total Transactions : ${transactions.length}`)
-    lines.push(`  Total Volume       : $${grandTotal.toFixed(2)} CAD`)
+    lines.push(`  Total Volume       : $${grandTotal.toFixed(2)} USD`)
     lines.push("")
   }
 
   triggerDownload(
-    `interac-annual-report-${new Date().getFullYear()}.txt`,
+    `zelle-annual-report-${new Date().getFullYear()}.txt`,
     lines.join("\n"),
     "text/plain",
   )
@@ -235,24 +235,24 @@ function ReportsContent() {
       description: "Complete list of all transactions",
       icon: FileText,
       format: "CSV",
-      iconColor: "text-[#FDB913]",
-      borderAccent: "hover:border-[#FDB913]/60",
+      iconColor: "text-[#6D1ED4]",
+      borderAccent: "hover:border-[#6D1ED4]/60",
     },
     {
       title: "Monthly Summary",
       description: "Monthly transaction summary and totals",
       icon: Calendar,
       format: "CSV",
-      iconColor: "text-[#FDB913]",
-      borderAccent: "hover:border-[#FDB913]/60",
+      iconColor: "text-[#6D1ED4]",
+      borderAccent: "hover:border-[#6D1ED4]/60",
     },
     {
       title: "Annual Report",
       description: "Year-end financial summary",
       icon: FileText,
       format: "TXT",
-      iconColor: "text-[#FDB913]",
-      borderAccent: "hover:border-[#FDB913]/60",
+      iconColor: "text-[#6D1ED4]",
+      borderAccent: "hover:border-[#6D1ED4]/60",
     },
   ]
 
@@ -271,8 +271,8 @@ function ReportsContent() {
               Back
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#FDB913]/10 border border-[#FDB913]/30 rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-[#FDB913]" />
+              <div className="w-10 h-10 bg-[#6D1ED4]/10 border border-[#6D1ED4]/30 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#6D1ED4]" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-foreground tracking-tight">Transaction Reports</h1>
@@ -299,7 +299,7 @@ function ReportsContent() {
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-11 h-11 bg-[#FDB913]/10 border border-[#FDB913]/20 rounded-lg flex items-center justify-center">
+                    <div className="w-11 h-11 bg-[#6D1ED4]/10 border border-[#6D1ED4]/20 rounded-lg flex items-center justify-center">
                       <IconComponent className={`w-5 h-5 ${report.iconColor}`} />
                     </div>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-border text-muted-foreground bg-secondary">
@@ -318,7 +318,7 @@ function ReportsContent() {
                       No transaction data found
                     </div>
                   ) : isDone ? (
-                    <div className="w-full flex items-center justify-center gap-2 py-2.5 text-sm rounded-lg bg-[#FDB913]/10 border border-[#FDB913]/30 text-[#FDB913]">
+                    <div className="w-full flex items-center justify-center gap-2 py-2.5 text-sm rounded-lg bg-[#6D1ED4]/10 border border-[#6D1ED4]/30 text-[#6D1ED4]">
                       <CheckCircle className="w-4 h-4 shrink-0" />
                       Download started
                     </div>
@@ -326,7 +326,7 @@ function ReportsContent() {
                     <Button
                       onClick={() => handleDownload(report.title)}
                       disabled={isDownloading}
-                      className="w-full bg-[#FDB913] text-black hover:bg-[#e5a811] font-semibold gap-2 disabled:opacity-60"
+                      className="w-full bg-[#6D1ED4] text-white hover:bg-[#5A18B0] font-semibold gap-2 disabled:opacity-60"
                     >
                       <Download className={`w-4 h-4 ${isDownloading ? "animate-bounce" : ""}`} />
                       {isDownloading ? "Preparing..." : "Download Report"}

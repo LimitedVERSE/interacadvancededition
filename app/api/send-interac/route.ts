@@ -43,20 +43,22 @@ export async function POST(request: Request) {
     }
 
     const transferId = `INTC-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
-    const timestamp = Date.now()
+    const timestamp = new Date().toISOString()
 
-    // Build deposit link
-    const depositBaseUrl = "https://interac.quantumyield.digital"
+    // Build deposit link — use the app's own origin so the link works in any environment
+    const appOrigin =
+      process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
+      (request.headers.get("origin") ?? request.headers.get("referer")?.replace(/\/[^/]*$/, "") ?? "")
     const depositParams = new URLSearchParams({
       transferId,
       amount: amountNum.toString(),
       recipient: recipientEmail,
       recipientName,
-      bankName: "QuantumYield",
+      bankName: "Banking System",
       message: message || "",
-      timestamp: timestamp.toString(),
+      timestamp,
     })
-    const depositLink = `${depositBaseUrl}/deposit-portal?${depositParams.toString()}`
+    const depositLink = `${appOrigin}/deposit-portal/client?${depositParams.toString()}`
 
     // Resolve template ID — fall back to transfer-received for /send page
     const resolvedBase = templateId || "transfer-received"

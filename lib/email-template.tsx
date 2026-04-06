@@ -139,8 +139,9 @@ export function generateInteracEmailHtml(data: EmailData): string {
       margin-top: 0;
     }
     .detail-row {
-      display: flex;
-      justify-content: space-between;
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
       padding: 12px 0;
       border-bottom: 1px solid #f0f0f0;
     }
@@ -148,14 +149,19 @@ export function generateInteracEmailHtml(data: EmailData): string {
       border-bottom: none;
     }
     .detail-label {
+      display: table-cell;
       font-weight: 600;
       color: #666666;
       font-size: 14px;
+      width: 45%;
+      vertical-align: middle;
     }
     .detail-value {
+      display: table-cell;
       color: #000000;
       font-size: 14px;
       text-align: right;
+      vertical-align: middle;
     }
     .message-box {
       background-color: #f9f9f9;
@@ -283,11 +289,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
         width: 100%;
       }
       .detail-row {
-        flex-direction: column;
-        gap: 4px;
-      }
-      .detail-value {
-        text-align: left;
+        padding: 10px 0;
       }
     }
   </style>

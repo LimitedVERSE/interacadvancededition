@@ -31,10 +31,10 @@ const getEmailStyles = () => `
     .amount-label { font-size: 14px; opacity: 0.8; margin-top: 4px; }
     .details-card { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin: 24px 0; }
     .details-title { font-size: 16px; font-weight: 600; color: #000000; margin-bottom: 16px; }
-    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
+    .detail-row { display: table; width: 100%; padding: 10px 0; border-bottom: 1px solid #e9ecef; border-collapse: collapse; }
     .detail-row:last-child { border-bottom: none; }
-    .detail-label { color: #666666; font-size: 14px; }
-    .detail-value { color: #000000; font-size: 14px; font-weight: 500; }
+    .detail-label { display: table-cell; color: #666666; font-size: 14px; width: 45%; vertical-align: middle; }
+    .detail-value { display: table-cell; color: #000000; font-size: 14px; font-weight: 500; text-align: right; vertical-align: middle; }
     .button-section { text-align: center; margin: 32px 0; }
     .action-button { display: inline-block; background-color: #FDB913; color: #000000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; }
     .action-button:hover { background-color: #e5a811; }

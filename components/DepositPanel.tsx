@@ -68,9 +68,9 @@ export default function DepositPanel({ transferAmount, transferSender }: Deposit
         if (transferAmount) {
           setDepositInfo({
             amount: transferAmount,
-            currency: "CAD",
-            sender: transferSender || "Banking System",
-            reference: `INTC-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
+            currency: "USD",
+            sender: transferSender || "Zelle Network",
+            reference: `ZELLE-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
           })
         } else {
           const info = await getDepositDetails()
@@ -109,7 +109,7 @@ export default function DepositPanel({ transferAmount, transferSender }: Deposit
       <section className="border-b-2 border-border pb-8 mb-8" aria-labelledby="deposit-heading">
         <div className="flex items-center justify-center py-12">
           <div
-            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#FDB913] border-r-transparent"
+            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#6D1ED4] border-r-transparent"
             role="status"
           >
             <span className="sr-only">{t.depositPanel.loadingMessage}</span>
@@ -152,7 +152,7 @@ export default function DepositPanel({ transferAmount, transferSender }: Deposit
                 ${Number.parseFloat(displayAmount).toFixed(2)}
               </span>
               <span className="text-lg md:text-xl lg:text-2xl font-semibold text-muted-foreground">
-                {depositInfo?.currency || "CAD"}
+                {depositInfo?.currency || "USD"}
               </span>
             </div>
 

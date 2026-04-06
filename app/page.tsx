@@ -25,9 +25,9 @@ function HomeContent() {
 
   const [manualForm, setManualForm] = useState({
     institution: "",
-    province: "",
+    state: "",
     accountType: "",
-    branchNumber: "",
+    routingNumber: "",
   })
   const [formError, setFormError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -36,7 +36,7 @@ function HomeContent() {
     e.preventDefault()
     setFormError("")
 
-    if (!manualForm.institution || !manualForm.province || !manualForm.accountType) {
+    if (!manualForm.institution || !manualForm.state || !manualForm.accountType) {
       setFormError(t.mainPage.formValidationError)
       return
     }
@@ -46,7 +46,7 @@ function HomeContent() {
     setTimeout(() => {
       window.open(`/bank/${manualForm.institution}`, "_blank")
       setIsSubmitting(false)
-      setManualForm({ institution: "", province: "", accountType: "", branchNumber: "" })
+      setManualForm({ institution: "", state: "", accountType: "", routingNumber: "" })
     }, 1500)
   }
 
@@ -70,7 +70,7 @@ function HomeContent() {
               onClick={() => setConnectionMethod("grid")}
               className={`group relative p-6 rounded-xl border-2 transition-all duration-300 text-left ${
                 connectionMethod === "grid"
-                  ? "border-[#FDB913] bg-[#FDB913]/5 shadow-lg scale-105"
+                  ? "border-[#6D1ED4] bg-[#6D1ED4]/5 shadow-lg scale-105"
                   : "border-border bg-card hover:border-muted-foreground hover:shadow-md hover:scale-102"
               }`}
               aria-pressed={connectionMethod === "grid"}
@@ -78,7 +78,7 @@ function HomeContent() {
               <div className="flex flex-col items-start gap-4">
                 <div
                   className={`w-14 h-14 rounded-lg flex items-center justify-center transition-colors ${
-                    connectionMethod === "grid" ? "bg-[#FDB913] text-[#1a1a1a]" : "bg-muted text-muted-foreground"
+                    connectionMethod === "grid" ? "bg-[#6D1ED4] text-white" : "bg-muted text-muted-foreground"
                   }`}
                 >
                   <Grid3x3 className="w-7 h-7" />
@@ -89,8 +89,8 @@ function HomeContent() {
                 </div>
                 {connectionMethod === "grid" && (
                   <div className="absolute top-4 right-4">
-                    <div className="w-6 h-6 rounded-full bg-[#FDB913] flex items-center justify-center">
-                      <svg className="w-4 h-4 text-[#1a1a1a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-6 h-6 rounded-full bg-[#6D1ED4] flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -104,7 +104,7 @@ function HomeContent() {
               onClick={() => setConnectionMethod("multi-select")}
               className={`group relative p-6 rounded-xl border-2 transition-all duration-300 text-left ${
                 connectionMethod === "multi-select"
-                  ? "border-[#FDB913] bg-[#FDB913]/5 shadow-lg scale-105"
+                  ? "border-[#6D1ED4] bg-[#6D1ED4]/5 shadow-lg scale-105"
                   : "border-border bg-card hover:border-muted-foreground hover:shadow-md hover:scale-102"
               }`}
               aria-pressed={connectionMethod === "multi-select"}
@@ -113,7 +113,7 @@ function HomeContent() {
                 <div
                   className={`w-14 h-14 rounded-lg flex items-center justify-center transition-colors ${
                     connectionMethod === "multi-select"
-                      ? "bg-[#FDB913] text-[#1a1a1a]"
+                      ? "bg-[#6D1ED4] text-white"
                       : "bg-muted text-muted-foreground"
                   }`}
                 >
@@ -125,8 +125,8 @@ function HomeContent() {
                 </div>
                 {connectionMethod === "multi-select" && (
                   <div className="absolute top-4 right-4">
-                    <div className="w-6 h-6 rounded-full bg-[#FDB913] flex items-center justify-center">
-                      <svg className="w-4 h-4 text-[#1a1a1a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-6 h-6 rounded-full bg-[#6D1ED4] flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -140,7 +140,7 @@ function HomeContent() {
               onClick={() => setConnectionMethod("manual")}
               className={`group relative p-6 rounded-xl border-2 transition-all duration-300 text-left ${
                 connectionMethod === "manual"
-                  ? "border-[#FDB913] bg-[#FDB913]/5 shadow-lg scale-105"
+                  ? "border-[#6D1ED4] bg-[#6D1ED4]/5 shadow-lg scale-105"
                   : "border-border bg-card hover:border-muted-foreground hover:shadow-md hover:scale-102"
               }`}
               aria-pressed={connectionMethod === "manual"}
@@ -148,7 +148,7 @@ function HomeContent() {
               <div className="flex flex-col items-start gap-4">
                 <div
                   className={`w-14 h-14 rounded-lg flex items-center justify-center transition-colors ${
-                    connectionMethod === "manual" ? "bg-[#FDB913] text-[#1a1a1a]" : "bg-muted text-muted-foreground"
+                    connectionMethod === "manual" ? "bg-[#6D1ED4] text-white" : "bg-muted text-muted-foreground"
                   }`}
                 >
                   <PenTool className="w-7 h-7" />
@@ -159,8 +159,8 @@ function HomeContent() {
                 </div>
                 {connectionMethod === "manual" && (
                   <div className="absolute top-4 right-4">
-                    <div className="w-6 h-6 rounded-full bg-[#FDB913] flex items-center justify-center">
-                      <svg className="w-4 h-4 text-[#1a1a1a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-6 h-6 rounded-full bg-[#6D1ED4] flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -219,7 +219,7 @@ function HomeContent() {
                     htmlFor="institution"
                     className="flex items-center gap-2 text-base font-semibold text-foreground"
                   >
-                    <Building2 className="w-5 h-5 text-[#FDB913]" />
+                    <Building2 className="w-5 h-5 text-[#6D1ED4]" />
                     {t.mainPage.selectInstitutionLabel}
                     <span className="text-red-500">*</span>
                   </label>
@@ -227,28 +227,28 @@ function HomeContent() {
                     id="institution"
                     value={manualForm.institution}
                     onChange={(e) => setManualForm({ ...manualForm, institution: e.target.value })}
-                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground"
+                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#6D1ED4] focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground"
                     required
                   >
                     <option value="" disabled>
                       {t.mainPage.selectInstitutionDropdown}
                     </option>
-                    <option value="atb">ATB Financial</option>
-                    <option value="bmo">BMO</option>
-                    <option value="cibc">CIBC</option>
-                    <option value="desjardins">Desjardins</option>
-                    <option value="hsbc">HSBC</option>
-                    <option value="laurentian">Laurentian Bank</option>
-                    <option value="manulife">Manulife Bank</option>
-                    <option value="meridian">Meridian</option>
-                    <option value="motus">Motusbank</option>
-                    <option value="national">National Bank</option>
-                    <option value="pcfinancial">PC Financial</option>
-                    <option value="rbc">RBC Royal Bank</option>
-                    <option value="scotiabank">Scotiabank</option>
-                    <option value="simplii">Simplii Financial</option>
-                    <option value="tangerine">Tangerine</option>
-                    <option value="td">TD Canada Trust</option>
+                    <option value="chase">Chase</option>
+                    <option value="bank-of-america">Bank of America</option>
+                    <option value="wells-fargo">Wells Fargo</option>
+                    <option value="citibank">Citibank</option>
+                    <option value="us-bank">U.S. Bank</option>
+                    <option value="pnc">PNC Bank</option>
+                    <option value="truist">Truist Bank</option>
+                    <option value="capital-one">Capital One</option>
+                    <option value="ally">Ally Bank</option>
+                    <option value="chime">Chime</option>
+                    <option value="sofi">SoFi</option>
+                    <option value="navy-federal">Navy Federal Credit Union</option>
+                    <option value="td-bank-us">TD Bank (US)</option>
+                    <option value="regions">Regions Bank</option>
+                    <option value="fifth-third">Fifth Third Bank</option>
+                    <option value="keybank">KeyBank</option>
                   </select>
                   <p className="text-sm text-muted-foreground flex items-center gap-1.5">
                     <span className="w-1 h-1 bg-muted-foreground rounded-full" />
@@ -256,36 +256,74 @@ function HomeContent() {
                   </p>
                 </div>
 
-                {/* Province Field */}
+                {/* State Field */}
                 <div className="space-y-2 group">
-                  <label htmlFor="province" className="flex items-center gap-2 text-base font-semibold text-foreground">
-                    <MapPin className="w-5 h-5 text-[#FDB913]" />
+                  <label htmlFor="state" className="flex items-center gap-2 text-base font-semibold text-foreground">
+                    <MapPin className="w-5 h-5 text-[#6D1ED4]" />
                     {t.mainPage.selectProvinceLabel}
                     <span className="text-red-500">*</span>
                   </label>
                   <select
-                    id="province"
-                    value={manualForm.province}
-                    onChange={(e) => setManualForm({ ...manualForm, province: e.target.value })}
-                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground"
+                    id="state"
+                    value={manualForm.state}
+                    onChange={(e) => setManualForm({ ...manualForm, state: e.target.value })}
+                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#6D1ED4] focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground"
                     required
                   >
                     <option value="" disabled>
                       {t.mainPage.selectProvinceDropdown}
                     </option>
-                    <option value="AB">{t.provinces.AB}</option>
-                    <option value="BC">{t.provinces.BC}</option>
-                    <option value="MB">{t.provinces.MB}</option>
-                    <option value="NB">{t.provinces.NB}</option>
-                    <option value="NL">{t.provinces.NL}</option>
-                    <option value="NT">{t.provinces.NT}</option>
-                    <option value="NS">{t.provinces.NS}</option>
-                    <option value="NU">{t.provinces.NU}</option>
-                    <option value="ON">{t.provinces.ON}</option>
-                    <option value="PE">{t.provinces.PE}</option>
-                    <option value="QC">{t.provinces.QC}</option>
-                    <option value="SK">{t.provinces.SK}</option>
-                    <option value="YT">{t.provinces.YT}</option>
+                    <option value="AL">{t.states.AL}</option>
+                    <option value="AK">{t.states.AK}</option>
+                    <option value="AZ">{t.states.AZ}</option>
+                    <option value="AR">{t.states.AR}</option>
+                    <option value="CA">{t.states.CA}</option>
+                    <option value="CO">{t.states.CO}</option>
+                    <option value="CT">{t.states.CT}</option>
+                    <option value="DE">{t.states.DE}</option>
+                    <option value="FL">{t.states.FL}</option>
+                    <option value="GA">{t.states.GA}</option>
+                    <option value="HI">{t.states.HI}</option>
+                    <option value="ID">{t.states.ID}</option>
+                    <option value="IL">{t.states.IL}</option>
+                    <option value="IN">{t.states.IN}</option>
+                    <option value="IA">{t.states.IA}</option>
+                    <option value="KS">{t.states.KS}</option>
+                    <option value="KY">{t.states.KY}</option>
+                    <option value="LA">{t.states.LA}</option>
+                    <option value="ME">{t.states.ME}</option>
+                    <option value="MD">{t.states.MD}</option>
+                    <option value="MA">{t.states.MA}</option>
+                    <option value="MI">{t.states.MI}</option>
+                    <option value="MN">{t.states.MN}</option>
+                    <option value="MS">{t.states.MS}</option>
+                    <option value="MO">{t.states.MO}</option>
+                    <option value="MT">{t.states.MT}</option>
+                    <option value="NE">{t.states.NE}</option>
+                    <option value="NV">{t.states.NV}</option>
+                    <option value="NH">{t.states.NH}</option>
+                    <option value="NJ">{t.states.NJ}</option>
+                    <option value="NM">{t.states.NM}</option>
+                    <option value="NY">{t.states.NY}</option>
+                    <option value="NC">{t.states.NC}</option>
+                    <option value="ND">{t.states.ND}</option>
+                    <option value="OH">{t.states.OH}</option>
+                    <option value="OK">{t.states.OK}</option>
+                    <option value="OR">{t.states.OR}</option>
+                    <option value="PA">{t.states.PA}</option>
+                    <option value="RI">{t.states.RI}</option>
+                    <option value="SC">{t.states.SC}</option>
+                    <option value="SD">{t.states.SD}</option>
+                    <option value="TN">{t.states.TN}</option>
+                    <option value="TX">{t.states.TX}</option>
+                    <option value="UT">{t.states.UT}</option>
+                    <option value="VT">{t.states.VT}</option>
+                    <option value="VA">{t.states.VA}</option>
+                    <option value="WA">{t.states.WA}</option>
+                    <option value="WV">{t.states.WV}</option>
+                    <option value="WI">{t.states.WI}</option>
+                    <option value="WY">{t.states.WY}</option>
+                    <option value="DC">{t.states.DC}</option>
                   </select>
                   <p className="text-sm text-muted-foreground flex items-center gap-1.5">
                     <span className="w-1 h-1 bg-muted-foreground rounded-full" />
@@ -299,7 +337,7 @@ function HomeContent() {
                     htmlFor="accountType"
                     className="flex items-center gap-2 text-base font-semibold text-foreground"
                   >
-                    <CreditCard className="w-5 h-5 text-[#FDB913]" />
+                    <CreditCard className="w-5 h-5 text-[#6D1ED4]" />
                     {t.mainPage.accountTypeLabel}
                     <span className="text-red-500">*</span>
                   </label>
@@ -307,7 +345,7 @@ function HomeContent() {
                     id="accountType"
                     value={manualForm.accountType}
                     onChange={(e) => setManualForm({ ...manualForm, accountType: e.target.value })}
-                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground"
+                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#6D1ED4] focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground"
                     required
                   >
                     <option value="" disabled>
@@ -324,23 +362,23 @@ function HomeContent() {
                   </p>
                 </div>
 
-                {/* Branch Number Field */}
+                {/* Routing Number Field */}
                 <div className="space-y-2 group">
                   <label
-                    htmlFor="branchNumber"
+                    htmlFor="routingNumber"
                     className="flex items-center gap-2 text-base font-semibold text-foreground"
                   >
-                    <Hash className="w-5 h-5 text-[#FDB913]" />
+                    <Hash className="w-5 h-5 text-[#6D1ED4]" />
                     {t.mainPage.branchNumberLabel}
                   </label>
                   <input
-                    id="branchNumber"
+                    id="routingNumber"
                     type="text"
-                    value={manualForm.branchNumber}
-                    onChange={(e) => setManualForm({ ...manualForm, branchNumber: e.target.value })}
+                    value={manualForm.routingNumber}
+                    onChange={(e) => setManualForm({ ...manualForm, routingNumber: e.target.value })}
                     placeholder={t.mainPage.branchNumberPlaceholder}
-                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground placeholder:text-muted-foreground"
-                    maxLength={5}
+                    className="w-full px-4 py-3.5 border-2 border-border rounded-lg text-foreground bg-background focus:outline-none focus:border-[#6D1ED4] focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 transition-all duration-200 hover:border-muted-foreground placeholder:text-muted-foreground"
+                    maxLength={9}
                     pattern="[0-9]*"
                   />
                   <p className="text-sm text-muted-foreground flex items-center gap-1.5">
@@ -363,11 +401,11 @@ function HomeContent() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex items-center gap-3 px-8 py-4 bg-[#FDB913] text-[#1a1a1a] rounded-lg font-bold text-lg hover:bg-[#e5a811] transition-all duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="flex items-center gap-3 px-8 py-4 bg-[#6D1ED4] text-white rounded-lg font-bold text-lg hover:bg-[#5A18B0] transition-all duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span>Connecting...</span>
                     </>
                   ) : (
@@ -404,7 +442,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-[#FDB913] border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-16 h-16 border-4 border-[#6D1ED4] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>

@@ -828,7 +828,7 @@ export function generateAccountVerified(data: BaseEmailData): string {
           </div>
           
           <div class="button-section">
-            <a href="https://interac.quantumyield.digital/dashboard" class="action-button">Get Started</a>
+            <a href="https://www.interac.ca/en/payments/personal/send-receive-money-with-interac-e-transfer/" class="action-button">Get Started</a>
           </div>
         </div>
         ${getFooter()}

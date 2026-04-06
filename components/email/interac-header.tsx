@@ -4,7 +4,7 @@ interface InteracHeaderProps {
   clientMode?: boolean
 }
 
-export default function InteracHeader({
+export function InteracHeader({
   logoUrl = "https://etransfer-notification.interac.ca/images/new/interac_logo.png",
   language = "en",
   clientMode = false,

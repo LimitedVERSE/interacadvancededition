@@ -1338,7 +1338,7 @@ export function generateWelcomeOnboard(data: BaseEmailData): string {
       <div class="detail-row"><span class="detail-label">Member Since:</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value" style="color:#28a745;font-weight:600;">Active</span></div>
     </div>
-    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Explore Your Portal</a></div>
+    <div class="button-section"><a href="https://interac.ca" class="action-button">Explore Your Portal</a></div>
     <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Next Steps</h4><ol><li>Set up your security question for deposits</li><li>Link your preferred financial institution</li><li>Enable Auto-Deposit for seamless transfers</li><li>Review your transaction limits</li></ol></div>
   </div>${getFooter()}</div></body></html>`
 }
@@ -1357,7 +1357,7 @@ export function generateWelcomeOnboardFr(data: BaseEmailData): string {
       <div class="detail-row"><span class="detail-label">Membre depuis :</span><span class="detail-value">${formatDate()}</span></div>
       <div class="detail-row"><span class="detail-label">Statut :</span><span class="detail-value" style="color:#28a745;font-weight:600;">Actif</span></div>
     </div>
-    <div class="button-section"><a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Explorer votre portail</a></div>
+    <div class="button-section"><a href="https://interac.ca" class="action-button">Explorer votre portail</a></div>
     <div class="instructions"><h4 style="margin-bottom:12px;font-weight:600;">Prochaines étapes</h4><ol><li>Configurez votre question de sécurité pour les dépôts</li><li>Liez votre institution financière préférée</li><li>Activez le dépôt automatique pour des virements transparents</li><li>Vérifiez vos limites de transaction</li></ol></div>
   </div>${getFooter()}</div></body></html>`
 }

@@ -12,26 +12,23 @@ import {
   LogOut,
   Users,
   FileText,
-  Bell,
-  ShieldCheck,
-  BarChart3,
-  Mail,
   Lock,
   RefreshCw,
   TrendingUp,
   Building2,
   Zap,
   LayoutDashboard,
-  Wallet,
   Activity,
 } from "lucide-react"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import FooterMegaMenu from "@/components/FooterMegaMenu"
 
-// ─── Constants ──────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   Constants
+   ═══════════════════════════════════════════════════════════════════════════ */
 const CHECKING_USD     = 7_000_000
 const SAVINGS_USD      = 14_250_000
-const RELOAD_THRESHOLD = 0.20
+const RELOAD_PCT       = 0.20
 
 function formatUSD(n: number) {
   return new Intl.NumberFormat("en-US", {
@@ -40,21 +37,195 @@ function formatUSD(n: number) {
   }).format(n)
 }
 
-// ─── Particle System ────────────────────────────────────────────────────────
-interface Particle { id: number; x: number; y: number; size: number; delay: number; drift: number; color: string }
+/* ═══════════════════════════════════════════════════════════════════════════
+   3D ROOM ENVIRONMENT
+   Creates the "inside the digital room" presence:
+   - Perspective ceiling with reflected grid
+   - Perspective floor advancing toward viewer
+   - Side wall edge glows
+   - Electrical arc flashes along edges
+   - Volumetric light cones from above
+   - Floating haze / atmosphere
+   - Particle system with depth layers
+   - Multiple scan lines (vertical + horizontal)
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-function ParticleField() {
-  const particles: Particle[] = Array.from({ length: 28 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: 20 + Math.random() * 75,
-    size: 1 + Math.random() * 2.5,
-    delay: Math.random() * 8,
-    drift: (Math.random() - 0.5) * 60,
-    color: i % 3 === 0 ? "#6D1ED4" : i % 3 === 1 ? "#00B8D9" : "#8B4AE8",
-  }))
+function DigitalRoom() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+
+      {/* ── Deep space base gradient ── */}
+      <div className="absolute inset-0" style={{
+        background: "radial-gradient(ellipse 140% 90% at 50% 30%, #0d0422 0%, #060312 25%, #020108 60%, #000 100%)",
+      }} />
+
+      {/* ── Ceiling: reflected grid receding upward ── */}
+      <div
+        className="absolute left-0 right-0 top-0"
+        style={{
+          height: "40%",
+          transformOrigin: "50% 0%",
+          transform: "perspective(500px) rotateX(-68deg) scaleX(2.2)",
+          backgroundImage:
+            "linear-gradient(rgba(109,30,212,0.12) 1px, transparent 1px)," +
+            "linear-gradient(90deg, rgba(109,30,212,0.12) 1px, transparent 1px)",
+          backgroundSize: "100px 100px",
+          maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 100%)",
+        }}
+      />
+
+      {/* ── Ceiling volumetric light ── */}
+      <div className="absolute top-0 left-0 right-0 h-[50%] ceiling-flicker" style={{
+        background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(109,30,212,0.14) 0%, transparent 80%)",
+      }} />
+
+      {/* ── Volumetric light cone sweeping ── */}
+      <div className="absolute inset-0 light-cone" style={{
+        background: "radial-gradient(ellipse 30% 100% at 50% 0%, rgba(109,30,212,0.06) 0%, transparent 70%)",
+      }} />
+
+      {/* ── Floor: perspective grid advancing toward camera ── */}
+      <div
+        className="absolute bottom-0 left-0 right-0 grid-advance"
+        style={{
+          height: "55%",
+          transformOrigin: "50% 100%",
+          transform: "perspective(500px) rotateX(72deg) scaleX(2.2)",
+          backgroundImage:
+            "linear-gradient(rgba(109,30,212,0.2) 1px, transparent 1px)," +
+            "linear-gradient(90deg, rgba(109,30,212,0.2) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+          maskImage: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)",
+        }}
+      />
+      {/* Secondary larger cyan grid on floor */}
+      <div
+        className="absolute bottom-0 left-0 right-0"
+        style={{
+          height: "55%",
+          transformOrigin: "50% 100%",
+          transform: "perspective(500px) rotateX(72deg) scaleX(2.2)",
+          backgroundImage:
+            "linear-gradient(rgba(0,200,255,0.06) 1px, transparent 1px)," +
+            "linear-gradient(90deg, rgba(0,200,255,0.06) 1px, transparent 1px)",
+          backgroundSize: "240px 240px",
+          maskImage: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%)",
+        }}
+      />
+
+      {/* ── Horizon glow line ── */}
+      <div className="absolute left-0 right-0" style={{
+        top: "42%",
+        height: "3px",
+        background: "linear-gradient(90deg, transparent 5%, rgba(109,30,212,0.6) 25%, rgba(0,200,255,0.4) 50%, rgba(109,30,212,0.6) 75%, transparent 95%)",
+        filter: "blur(2px)",
+        boxShadow: "0 0 30px 8px rgba(109,30,212,0.15), 0 0 60px 15px rgba(0,200,255,0.08)",
+      }} />
+      {/* Thin sharp horizon on top */}
+      <div className="absolute left-0 right-0" style={{
+        top: "42%",
+        height: "1px",
+        background: "linear-gradient(90deg, transparent 10%, rgba(109,30,212,0.9) 30%, rgba(0,200,255,0.7) 50%, rgba(109,30,212,0.9) 70%, transparent 90%)",
+      }} />
+
+      {/* ── Left wall edge glow ── */}
+      <div className="absolute left-0 top-0 bottom-0 w-[3px] wall-glow" style={{
+        background: "linear-gradient(to bottom, transparent 5%, rgba(109,30,212,0.5) 30%, rgba(0,200,255,0.3) 50%, rgba(109,30,212,0.5) 70%, transparent 95%)",
+        boxShadow: "0 0 20px 4px rgba(109,30,212,0.12), 4px 0 30px 2px rgba(109,30,212,0.06)",
+      }} />
+      {/* ── Right wall edge glow ── */}
+      <div className="absolute right-0 top-0 bottom-0 w-[3px] wall-glow" style={{
+        background: "linear-gradient(to bottom, transparent 5%, rgba(109,30,212,0.5) 30%, rgba(0,200,255,0.3) 50%, rgba(109,30,212,0.5) 70%, transparent 95%)",
+        boxShadow: "0 0 20px 4px rgba(109,30,212,0.12), -4px 0 30px 2px rgba(109,30,212,0.06)",
+        animationDelay: "2s",
+      }} />
+
+      {/* ── Electrical arcs along horizon ── */}
+      <ElectricalArcs />
+
+      {/* ── Vertical scan line ── */}
+      <div className="scan-line absolute left-0 right-0 h-[2px] pointer-events-none"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.4) 20%, rgba(0,200,255,0.3) 50%, rgba(109,30,212,0.4) 80%, transparent)" }}
+      />
+
+      {/* ── Horizontal scan line ── */}
+      <div className="scan-line-h absolute top-0 bottom-0 w-[2px] pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, transparent, rgba(0,200,255,0.25) 20%, rgba(109,30,212,0.2) 50%, rgba(0,200,255,0.25) 80%, transparent)" }}
+      />
+
+      {/* ── Atmospheric haze ── */}
+      <div className="absolute inset-0 haze-drift" style={{
+        background: "radial-gradient(ellipse 80% 50% at 45% 55%, rgba(109,30,212,0.04) 0%, transparent 70%)",
+      }} />
+      <div className="absolute inset-0 haze-drift" style={{
+        background: "radial-gradient(ellipse 60% 40% at 65% 40%, rgba(0,200,255,0.03) 0%, transparent 60%)",
+        animationDelay: "-7s",
+      }} />
+
+      {/* ── Depth vignette ── */}
+      <div className="absolute inset-0" style={{
+        background: "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%)",
+      }} />
+
+      {/* ── CRT scanline overlay (very subtle) ── */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px)",
+        backgroundSize: "100% 4px",
+      }} />
+    </div>
+  )
+}
+
+/* ── Electrical Arc Flashes ── */
+function ElectricalArcs() {
+  const arcs = [
+    { top: "41.5%", left: "8%",  width: "12%", delay: "0s",   color: "#6D1ED4" },
+    { top: "42.5%", left: "30%", width: "8%",  delay: "1.3s", color: "#00C8FF" },
+    { top: "41%",   left: "55%", width: "15%", delay: "2.6s", color: "#6D1ED4" },
+    { top: "42%",   left: "78%", width: "10%", delay: "3.8s", color: "#00C8FF" },
+    { top: "15%",   left: "0%",  width: "3%",  delay: "1.5s", color: "#6D1ED4" },
+    { top: "70%",   right: "0%", width: "4%",  delay: "2.8s", color: "#6D1ED4" },
+  ]
+  return (
+    <>
+      {arcs.map((a, i) => (
+        <div
+          key={i}
+          className="absolute h-[1px] electric-arc"
+          style={{
+            top: a.top,
+            left: a.left,
+            right: a.right,
+            width: a.width,
+            background: `linear-gradient(90deg, transparent, ${a.color}, transparent)`,
+            filter: `blur(0.5px)`,
+            boxShadow: `0 0 8px 2px ${a.color}40`,
+            animationDelay: a.delay,
+          }}
+        />
+      ))}
+    </>
+  )
+}
+
+/* ── Multi-depth Particle System ── */
+function ParticleField() {
+  const particles = useRef(
+    Array.from({ length: 40 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: 15 + Math.random() * 80,
+      size: 0.8 + Math.random() * 2.5,
+      delay: Math.random() * 10,
+      drift: (Math.random() - 0.5) * 80,
+      dur: 5 + Math.random() * 8,
+      layer: i % 3,   // 0=far dim, 1=mid, 2=near bright
+      color: i % 5 === 0 ? "#00C8FF" : i % 3 === 0 ? "#8B4AE8" : "#6D1ED4",
+    }))
+  ).current
+
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
       {particles.map(p => (
         <div
           key={p.id}
@@ -62,11 +233,13 @@ function ParticleField() {
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
-            width: p.size,
-            height: p.size,
+            width: p.size * (p.layer === 0 ? 0.5 : p.layer === 1 ? 1 : 1.5),
+            height: p.size * (p.layer === 0 ? 0.5 : p.layer === 1 ? 1 : 1.5),
             background: p.color,
-            boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
-            animation: `floatParticle ${5 + Math.random() * 6}s ease-in-out ${p.delay}s infinite`,
+            opacity: p.layer === 0 ? 0.3 : p.layer === 1 ? 0.6 : 1,
+            boxShadow: `0 0 ${p.size * 4}px ${p.color}`,
+            filter: p.layer === 0 ? "blur(1px)" : "none",
+            animation: `floatParticle ${p.dur}s ease-in-out ${p.delay}s infinite`,
             ["--drift" as string]: `${p.drift}px`,
           }}
         />
@@ -75,56 +248,9 @@ function ParticleField() {
   )
 }
 
-// ─── Perspective Grid Floor ─────────────────────────────────────────────────
-function PerspectiveGrid() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      <div className="absolute inset-0" style={{
-        background: "radial-gradient(ellipse 120% 60% at 50% 0%, rgba(109,30,212,0.12) 0%, rgba(0,10,30,0.0) 70%)",
-      }} />
-      <div
-        className="absolute bottom-0 left-0 right-0 grid-advance"
-        style={{
-          height: "65%",
-          transformOrigin: "50% 100%",
-          transform: "perspective(600px) rotateX(70deg) scaleX(1.8)",
-          backgroundImage:
-            "linear-gradient(rgba(109,30,212,0.18) 1px, transparent 1px)," +
-            "linear-gradient(90deg, rgba(109,30,212,0.18) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-          maskImage: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)",
-        }}
-      />
-      <div
-        className="absolute bottom-0 left-0 right-0"
-        style={{
-          height: "65%",
-          transformOrigin: "50% 100%",
-          transform: "perspective(600px) rotateX(70deg) scaleX(1.8)",
-          backgroundImage:
-            "linear-gradient(rgba(0,180,217,0.07) 1px, transparent 1px)," +
-            "linear-gradient(90deg, rgba(0,180,217,0.07) 1px, transparent 1px)",
-          backgroundSize: "240px 240px",
-          maskImage: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%)",
-        }}
-      />
-      <div className="absolute left-0 right-0" style={{
-        bottom: "38%",
-        height: "2px",
-        background: "linear-gradient(90deg, transparent 0%, rgba(109,30,212,0.5) 20%, rgba(0,180,217,0.4) 50%, rgba(109,30,212,0.5) 80%, transparent 100%)",
-        filter: "blur(1px)",
-      }} />
-      <div className="scan-line absolute left-0 right-0 h-[2px] pointer-events-none"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.35) 30%, rgba(0,180,217,0.25) 50%, rgba(109,30,212,0.35) 70%, transparent)" }}
-      />
-      <div className="absolute inset-0" style={{
-        background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(3,5,20,0.7) 100%)",
-      }} />
-    </div>
-  )
-}
-
-// ─── Corner Brackets ────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   Corner Brackets (HUD markers)
+   ═══════════════════════════════════════════════════════════════════════════ */
 function CornerBrackets({ color = "#6D1ED4", size = 14 }: { color?: string; size?: number }) {
   const s = `${size}px`
   const style: React.CSSProperties = { width: s, height: s, borderColor: color }
@@ -138,38 +264,37 @@ function CornerBrackets({ color = "#6D1ED4", size = 14 }: { color?: string; size
   )
 }
 
-// ─── Live Ledger Panel ──────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   Live Ledger Panel (right sidebar data feed)
+   ═══════════════════════════════════════════════════════════════════════════ */
 const LEDGER_LINES = [
   { label: "ROUTE UPLINK",   val: "NOMINAL",  col: "#4ade80" },
   { label: "PROCESSING",     val: "ACTIVE",   col: "#6D1ED4" },
-  { label: "LATENCY",        val: "12ms",     col: "#00B8D9" },
+  { label: "LATENCY",        val: "12ms",     col: "#00C8FF" },
   { label: "NODES",          val: "847",      col: "#a78bfa" },
   { label: "ENCRYPT",        val: "AES-256",  col: "#4ade80" },
   { label: "TX POOL",        val: "CLEAR",    col: "#4ade80" },
   { label: "NET STATUS",     val: "OPTIMAL",  col: "#4ade80" },
-  { label: "ROUTE UPLINK",   val: "NOMINAL",  col: "#4ade80" },
-  { label: "PROCESSING",     val: "ACTIVE",   col: "#6D1ED4" },
-  { label: "LATENCY",        val: "12ms",     col: "#00B8D9" },
+  { label: "SYNC DELTA",     val: "0.3ms",    col: "#00C8FF" },
+  { label: "VAULT SEAL",     val: "LOCKED",   col: "#a78bfa" },
+  { label: "SESSION",        val: "ACTIVE",   col: "#4ade80" },
 ]
 
 function LiveLedgerPanel() {
   const [uptime, setUptime] = useState(99.09)
   useEffect(() => {
-    const t = setInterval(() => {
-      setUptime(v => Math.min(100, v + (Math.random() - 0.48) * 0.02))
-    }, 1800)
+    const t = setInterval(() => setUptime(v => Math.min(100, v + (Math.random() - 0.48) * 0.02)), 1800)
     return () => clearInterval(t)
   }, [])
 
   return (
-    <div className="relative rounded-xl border border-white/[0.06] bg-[rgba(3,5,20,0.88)] overflow-hidden h-full flex flex-col holo-card-cyan crt-flicker">
-      <CornerBrackets color="#00B8D9" size={10} />
-      <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, #00B8D9, transparent)" }} />
+    <div className="relative rounded-xl border border-white/[0.06] bg-[rgba(3,4,18,0.92)] backdrop-blur-sm overflow-hidden h-full flex flex-col holo-card-cyan crt-flicker">
+      <CornerBrackets color="#00C8FF" size={10} />
+      <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, #00C8FF, transparent)" }} />
 
-      {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.05]">
         <div className="flex items-center gap-1.5">
-          <Activity className="w-3 h-3" style={{ color: "#00B8D9" }} />
+          <Activity className="w-3 h-3" style={{ color: "#00C8FF" }} />
           <span className="text-[9px] font-bold tracking-[0.18em] uppercase text-zinc-400">Live Ledger</span>
         </div>
         <div className="flex items-center gap-1">
@@ -178,7 +303,6 @@ function LiveLedgerPanel() {
         </div>
       </div>
 
-      {/* Caution banner */}
       <div className="px-3 py-1.5 border-b border-white/[0.04]">
         <p className="text-[8px] text-zinc-500 font-mono leading-relaxed">
           Caution: your card was once placed shortly delayed.
@@ -186,7 +310,6 @@ function LiveLedgerPanel() {
         </p>
       </div>
 
-      {/* Status header */}
       <div className="px-3 py-1.5 border-b border-white/[0.04]">
         <div className="flex items-center gap-2">
           <span className="text-[8px] font-mono text-zinc-500 tracking-widest">Route latency:</span>
@@ -195,7 +318,6 @@ function LiveLedgerPanel() {
         </div>
       </div>
 
-      {/* Scrolling data */}
       <div className="flex-1 overflow-hidden relative px-2.5 py-1">
         <div className="data-scroll">
           {[...LEDGER_LINES, ...LEDGER_LINES].map((line, i) => (
@@ -207,7 +329,6 @@ function LiveLedgerPanel() {
         </div>
       </div>
 
-      {/* Footer mini-chart area */}
       <div className="px-3 py-2 border-t border-white/[0.05]">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[8px] font-mono text-zinc-600 tracking-widest">LINQNET OGS</span>
@@ -225,10 +346,7 @@ function LiveLedgerPanel() {
                 <div
                   key={i}
                   className="w-[3px] rounded-sm"
-                  style={{
-                    height: `${h * 2}px`,
-                    background: i > 6 ? "#ef4444" : "rgba(0,180,217,0.4)",
-                  }}
+                  style={{ height: `${h * 2}px`, background: i > 6 ? "#ef4444" : "rgba(0,200,255,0.4)" }}
                 />
               ))}
             </div>
@@ -239,13 +357,15 @@ function LiveLedgerPanel() {
   )
 }
 
-// ─── Account Balance Panel ──────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   Account Balance Cards
+   ═══════════════════════════════════════════════════════════════════════════ */
 function AccountBalancePanel() {
   const [revealed, setRevealed]       = useState(false)
   const [reloadPulse, setReloadPulse] = useState(false)
   const [checkingLive, setCheckingLive] = useState(CHECKING_USD)
 
-  const thresholdUSD  = CHECKING_USD * RELOAD_THRESHOLD
+  const thresholdUSD  = CHECKING_USD * RELOAD_PCT
   const checkingPct   = (checkingLive / CHECKING_USD) * 100
   const isLow         = checkingLive <= thresholdUSD
 
@@ -259,11 +379,10 @@ function AccountBalancePanel() {
 
   return (
     <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
-
       {/* ── CHECKING ── */}
-      <div className={`relative rounded-xl border overflow-hidden transition-all duration-500 glow-pop ${
-        isLow ? "border-amber-500/40 bg-[rgba(30,20,5,0.85)]" : "holo-card-purple bg-[rgba(3,5,20,0.85)]"
-      }`} style={{ animationDelay: "0.1s" }}>
+      <div className={`relative rounded-xl border overflow-hidden transition-all duration-500 glow-pop backdrop-blur-sm ${
+        isLow ? "border-amber-500/40 bg-[rgba(20,14,4,0.88)]" : "holo-card-purple bg-[rgba(5,3,18,0.88)]"
+      }`} style={{ animationDelay: "0.15s" }}>
         <CornerBrackets color={isLow ? "#f59e0b" : "#6D1ED4"} size={12} />
         <div className="h-px w-full" style={{
           background: isLow
@@ -272,7 +391,6 @@ function AccountBalancePanel() {
         }} />
 
         <div className="p-4 sm:p-5">
-          {/* Title row */}
           <div className="flex items-start justify-between mb-3">
             <div>
               <div className="flex items-center gap-2 mb-0.5">
@@ -294,7 +412,6 @@ function AccountBalancePanel() {
             </div>
           </div>
 
-          {/* Balance */}
           <button
             onClick={() => setRevealed(v => !v)}
             className="text-left mb-0.5 focus:outline-none group w-full"
@@ -306,14 +423,15 @@ function AccountBalancePanel() {
                 revealed ? "text-2xl sm:text-[26px] text-white" : "text-2xl sm:text-[26px] text-zinc-600 group-hover:text-zinc-500"
               }`}>
                 {revealed ? (
-                  <span style={{ textShadow: "0 0 20px rgba(109,30,212,0.6)" }}>{formatUSD(checkingLive).replace("$", "")}</span>
+                  <span style={{ textShadow: "0 0 24px rgba(109,30,212,0.7), 0 0 60px rgba(109,30,212,0.3)" }}>
+                    {formatUSD(checkingLive).replace("$", "")}
+                  </span>
                 ) : "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"}
               </span>
             </div>
           </button>
           <p className="text-[10px] text-zinc-500 mb-4 font-mono tracking-widest">USD &middot; FDIC Insured</p>
 
-          {/* Progress bar */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[9px] text-zinc-500 tracking-widest uppercase">Balance level</span>
@@ -326,8 +444,8 @@ function AccountBalancePanel() {
                 className="h-full rounded-full transition-all duration-1000"
                 style={{
                   width: `${Math.max(checkingPct, 1)}%`,
-                  background: isLow ? "#f59e0b" : "linear-gradient(90deg, #6D1ED4, #00B8D9)",
-                  boxShadow: isLow ? "0 0 8px #f59e0b" : "0 0 8px #6D1ED4",
+                  background: isLow ? "#f59e0b" : "linear-gradient(90deg, #6D1ED4, #00C8FF)",
+                  boxShadow: isLow ? "0 0 10px #f59e0b" : "0 0 10px #6D1ED4, 0 0 20px rgba(0,200,255,0.3)",
                 }}
               />
             </div>
@@ -341,9 +459,9 @@ function AccountBalancePanel() {
       </div>
 
       {/* ── SAVINGS ── */}
-      <div className="relative rounded-xl border overflow-hidden holo-card-cyan bg-[rgba(3,5,20,0.85)] glow-pop" style={{ animationDelay: "0.2s" }}>
-        <CornerBrackets color="#00B8D9" size={12} />
-        <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, #00B8D9, transparent)" }} />
+      <div className="relative rounded-xl border overflow-hidden holo-card-cyan bg-[rgba(3,5,18,0.88)] backdrop-blur-sm glow-pop" style={{ animationDelay: "0.25s" }}>
+        <CornerBrackets color="#00C8FF" size={12} />
+        <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, #00C8FF, transparent)" }} />
 
         <div className="p-4 sm:p-5">
           <div className="flex items-start justify-between mb-3">
@@ -357,8 +475,8 @@ function AccountBalancePanel() {
               <span className="text-[10px] text-zinc-500 tracking-wider">Zelle Network &middot; Reserve</span>
             </div>
             <div className="w-7 h-7 rounded-lg flex items-center justify-center border"
-              style={{ background: "rgba(0,180,217,0.08)", borderColor: "rgba(0,180,217,0.2)" }}>
-              <Lock className="w-3.5 h-3.5" style={{ color: "#00B8D9" }} />
+              style={{ background: "rgba(0,200,255,0.08)", borderColor: "rgba(0,200,255,0.2)" }}>
+              <Lock className="w-3.5 h-3.5" style={{ color: "#00C8FF" }} />
             </div>
           </div>
 
@@ -373,7 +491,9 @@ function AccountBalancePanel() {
                 revealed ? "text-zinc-200" : "text-zinc-600 group-hover:text-zinc-500"
               }`}>
                 {revealed ? (
-                  <span style={{ textShadow: "0 0 20px rgba(0,180,217,0.4)" }}>{formatUSD(SAVINGS_USD).replace("$", "")}</span>
+                  <span style={{ textShadow: "0 0 24px rgba(0,200,255,0.5), 0 0 60px rgba(0,200,255,0.2)" }}>
+                    {formatUSD(SAVINGS_USD).replace("$", "")}
+                  </span>
                 ) : "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"}
               </span>
             </div>
@@ -381,11 +501,11 @@ function AccountBalancePanel() {
           <p className="text-[10px] text-zinc-500 mb-4 font-mono tracking-widest">USD &middot; FDIC Insured</p>
 
           <div className="flex items-start gap-2 p-2.5 rounded-lg border"
-            style={{ background: "rgba(0,180,217,0.05)", borderColor: "rgba(0,180,217,0.12)" }}>
-            <RefreshCw className="w-3 h-3 mt-0.5 shrink-0" style={{ color: "#00B8D9" }} />
+            style={{ background: "rgba(0,200,255,0.05)", borderColor: "rgba(0,200,255,0.12)" }}>
+            <RefreshCw className="w-3 h-3 mt-0.5 shrink-0" style={{ color: "#00C8FF" }} />
             <p className="text-[9px] text-zinc-400 leading-relaxed font-mono">
               Auto-reloads Checking below{" "}
-              <span className="text-zinc-200 font-bold">{formatUSD(CHECKING_USD * RELOAD_THRESHOLD)}</span>
+              <span className="text-zinc-200 font-bold">{formatUSD(CHECKING_USD * RELOAD_PCT)}</span>
               {" "}(20% threshold)
             </p>
           </div>
@@ -400,7 +520,9 @@ function AccountBalancePanel() {
   )
 }
 
-// ─── Sidebar nav ────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   Sidebar Navigation
+   ═══════════════════════════════════════════════════════════════════════════ */
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard",  active: true  },
   { icon: SendIcon,        label: "Payments",   href: "/send" },
@@ -413,14 +535,14 @@ const NAV_ITEMS = [
 function Sidebar({ onNav }: { onNav: (href: string) => void }) {
   return (
     <aside
-      className="hidden lg:flex flex-col gap-1 py-5 px-3 border-r border-white/[0.05] w-[160px] shrink-0"
-      style={{ background: "rgba(3,5,20,0.92)" }}
+      className="hidden lg:flex flex-col gap-1 py-5 px-3 border-r border-white/[0.04] w-[160px] shrink-0 relative z-30"
+      style={{ background: "rgba(3,3,16,0.95)", backdropFilter: "blur(12px)" }}
       aria-label="Main navigation"
     >
       {/* Z logo */}
       <div className="flex items-center gap-2.5 px-2 mb-5">
         <div className="w-9 h-9 bg-[#6D1ED4] rounded-xl flex items-center justify-center shrink-0"
-          style={{ boxShadow: "0 0 16px rgba(109,30,212,0.6)" }}>
+          style={{ boxShadow: "0 0 20px rgba(109,30,212,0.7), 0 0 40px rgba(109,30,212,0.3)" }}>
           <span className="text-white font-black text-lg leading-none">Z</span>
         </div>
         <span className="text-[13px] font-bold text-white tracking-wide">Zelle</span>
@@ -443,21 +565,21 @@ function Sidebar({ onNav }: { onNav: (href: string) => void }) {
           <span className={`text-[12px] font-medium tracking-wide ${active ? "text-[#8B4AE8]" : "text-zinc-500 group-hover:text-zinc-300"} transition-colors`}>
             {label}
           </span>
-          {active && (
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-l-full bg-[#6D1ED4]" />
-          )}
+          {active && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-l-full bg-[#6D1ED4]" />}
         </button>
       ))}
     </aside>
   )
 }
 
-// ─── Action Buttons ─────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   Action Buttons (bottom dock)
+   ═══════════════════════════════════════════════════════════════════════════ */
 const ACTION_BTNS = [
-  { label: "Send Payment",   icon: SendIcon,   href: "/send",           color: "#6D1ED4", glow: "rgba(109,30,212,0.35)" },
-  { label: "Receive Funds",  icon: DollarSign, href: "/deposit-portal", color: "#00B8D9", glow: "rgba(0,184,217,0.3)"   },
-  { label: "Link Bank",      icon: CreditCard, href: "/connect-bank",   color: "#8B4AE8", glow: "rgba(139,74,232,0.3)"  },
-  { label: "Statements",     icon: FileText,   href: "/reports",        color: "#4ade80", glow: "rgba(74,222,128,0.25)" },
+  { label: "Send Payment",   icon: SendIcon,    href: "/send",           color: "#6D1ED4", glow: "rgba(109,30,212,0.4)" },
+  { label: "Receive Funds",  icon: DollarSign,  href: "/deposit-portal", color: "#00C8FF", glow: "rgba(0,200,255,0.35)" },
+  { label: "Link Bank",      icon: CreditCard,  href: "/connect-bank",   color: "#8B4AE8", glow: "rgba(139,74,232,0.35)" },
+  { label: "Statements",     icon: FileText,    href: "/reports",        color: "#4ade80", glow: "rgba(74,222,128,0.3)" },
 ]
 
 function ActionButtons({ onNav }: { onNav: (href: string) => void }) {
@@ -467,25 +589,22 @@ function ActionButtons({ onNav }: { onNav: (href: string) => void }) {
         <button
           key={label}
           onClick={() => onNav(href)}
-          className="group flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border text-[12px] sm:text-[13px] font-bold tracking-wide uppercase transition-all duration-200 glow-pop hover:scale-[1.03] active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+          className="group flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border text-[12px] sm:text-[13px] font-bold tracking-wide uppercase transition-all duration-200 glow-pop hover:scale-[1.03] active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 backdrop-blur-sm"
           style={{
             borderColor: `${color}40`,
             background: `${color}0d`,
             color,
-            animationDelay: `${0.3 + i * 0.07}s`,
-            boxShadow: `0 0 0 0 transparent`,
+            animationDelay: `${0.35 + i * 0.08}s`,
           }}
           onMouseEnter={e => {
-            const el = e.currentTarget
-            el.style.background = `${color}1a`
-            el.style.boxShadow  = `0 0 18px ${glow}, inset 0 0 12px ${color}0d`
-            el.style.borderColor = `${color}80`
+            e.currentTarget.style.background = `${color}1a`
+            e.currentTarget.style.boxShadow  = `0 0 20px ${glow}, inset 0 0 14px ${color}0d`
+            e.currentTarget.style.borderColor = `${color}80`
           }}
           onMouseLeave={e => {
-            const el = e.currentTarget
-            el.style.background  = `${color}0d`
-            el.style.boxShadow   = "none"
-            el.style.borderColor = `${color}40`
+            e.currentTarget.style.background  = `${color}0d`
+            e.currentTarget.style.boxShadow   = "none"
+            e.currentTarget.style.borderColor = `${color}40`
           }}
         >
           <Icon className="w-4 h-4 shrink-0" />
@@ -496,20 +615,9 @@ function ActionButtons({ onNav }: { onNav: (href: string) => void }) {
   )
 }
 
-// ─── Quick-access grid ──────────────────────────────────────────────────────
-const GRID_ITEMS = [
-  { id: "history",        title: "History",      icon: History,     href: "/history",         color: "#f59e0b" },
-  { id: "recipients",     title: "Contacts",     icon: Users,       href: "/recipients",      color: "#00B8D9" },
-  { id: "reports",        title: "Statements",   icon: FileText,    href: "/reports",          color: "#6D1ED4" },
-  { id: "notifications",  title: "Alerts",       icon: Bell,        href: "/notifications",    color: "#a78bfa" },
-  { id: "security",       title: "Verification", icon: ShieldCheck, href: "/security",         color: "#4ade80" },
-  { id: "analytics",      title: "Insights",     icon: BarChart3,   href: "/analytics",        color: "#00B8D9" },
-  { id: "email-studio",   title: "Messages",     icon: Mail,        href: "/email-studio",     color: "#f472b6" },
-  { id: "wallet",         title: "Wallet",       icon: Wallet,      href: "/deposit-portal",   color: "#8B4AE8" },
-  { id: "admin",          title: "Settings",     icon: Settings,    href: "/admin",            color: "#71717a" },
-]
-
-// ─── Boot Loader ────────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   Boot Loader (entry sequence)
+   ═══════════════════════════════════════════════════════════════════════════ */
 function ZelleLoader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0)
   const [fadeOut, setFadeOut]   = useState(false)
@@ -544,15 +652,15 @@ function ZelleLoader({ onComplete }: { onComplete: () => void }) {
   ]
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-700 ${fadeOut ? "opacity-0" : "opacity-100"}`}
-      style={{ background: "radial-gradient(ellipse 100% 100% at 50% 50%, #060818 0%, #030310 100%)" }}>
-      <PerspectiveGrid />
+    <div className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-700 ${fadeOut ? "opacity-0" : "opacity-100"}`}>
+      <DigitalRoom />
+      <ParticleField />
       <div className="relative flex flex-col items-center gap-6 z-10">
         <div className="relative w-24 h-24 flex items-center justify-center">
           <div className="absolute inset-0 rounded-full border border-[#6D1ED4]/20 orbit-ring" />
           <div className="absolute inset-[-12px] rounded-full border border-[#6D1ED4]/10 orbit-ring" style={{ animationDirection: "reverse", animationDuration: "12s" }} />
           <div className="w-16 h-16 bg-[#6D1ED4] rounded-2xl flex items-center justify-center"
-            style={{ boxShadow: "0 0 40px rgba(109,30,212,0.8), inset 0 0 20px rgba(139,74,232,0.3)" }}>
+            style={{ boxShadow: "0 0 50px rgba(109,30,212,0.9), 0 0 100px rgba(109,30,212,0.3), inset 0 0 20px rgba(139,74,232,0.3)" }}>
             <span className="text-white font-black text-3xl leading-none">Z</span>
           </div>
         </div>
@@ -561,19 +669,18 @@ function ZelleLoader({ onComplete }: { onComplete: () => void }) {
             Zelle Disbursement Portal
           </h2>
           {BOOT_LINES.slice(0, phase + 1).map((line, i) => (
-            <p key={i} className="text-[10px] font-mono tracking-widest" style={{ color: i === phase ? "#00B8D9" : "#3f3f46" }}>
+            <p key={i} className="text-[10px] font-mono tracking-widest" style={{ color: i === phase ? "#00C8FF" : "#3f3f46" }}>
               {line}
             </p>
           ))}
         </div>
         <div className="w-48 sm:w-64 space-y-1.5">
           <div className="h-[2px] bg-zinc-800 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-100"
+            <div className="h-full rounded-full transition-all duration-100"
               style={{
                 width: `${progress}%`,
-                background: "linear-gradient(90deg, #6D1ED4, #00B8D9)",
-                boxShadow: "0 0 8px #6D1ED4",
+                background: "linear-gradient(90deg, #6D1ED4, #00C8FF)",
+                boxShadow: "0 0 12px #6D1ED4, 0 0 24px rgba(0,200,255,0.4)",
               }}
             />
           </div>
@@ -587,7 +694,9 @@ function ZelleLoader({ onComplete }: { onComplete: () => void }) {
   )
 }
 
-// ─── Main Dashboard ─────────────────────────────────────────────────────────
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN DASHBOARD
+   ═══════════════════════════════════════════════════════════════════════════ */
 function DashboardContent() {
   const { user, logout } = useAuth()
   const router           = useRouter()
@@ -602,48 +711,43 @@ function DashboardContent() {
   const handleLogout = () => { logout(); router.push("/login") }
   const handleNav    = useCallback((href: string) => router.push(href), [router])
 
-  const formatTime = (d: Date) => d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })
-  const formatDate = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })
+  const fmt = (d: Date) => d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })
+  const fmtDate = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })
 
   if (isLoading) return <ZelleLoader onComplete={() => setIsLoading(false)} />
 
   return (
-    <div className="fixed inset-0 overflow-hidden flex crt-flicker"
-      style={{ background: "radial-gradient(ellipse 120% 80% at 50% 0%, #0a0618 0%, #030310 60%, #020208 100%)" }}>
+    <div className="fixed inset-0 overflow-hidden flex crt-flicker">
 
-      {/* ── Animated background ── */}
-      <PerspectiveGrid />
+      {/* ── Full 3D Room Environment ── */}
+      <DigitalRoom />
       <ParticleField />
 
       {/* ── Sidebar ── */}
       <Sidebar onNav={handleNav} />
 
-      {/* ── Content area ── */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      {/* ── Content Area ── */}
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
 
         {/* ── Cinematic Clock ── */}
         <div className="relative z-10 flex flex-col items-center pt-4 sm:pt-6 pb-2">
           <p className="text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-tight tabular-nums font-mono"
-            style={{ textShadow: "0 0 30px rgba(109,30,212,0.4), 0 0 60px rgba(109,30,212,0.15)" }}>
-            {formatTime(currentTime)}
+            style={{ textShadow: "0 0 40px rgba(109,30,212,0.5), 0 0 80px rgba(109,30,212,0.2), 0 2px 4px rgba(0,0,0,0.5)" }}>
+            {fmt(currentTime)}
           </p>
-          <p className="text-[11px] sm:text-[12px] text-zinc-500 font-mono tracking-[0.2em] mt-1">{formatDate(currentTime)}</p>
+          <p className="text-[11px] sm:text-[12px] text-zinc-500 font-mono tracking-[0.2em] mt-1">{fmtDate(currentTime)}</p>
         </div>
 
-        {/* ── User bar + logout ── */}
+        {/* ── User bar ── */}
         <div className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-1.5 shrink-0">
-          {/* Mobile logo */}
           <div className="flex items-center gap-2 lg:hidden">
             <div className="w-7 h-7 bg-[#6D1ED4] rounded-lg flex items-center justify-center"
-              style={{ boxShadow: "0 0 12px rgba(109,30,212,0.5)" }}>
+              style={{ boxShadow: "0 0 14px rgba(109,30,212,0.6)" }}>
               <span className="text-white font-black text-sm leading-none">Z</span>
             </div>
             <span className="text-[11px] font-bold text-white tracking-wide">Zelle</span>
           </div>
-
           <div className="hidden lg:block" />
-
-          {/* User + logout */}
           <div className="flex items-center gap-2">
             <div className="hidden sm:block text-right">
               <p className="text-[11px] font-semibold text-white leading-none mb-0.5 truncate max-w-[140px]">{user?.name}</p>
@@ -652,7 +756,7 @@ function DashboardContent() {
             <button
               onClick={handleLogout}
               aria-label="Sign out"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.07] bg-white/[0.03] hover:bg-red-500/10 hover:border-red-500/20 text-zinc-500 hover:text-red-400 transition-all duration-200 text-[11px] font-medium"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.07] bg-white/[0.03] hover:bg-red-500/10 hover:border-red-500/20 text-zinc-500 hover:text-red-400 transition-all duration-200 text-[11px] font-medium backdrop-blur-sm"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Sign out</span>
@@ -660,11 +764,11 @@ function DashboardContent() {
           </div>
         </div>
 
-        {/* ── Main scroll area ── */}
+        {/* ── Main Scroll Area ── */}
         <main className="flex-1 overflow-y-auto relative z-10 pb-24" aria-label="Dashboard content">
           <div className="max-w-6xl mx-auto px-3 sm:px-5 py-3 space-y-3">
 
-            {/* Portal header row */}
+            {/* Portal header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <Building2 className="w-3 h-3 text-zinc-500" />
@@ -679,13 +783,13 @@ function DashboardContent() {
                 </div>
                 <div className="hidden sm:flex items-center gap-1.5">
                   <span className="text-[9px] text-zinc-600 font-mono tracking-widest">Powered by</span>
-                  <span className="text-[9px] font-bold text-[#00B8D9] font-mono tracking-widest">CBS</span>
+                  <span className="text-[9px] font-bold text-[#00C8FF] font-mono tracking-widest">CBS</span>
                   <span className="text-[9px] font-bold text-zinc-400 font-mono tracking-widest border border-white/[0.08] bg-white/[0.03] px-1.5 py-0.5 rounded">CREDSEC</span>
                 </div>
               </div>
             </div>
 
-            {/* ── Cards + Live Ledger side by side ── */}
+            {/* ── Account Cards + Ledger ── */}
             <div className="flex gap-3 items-stretch">
               <div className="flex-1 min-w-0">
                 <AccountBalancePanel />
@@ -700,56 +804,10 @@ function DashboardContent() {
               <ActionButtons onNav={handleNav} />
             </div>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3 py-1">
-              <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(109,30,212,0.3), transparent)" }} />
-              <span className="text-[9px] font-mono tracking-[0.2em] text-zinc-600 uppercase">Quick Access</span>
-              <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.3))" }} />
-            </div>
-
-            {/* ── App Grid ── */}
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-9 gap-1.5 sm:gap-2">
-              {GRID_ITEMS.map(({ id, title, icon: Icon, href, color }, i) => (
-                <button
-                  key={id}
-                  onClick={() => handleNav(href)}
-                  className="group flex flex-col items-center gap-1.5 p-2.5 sm:p-3 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.05] active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60"
-                  style={{
-                    animationDelay: `${0.5 + i * 0.05}s`,
-                    animation: "glowPop 0.4s ease-out forwards",
-                    opacity: 0,
-                  }}
-                >
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-105"
-                    style={{
-                      background: `${color}10`,
-                      borderColor: `${color}25`,
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget
-                      el.style.boxShadow = `0 0 12px ${color}40`
-                      el.style.borderColor = `${color}55`
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget
-                      el.style.boxShadow = "none"
-                      el.style.borderColor = `${color}25`
-                    }}
-                  >
-                    <Icon className="w-5 h-5" style={{ color }} />
-                  </div>
-                  <span className="text-[9px] sm:text-[10px] font-mono tracking-wide text-zinc-500 group-hover:text-zinc-300 transition-colors text-center leading-tight">
-                    {title}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            {/* Live ledger — mobile/tablet fallback */}
+            {/* Mobile ledger fallback */}
             <div className="xl:hidden" style={{ height: "200px" }}>
               <LiveLedgerPanel />
             </div>
-
           </div>
         </main>
       </div>
@@ -762,6 +820,7 @@ function DashboardContent() {
   )
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════ */
 export default function DashboardPage() {
   return (
     <ProtectedRoute>

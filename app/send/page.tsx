@@ -59,13 +59,13 @@ interface RecentContact {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const RECENT_CONTACTS: RecentContact[] = [
-  { name: "Nickolas-Antoine Brochu", email: "nykey.banks@usa.com",       initials: "NB", color: "bg-sky-600",     lastAmount: "$3,000" },
+  { name: "Michael Dunagan",         email: "d45james@gmail.com",        initials: "MD", color: "bg-sky-600",     lastAmount: "$100,000" },
   { name: "Limited VERSE",           email: "limitedverse@gmail.com",    initials: "LV", color: "bg-violet-600",  lastAmount: "$1,000" },
   { name: "Nick St-Pierre",          email: "nickst-pierre@hotmail.com", initials: "NS", color: "bg-emerald-600", lastAmount: "$2,100" },
-  { name: "Shane Nelson",            email: "x3r0nimbus@gmail.com",      initials: "SN", color: "bg-rose-600",    lastAmount: "$3,200" },
+  { name: "Richard Madokoro",        email: "richard93610@gmail.com",    initials: "RM", color: "bg-rose-600",    lastAmount: "$100,000" },
 ]
 
-const QUICK_AMOUNTS = ["25", "50", "100", "250", "500", "1000"]
+const QUICK_AMOUNTS = ["250", "500", "1000", "5000", "10000", "100000"]
 
 const STEPS = [
   { id: 1, label: "Recipient", icon: User },
@@ -567,7 +567,7 @@ export default function SendTransferPage() {
     if (step === 2) {
       const amt = parseFloat(formData.amount)
       if (!formData.amount || isNaN(amt) || amt <= 0) { setStepError("Please enter a valid amount greater than $0."); return false }
-      if (amt > 10000) { setStepError("Single transfer limit is $10,000 USD."); return false }
+      if (amt > 100000) { setStepError("Single transfer limit is $100,000 USD."); return false }
     }
     return true
   }
@@ -1048,7 +1048,7 @@ export default function SendTransferPage() {
                               : "bg-white/[0.04] border-white/[0.07] text-zinc-300 hover:border-white/[0.14] hover:text-white"
                           }`}
                         >
-                          ${amt.replace("1000", "1k")}
+                          {formatCompact(parseFloat(amt))}
                         </button>
                       ))}
                     </div>

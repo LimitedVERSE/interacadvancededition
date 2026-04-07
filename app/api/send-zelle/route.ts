@@ -29,6 +29,9 @@ export async function POST(request: Request) {
     if (isNaN(amountNum) || amountNum <= 0) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 })
     }
+    if (amountNum > 100000) {
+      return NextResponse.json({ error: "Single transfer limit is $100,000 USD." }, { status: 400 })
+    }
 
     // Check for Resend API key
     const resendApiKey = process.env.RESEND_API_KEY

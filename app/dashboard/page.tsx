@@ -384,85 +384,126 @@ const NAV_ITEMS = [
   { icon: Building2,       label: "Banking",    href: "/connect-bank" },
   { icon: History,         label: "History",    href: "/history" },
   { icon: Users,           label: "Contacts",   href: "/recipients" },
+  { icon: BarChart3,       label: "Insights",   href: "/analytics" },
+  { icon: Bell,            label: "Alerts",     href: "/notifications" },
   { icon: Settings,        label: "Settings",   href: "/admin" },
 ]
 
-function Sidebar({ onNav }: { onNav: (href: string) => void }) {
+function Sidebar({ onNav, onLogout, user }: { onNav: (href: string) => void; onLogout: () => void; user?: { name?: string; email?: string } | null }) {
   return (
     <aside
-      className="hidden lg:flex flex-col items-center gap-1 py-6 px-2 border-r border-white/[0.05] w-[72px] shrink-0"
-      style={{ background: "rgba(3,5,20,0.92)" }}
+      className="hidden lg:flex flex-col py-5 px-3 border-r border-white/[0.06] w-[220px] shrink-0"
+      style={{ background: "rgba(3,5,20,0.96)" }}
       aria-label="Main navigation"
     >
-      {/* Zelle logo */}
-      <div className="w-10 h-10 rounded-xl overflow-hidden mb-4 shrink-0"
-        style={{ boxShadow: "0 0 16px rgba(109,30,212,0.6)" }}>
-        <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
+      {/* Logo + brand */}
+      <div className="flex items-center gap-3 px-2 mb-7">
+        <div className="w-9 h-9 rounded-xl overflow-hidden shrink-0"
+          style={{ boxShadow: "0 0 16px rgba(109,30,212,0.55)" }}>
+          <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
+        </div>
+        <div className="flex flex-col leading-none">
+          <span className="text-white font-bold text-[14px] tracking-tight">Zelle</span>
+          <span className="text-[10px] font-mono text-zinc-500 tracking-widest uppercase mt-0.5">Disbursement</span>
+        </div>
       </div>
 
-      {NAV_ITEMS.map(({ icon: Icon, label, active, href }) => (
+      {/* Section label */}
+      <p className="text-[9px] font-mono tracking-[0.2em] text-zinc-600 uppercase px-3 mb-2">Navigation</p>
+
+      {/* Nav items */}
+      <nav className="flex flex-col gap-0.5 flex-1">
+        {NAV_ITEMS.map(({ icon: Icon, label, active, href }) => (
+          <button
+            key={label}
+            onClick={() => href && onNav(href)}
+            aria-label={label}
+            aria-current={active ? "page" : undefined}
+            className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6D1ED4] text-left w-full ${
+              active
+                ? "bg-[#6D1ED4]/12 border border-[#6D1ED4]/25"
+                : "hover:bg-white/[0.04] border border-transparent"
+            }`}
+          >
+            <Icon className={`w-4 h-4 shrink-0 ${active ? "text-[#8B4AE8]" : "text-zinc-500 group-hover:text-zinc-300"} transition-colors`} />
+            <span className={`text-[13px] font-medium ${active ? "text-zinc-100" : "text-zinc-500 group-hover:text-zinc-200"} transition-colors`}>
+              {label}
+            </span>
+            {active && (
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-l-full bg-[#6D1ED4]" />
+            )}
+          </button>
+        ))}
+      </nav>
+
+      {/* Bottom: user + logout */}
+      <div className="mt-auto pt-4 border-t border-white/[0.06]">
+        <div className="flex items-center gap-2.5 px-2 mb-3">
+          <div className="w-7 h-7 rounded-full bg-[#6D1ED4]/20 border border-[#6D1ED4]/30 flex items-center justify-center shrink-0">
+            <span className="text-[11px] font-bold text-[#8B4AE8]">
+              {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
+            </span>
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[12px] font-semibold text-zinc-200 leading-tight truncate">{user?.name ?? "User"}</span>
+            <span className="text-[10px] text-zinc-600 font-mono truncate">{user?.email ?? ""}</span>
+          </div>
+        </div>
         <button
-          key={label}
-          onClick={() => href && onNav(href)}
-          title={label}
-          aria-label={label}
-          aria-current={active ? "page" : undefined}
-          className={`group relative w-12 h-12 flex flex-col items-center justify-center rounded-xl gap-1 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6D1ED4] ${
-            active
-              ? "bg-[#6D1ED4]/15 border border-[#6D1ED4]/30"
-              : "hover:bg-white/[0.04] border border-transparent"
-          }`}
+          onClick={onLogout}
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-xl border border-transparent hover:bg-red-500/10 hover:border-red-500/20 text-zinc-600 hover:text-red-400 transition-all duration-200 text-[12px] font-medium"
         >
-          <Icon className={`w-4 h-4 ${active ? "text-[#8B4AE8]" : "text-zinc-500 group-hover:text-zinc-300"} transition-colors`} />
-          <span className={`text-[7px] font-mono tracking-wider ${active ? "text-[#8B4AE8]" : "text-zinc-600 group-hover:text-zinc-400"} transition-colors`}>
-            {label.slice(0, 4).toUpperCase()}
-          </span>
-          {active && (
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-l-full bg-[#6D1ED4]" />
-          )}
+          <LogOut className="w-3.5 h-3.5 shrink-0" />
+          Sign out
         </button>
-      ))}
+      </div>
     </aside>
   )
 }
 
 // ─── Action buttons ───────────────────────────────────────────────────────────
 const ACTION_BTNS = [
-  { label: "Send Payment",   icon: SendIcon,   href: "/send",           color: "#6D1ED4", glow: "rgba(109,30,212,0.35)" },
-  { label: "Receive Funds",  icon: DollarSign, href: "/deposit-portal", color: "#00B8D9", glow: "rgba(0,184,217,0.3)"   },
-  { label: "Link Bank",      icon: CreditCard, href: "/connect-bank",   color: "#8B4AE8", glow: "rgba(139,74,232,0.3)"  },
-  { label: "Statements",     icon: FileText,   href: "/reports",        color: "#4ade80", glow: "rgba(74,222,128,0.25)" },
+  { label: "Send Payment",   desc: "Transfer funds instantly",  icon: SendIcon,   href: "/send",           color: "#6D1ED4", glow: "rgba(109,30,212,0.35)" },
+  { label: "Receive Funds",  desc: "Deposit to your account",   icon: DollarSign, href: "/deposit-portal", color: "#00B8D9", glow: "rgba(0,184,217,0.3)"   },
+  { label: "Link Bank",      desc: "Connect your institution",  icon: CreditCard, href: "/connect-bank",   color: "#8B4AE8", glow: "rgba(139,74,232,0.3)"  },
+  { label: "Statements",     desc: "Download reports & history",icon: FileText,   href: "/reports",        color: "#4ade80", glow: "rgba(74,222,128,0.25)" },
 ]
 
 function ActionButtons({ onNav }: { onNav: (href: string) => void }) {
   return (
-    <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full">
-      {ACTION_BTNS.map(({ label, icon: Icon, href, color, glow }, i) => (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 w-full">
+      {ACTION_BTNS.map(({ label, desc, icon: Icon, href, color, glow }, i) => (
         <button
           key={label}
           onClick={() => onNav(href)}
-          className="group flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl border text-[12px] sm:text-[13px] font-bold tracking-wide uppercase transition-all duration-200 glow-pop focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+          className="group flex items-center gap-3 px-4 py-3.5 rounded-xl border text-left transition-all duration-200 glow-pop focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
           style={{
-            borderColor: `${color}40`,
-            background: `${color}0d`,
-            color,
+            borderColor: `${color}30`,
+            background: `${color}08`,
             animationDelay: `${0.3 + i * 0.07}s`,
           }}
           onMouseEnter={e => {
             const el = e.currentTarget
-            el.style.background = `${color}1a`
-            el.style.boxShadow  = `0 0 18px ${glow}, inset 0 0 12px ${color}0d`
-            el.style.borderColor = `${color}80`
+            el.style.background  = `${color}14`
+            el.style.boxShadow   = `0 0 20px ${glow}`
+            el.style.borderColor = `${color}60`
           }}
           onMouseLeave={e => {
             const el = e.currentTarget
-            el.style.background  = `${color}0d`
+            el.style.background  = `${color}08`
             el.style.boxShadow   = "none"
-            el.style.borderColor = `${color}40`
+            el.style.borderColor = `${color}30`
           }}
         >
-          <Icon className="w-4 h-4 shrink-0" />
-          <span className="hidden xs:inline">{label}</span>
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200"
+            style={{ background: `${color}15`, border: `1px solid ${color}25` }}>
+            <Icon className="w-4 h-4" style={{ color }} />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[13px] font-semibold text-zinc-200 leading-tight">{label}</span>
+            <span className="text-[10px] text-zinc-600 leading-tight mt-0.5 hidden sm:block truncate">{desc}</span>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-400 transition-colors ml-auto shrink-0" />
         </button>
       ))}
     </div>
@@ -471,18 +512,18 @@ function ActionButtons({ onNav }: { onNav: (href: string) => void }) {
 
 // ─── App grid ─────────────────────────────────────────────────────────────────
 const GRID_ITEMS = [
-  { id: "history",       title: "History",      icon: History,     href: "/history",         color: "#f59e0b" },
-  { id: "recipients",   title: "Contacts",     icon: Users,       href: "/recipients",       color: "#00B8D9" },
-  { id: "reports",      title: "Statements",   icon: FileText,    href: "/reports",          color: "#6D1ED4" },
-  { id: "notifications",title: "Alerts",       icon: Bell,        href: "/notifications",    color: "#a78bfa" },
-  { id: "security",     title: "Verification", icon: ShieldCheck, href: "/security",         color: "#4ade80" },
-  { id: "analytics",    title: "Insights",     icon: BarChart3,   href: "/analytics",        color: "#00B8D9" },
-  { id: "email-studio", title: "Messages",     icon: Mail,        href: "/email-studio",     color: "#f472b6" },
-  { id: "wallet",       title: "Wallet",       icon: Wallet,      href: "/deposit-portal",   color: "#8B4AE8" },
-  { id: "admin",        title: "Settings",     icon: Settings,    href: "/admin",            color: "#71717a" },
+  { id: "history",       title: "History",      desc: "Transactions",  icon: History,     href: "/history",         color: "#f59e0b" },
+  { id: "recipients",   title: "Contacts",     desc: "Recipients",    icon: Users,       href: "/recipients",       color: "#00B8D9" },
+  { id: "reports",      title: "Statements",   desc: "Reports",       icon: FileText,    href: "/reports",          color: "#6D1ED4" },
+  { id: "notifications",title: "Alerts",       desc: "Notifications", icon: Bell,        href: "/notifications",    color: "#a78bfa" },
+  { id: "security",     title: "Verification", desc: "2FA & ID",      icon: ShieldCheck, href: "/security",         color: "#4ade80" },
+  { id: "analytics",    title: "Insights",     desc: "Analytics",     icon: BarChart3,   href: "/analytics",        color: "#00B8D9" },
+  { id: "email-studio", title: "Messages",     desc: "Email Studio",  icon: Mail,        href: "/email-studio",     color: "#f472b6" },
+  { id: "wallet",       title: "Wallet",       desc: "Deposit Portal",icon: Wallet,      href: "/deposit-portal",   color: "#8B4AE8" },
+  { id: "admin",        title: "Settings",     desc: "Admin Panel",   icon: Settings,    href: "/admin",            color: "#71717a" },
 ]
 
-// ─── Loader ───────────────────────────────────────────────────────────────────
+// ─── Loader ─────────────────────────────────────────────��─────────────────────
 function ZelleLoader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0)
   const [fadeOut, setFadeOut]   = useState(false)
@@ -597,14 +638,14 @@ function DashboardContent() {
       <ParticleField />
 
       {/* ── Sidebar ── */}
-      <Sidebar onNav={handleNav} />
+      <Sidebar onNav={handleNav} onLogout={handleLogout} user={user} />
 
       {/* ── Content area ── */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
 
         {/* Header */}
-        <header className="relative z-10 flex items-center justify-between px-4 sm:px-5 py-2.5 border-b border-white/[0.05] shrink-0"
-          style={{ background: "rgba(3,5,20,0.7)", backdropFilter: "blur(12px)" }}>
+        <header className="relative z-10 flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/[0.06] shrink-0"
+          style={{ background: "rgba(3,5,20,0.75)", backdropFilter: "blur(16px)" }}>
 
           {/* Mobile logo */}
           <div className="flex items-center gap-2 lg:hidden">
@@ -615,52 +656,75 @@ function DashboardContent() {
             <span className="text-[12px] font-bold text-white tracking-wide">Zelle</span>
           </div>
 
+          {/* Desktop: breadcrumb + status badges */}
+          <div className="hidden lg:flex items-center gap-3">
+            <div className="flex items-center gap-2 text-zinc-500">
+              <LayoutDashboard className="w-3.5 h-3.5" />
+              <span className="text-[12px] font-mono tracking-widest uppercase text-zinc-500">Dashboard</span>
+            </div>
+            <div className="w-px h-4 bg-white/[0.08]" />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 ledger-tick" />
+              <span className="text-[10px] font-mono text-emerald-400 tracking-widest">LIVE</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#6D1ED4]/20 bg-[#6D1ED4]/5">
+              <ShieldCheck className="w-3 h-3 text-[#8B4AE8]" />
+              <span className="text-[10px] font-mono text-[#8B4AE8] tracking-widest">ENCRYPTED</span>
+            </div>
+          </div>
+
           {/* Clock — center */}
           <div className="absolute left-1/2 -translate-x-1/2 text-center">
-            <p className="text-xl sm:text-2xl lg:text-3xl font-light text-white tracking-tight tabular-nums font-mono"
+            <p className="text-xl sm:text-2xl font-light text-white tracking-tight tabular-nums font-mono"
               style={{ textShadow: "0 0 20px rgba(109,30,212,0.5)" }}>
               {formatTime(currentTime)}
             </p>
-            <p className="text-[10px] text-zinc-500 font-mono tracking-widest">{formatDate(currentTime)}</p>
+            <p className="text-[10px] text-zinc-500 font-mono tracking-widest hidden sm:block">{formatDate(currentTime)}</p>
           </div>
 
-          {/* User + logout */}
+          {/* Right: notifications + mobile logout */}
           <div className="flex items-center gap-2">
-            <div className="hidden sm:block text-right">
-              <p className="text-[12px] font-semibold text-white leading-none mb-0.5 truncate max-w-[140px]">{user?.name}</p>
-              <p className="text-[10px] text-zinc-500 font-mono leading-none truncate max-w-[140px]">{user?.email}</p>
-            </div>
+            <button
+              onClick={() => handleNav("/notifications")}
+              className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.06] text-zinc-500 hover:text-zinc-200 transition-all duration-200"
+              aria-label="Notifications"
+            >
+              <Bell className="w-3.5 h-3.5" />
+              <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#6D1ED4]" />
+            </button>
             <button
               onClick={handleLogout}
               aria-label="Sign out"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.07] bg-white/[0.03] hover:bg-red-500/10 hover:border-red-500/20 text-zinc-500 hover:text-red-400 transition-all duration-200 text-[12px] font-medium"
+              className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.07] bg-white/[0.03] hover:bg-red-500/10 hover:border-red-500/20 text-zinc-500 hover:text-red-400 transition-all duration-200 text-[12px] font-medium"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Sign out</span>
             </button>
           </div>
         </header>
 
         {/* Main scroll area */}
         <main className="flex-1 overflow-y-auto relative z-10 pb-24" aria-label="Dashboard content">
-          <div className="max-w-5xl mx-auto px-3 sm:px-5 py-4 sm:py-5 space-y-4">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 space-y-5">
 
             {/* Portal header row */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <Building2 className="w-3 h-3 text-zinc-500" />
-                <span className="text-[9px] font-bold tracking-[0.22em] text-zinc-500 uppercase font-mono">
-                  Zelle Payments Portal
-                </span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 ledger-tick" />
-                  <span className="text-[9px] text-emerald-400 font-mono tracking-widest">Live Ledger</span>
+              <div>
+                <h1 className="text-base font-semibold text-white tracking-tight leading-tight">Overview</h1>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <Building2 className="w-3 h-3 text-zinc-600" />
+                  <span className="text-[10px] font-mono tracking-[0.18em] text-zinc-600 uppercase">
+                    Zelle Payments Portal
+                  </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[9px] text-zinc-500 font-mono tracking-widest">
-                  <span style={{ color: "#00B8D9" }}>⬡</span>
-                  <span>CREDSEC</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/15 bg-emerald-500/5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 ledger-tick" />
+                  <span className="text-[10px] text-emerald-400 font-mono tracking-widest">All Systems Nominal</span>
+                </div>
+                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#00B8D9]/15 bg-[#00B8D9]/5">
+                  <Activity className="w-3 h-3" style={{ color: "#00B8D9" }} />
+                  <span className="text-[10px] font-mono tracking-widest" style={{ color: "#00B8D9" }}>CREDSEC · AES-256</span>
                 </div>
               </div>
             </div>
@@ -690,39 +754,36 @@ function DashboardContent() {
             </div>
 
             {/* App grid */}
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-9 gap-1.5 sm:gap-2">
-              {GRID_ITEMS.map(({ id, title, icon: Icon, href, color }, i) => (
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+              {GRID_ITEMS.map(({ id, title, desc, icon: Icon, href, color }, i) => (
                 <button
                   key={id}
                   onClick={() => handleNav(href)}
-                  className="group flex flex-col items-center gap-1.5 p-2.5 sm:p-3 rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.05] active:scale-95 transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60"
+                  className="group flex items-center gap-3 p-3 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.05] active:scale-[0.98] transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60 text-left"
                   style={{
                     animationDelay: `${0.5 + i * 0.05}s`,
                     animation: "glowPop 0.4s ease-out forwards",
                     opacity: 0,
                   }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLButtonElement).style.borderColor = `${color}30`
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.05)"
+                  }}
                 >
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-105"
-                    style={{
-                      background: `${color}10`,
-                      borderColor: `${color}25`,
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget
-                      el.style.boxShadow = `0 0 12px ${color}40`
-                      el.style.borderColor = `${color}55`
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget
-                      el.style.boxShadow = "none"
-                      el.style.borderColor = `${color}25`
-                    }}
-                  >
-                    <Icon className="w-5 h-5" style={{ color }} />
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center border shrink-0 transition-all duration-200 group-hover:scale-105"
+                    style={{ background: `${color}10`, borderColor: `${color}22` }}>
+                    <Icon className="w-4 h-4" style={{ color }} />
                   </div>
-                  <span className="text-[9px] sm:text-[10px] font-mono tracking-wide text-zinc-500 group-hover:text-zinc-300 transition-colors text-center leading-tight">
-                    {title}
-                  </span>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[12px] font-medium text-zinc-300 group-hover:text-white transition-colors leading-tight truncate">
+                      {title}
+                    </span>
+                    <span className="text-[10px] text-zinc-600 font-mono leading-tight mt-0.5 truncate hidden sm:block">
+                      {desc}
+                    </span>
+                  </div>
                 </button>
               ))}
             </div>

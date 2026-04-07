@@ -305,8 +305,18 @@ export function generateInteracEmailHtml(data: EmailData): string {
 <body>
   <div class="email-container">
     <div class="topbar">
-      <div class="topbar-left">
-        <div style="width:40px;height:40px;background:#6D1ED4;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fff;line-height:1;">Z</div>
+        <div class="topbar-left">
+        <table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;">
+          <tr>
+            <td width="40" height="40" style="background:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
+              <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                   alt="Zelle"
+                   width="24" height="24"
+                   style="display:block;margin:8px auto;width:24px;height:24px;border:0;"
+              />
+            </td>
+          </tr>
+        </table>
         <div class="dba">Partnered with QuantumYield</div>
       </div>
       <div class="topbar-right">

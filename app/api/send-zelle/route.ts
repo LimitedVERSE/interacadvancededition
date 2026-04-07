@@ -125,9 +125,15 @@ export async function POST(request: Request) {
       "account-suspended":         `Your Zelle account has been temporarily suspended`,
       "referral-bonus":            `You've earned a Zelle referral bonus!`,
       "kyc-verification":          `Action Required: Verify your Zelle identity`,
-      "aml-hold":                  `Zelle transaction hold — compliance review`,
-      "monthly-statement":         `Your Zelle monthly statement is ready`,
-      "large-transaction-review":  `Large Zelle transaction — additional verification required`,
+      "aml-hold":                           `Zelle transaction hold — compliance review`,
+      "monthly-statement":                  `Your Zelle monthly statement is ready`,
+      "large-transaction-review":           `Large Zelle transaction — additional verification required`,
+      "settlement-confirmation":            `Settlement Confirmed — Funds Deposited to Your Account`,
+      "settlement-delayed":                 `Settlement Delayed — Your Funds Are Pending`,
+      "regulatory-hold":                    `Regulatory Hold Placed on Your Transaction`,
+      "compliance-document-request":        `Action Required — Compliance Documents Needed`,
+      "settlement-summary":                 `Your Settlement Summary`,
+      "dispute-resolution":                 `Dispute Update — Case #${transferId}`,
     }
 
     const subject =

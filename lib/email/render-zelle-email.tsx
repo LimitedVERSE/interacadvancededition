@@ -18,7 +18,7 @@ function wrapEmail(html: string): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Zelle</title>
+  <title>Transfer Received — Zelle</title>
   <style>
     body{margin:0;padding:0;background:#eaeced;font-family:Arial,sans-serif}
     table{border-collapse:collapse}
@@ -53,12 +53,16 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
               <td style="padding:13px 24px;" valign="middle">
                 <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <!-- Zelle logo in purple square -->
+                    <!-- Official Zelle logo -->
                     <td valign="middle">
                       <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:6px;">
-                            <span style="color:#ffffff;font-family:Arial,sans-serif;font-size:22px;font-weight:900;line-height:32px;display:block;">Z</span>
+                          <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
+                            <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                                 alt="Zelle"
+                                 width="26" height="26"
+                                 style="display:block;margin:9px auto;width:26px;height:26px;border:0;"
+                            />
                           </td>
                         </tr>
                       </table>
@@ -231,9 +235,17 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td valign="top" width="50%">
-                  <div style="width:48px;height:48px;background-color:#6D1ED4;border-radius:8px;display:flex;align-items:center;justify-content:center;">
-                    <span style="color:#ffffff;font-family:Arial,sans-serif;font-size:24px;font-weight:900;line-height:48px;display:block;text-align:center;">Z</span>
-                  </div>
+                  <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="48" height="48" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
+                        <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                             alt="Zelle"
+                             width="28" height="28"
+                             style="display:block;margin:10px auto;width:28px;height:28px;border:0;"
+                        />
+                      </td>
+                    </tr>
+                  </table>
                 </td>
                 <td valign="top" width="50%" style="text-align:right;font-size:14px">
                   <p style="margin:0">2000 - 2025 Zelle.</p>

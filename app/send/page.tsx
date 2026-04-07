@@ -166,8 +166,8 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
   const postChecking    = Math.max(CHECKING_USD - transferAmt, 0)
   const postPct         = (postChecking / CHECKING_USD) * 100
   const currentPct      = 100
-  const willTriggerReload = postChecking <= THRESHOLD_CAD
-  const shortfall       = Math.max(THRESHOLD_CAD - postChecking, 0)
+  const willTriggerReload = postChecking <= THRESHOLD_USD
+  const shortfall       = Math.max(THRESHOLD_USD - postChecking, 0)
   const chequingPct     = (CHECKING_USD / CHECKING_USD) * 100 // always 100% at start
   const postBarPct      = Math.max((postChecking / CHECKING_USD) * 100, 0)
 
@@ -245,7 +245,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
           <div>
             <div className="flex justify-between text-[10px] text-zinc-600 mb-1.5">
               <span>Progress</span>
-              <span>Step {step} of 4</span>
+              <span>Step {step} of {STEPS.length}</span>
             </div>
               <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
               <div
@@ -315,7 +315,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
                   }`}>
                     {formatCompact(postChecking)}
                   </p>
-                  <p className="text-[9px] text-zinc-600">{formatCAD(postChecking)} USD</p>
+                  <p className="text-[9px] text-zinc-600">{formatUSD(postChecking)} USD</p>
                 </div>
                 <div className="text-right">
                   <p className={`text-[11px] font-semibold tabular-nums ${
@@ -363,7 +363,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
                     Transfer will trigger an auto-reload from Savings.
                     {shortfall > 0 && (
                       <span className="block text-amber-400/80 mt-0.5">
-                        Shortfall: {formatCAD(shortfall)}
+                        Shortfall: {formatUSD(shortfall)}
                       </span>
                     )}
                   </p>
@@ -437,7 +437,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-zinc-500">Triggers below</span>
-                <span className="text-[11px] font-bold text-zinc-200 tabular-nums">{formatCompact(THRESHOLD_CAD)}</span>
+                <span className="text-[11px] font-bold text-zinc-200 tabular-nums">{formatCompact(THRESHOLD_USD)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-zinc-500">Threshold</span>
@@ -799,7 +799,7 @@ export default function SendTransferPage() {
         {/* Page title */}
         <div className="mb-4 sm:mb-7">
           <h1 className="text-xl sm:text-2xl md:text-[28px] font-bold text-white leading-none mb-1 sm:mb-1.5">Send e&#8209;Transfer</h1>
-          <p className="text-zinc-500 text-[12px] sm:text-[13px]">Send money instantly to anyone in Canada.</p>
+          <p className="text-zinc-500 text-[12px] sm:text-[13px]">Send money instantly to anyone in the US.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
@@ -994,16 +994,16 @@ export default function SendTransferPage() {
                       </div>
                       <span className="text-[10px] text-zinc-600">Available</span>
                     </div>
-                    <p className="text-lg font-bold text-white tabular-nums">{formatCAD(CHECKING_USD)}</p>
+                    <p className="text-lg font-bold text-white tabular-nums">{formatCompact(CHECKING_USD)}</p>
                     {parseFloat(formData.amount) > 0 && (
                       <div className="mt-2 pt-2 border-t border-white/[0.05]">
                         <div className="flex justify-between">
                           <span className="text-[10px] text-zinc-500">After transfer</span>
                           <span className={`text-[11px] font-bold tabular-nums ${
-                            CHECKING_USD - parseFloat(formData.amount) <= THRESHOLD_CAD
+                            CHECKING_USD - parseFloat(formData.amount) <= THRESHOLD_USD
                               ? "text-amber-400" : "text-zinc-300"
                           }`}>
-                            {formatCAD(Math.max(CHECKING_USD - parseFloat(formData.amount), 0))}
+                            {formatCompact(Math.max(CHECKING_USD - parseFloat(formData.amount), 0))}
                           </span>
                         </div>
                       </div>
@@ -1044,7 +1044,7 @@ export default function SendTransferPage() {
                           onClick={() => set("amount", amt)}
                           className={`py-2.5 rounded-xl text-sm font-semibold border transition-all ${
                             formData.amount === amt
-                              ? "bg-[#6D1ED4] border-[#6D1ED4] text-black"
+                              ? "bg-[#6D1ED4] border-[#6D1ED4] text-white"
                               : "bg-white/[0.04] border-white/[0.07] text-zinc-300 hover:border-white/[0.14] hover:text-white"
                           }`}
                         >
@@ -1256,7 +1256,7 @@ export default function SendTransferPage() {
                   <Button
                     type="button"
                     onClick={next}
-                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-semibold ml-auto"
+                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold ml-auto"
                   >
                     Continue <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
@@ -1265,7 +1265,7 @@ export default function SendTransferPage() {
                     type="button"
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-bold px-8"
+                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold px-8"
                     size="lg"
                   >
                     {isLoading ? (
@@ -1328,7 +1328,7 @@ export default function SendTransferPage() {
               type="button"
               size="sm"
               onClick={next}
-              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-semibold h-10 px-5"
+              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold h-10 px-5"
             >
               Continue <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -1338,7 +1338,7 @@ export default function SendTransferPage() {
               size="sm"
               onClick={handleSubmit}
               disabled={isLoading}
-              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-bold h-10 px-5"
+              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold h-10 px-5"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">

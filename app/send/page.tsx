@@ -47,6 +47,8 @@ interface FormData {
   amount:           string
   message:          string
   fromAccount:      string
+  securityQuestion: string
+  securityAnswer:   string
 }
 
 interface RecentContact {
@@ -70,7 +72,19 @@ const QUICK_AMOUNTS = ["250", "500", "1000", "5000", "10000", "100000"]
 const STEPS = [
   { id: 1, label: "Recipient", icon: User },
   { id: 2, label: "Amount",    icon: DollarSign },
-  { id: 3, label: "Review",    icon: FileText },
+  { id: 3, label: "Security",  icon: Shield },
+  { id: 4, label: "Review",    icon: FileText },
+]
+
+const SECURITY_QUESTIONS = [
+  "What is the name of your first pet?",
+  "What city were you born in?",
+  "What is your mother's maiden name?",
+  "What was the name of your elementary school?",
+  "What is your oldest sibling's middle name?",
+  "What street did you grow up on?",
+  "What was the make of your first car?",
+  "What is your favorite sports team?",
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -509,12 +523,15 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
 export default function SendTransferPage() {
   const router = useRouter()
   const [step, setStep]           = useState(1)
+  const [showAnswer, setShowAnswer] = useState(false)
   const [formData, setFormData]   = useState<FormData>({
     fromAccount:      "checking",
     recipient:        "",
     recipientName:    "",
     amount:           "",
     message:          "",
+    securityQuestion: "",
+    securityAnswer:   "",
   })
   const [isLoading, setIsLoading]         = useState(false)
   const [error, setError]                 = useState("")
@@ -569,10 +586,14 @@ export default function SendTransferPage() {
       if (!formData.amount || isNaN(amt) || amt <= 0) { setStepError("Please enter a valid amount greater than $0."); return false }
       if (amt > 100000) { setStepError("Single transfer limit is $100,000 USD."); return false }
     }
+    if (step === 3) {
+      if (!formData.securityQuestion) { setStepError("Please select a security question."); return false }
+      if (!formData.securityAnswer.trim()) { setStepError("Please enter an answer to the security question."); return false }
+    }
     return true
   }
 
-  const next = () => { if (validateStep()) setStep((s) => Math.min(s + 1, 4)) }
+  const next = () => { if (validateStep()) setStep((s) => Math.min(s + 1, STEPS.length)) }
   const back = () => { setStepError(""); setStep((s) => Math.max(s - 1, 1)) }
 
   const copyTransferId = () => {
@@ -982,7 +1003,7 @@ export default function SendTransferPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-bold text-white mb-1">How much are you sending?</h2>
-                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $10,000 USD.</p>
+                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $100,000 USD.</p>
                   </div>
 
                   {/* Inline balance preview on step 2 — mobile only */}
@@ -1016,7 +1037,7 @@ export default function SendTransferPage() {
                       <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Daily Limit</span>
                       <span className="text-[10px] text-zinc-400 tabular-nums">
                         <span className="text-white font-semibold">{formatCurrency(formData.amount && !isNaN(parseFloat(formData.amount)) ? parseFloat(formData.amount) : 0)}</span>
-                        {" "}<span className="text-zinc-600">of $10,000 used</span>
+                        {" "}<span className="text-zinc-600">of $100,000 used</span>
                       </span>
                     </div>
                     <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
@@ -1024,7 +1045,7 @@ export default function SendTransferPage() {
                         className="h-full bg-[#6D1ED4] rounded-full transition-all duration-500"
                         style={{
                           width: `${Math.min(
-                            ((parseFloat(formData.amount) || 0) / 10000) * 100,
+                            ((parseFloat(formData.amount) || 0) / 100000) * 100,
                             100,
                           )}%`,
                         }}
@@ -1270,7 +1291,7 @@ export default function SendTransferPage() {
                   >
                     {isLoading ? (
                       <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Sending…
                       </span>
                     ) : (
@@ -1342,7 +1363,7 @@ export default function SendTransferPage() {
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   Sending…
                 </span>
               ) : (

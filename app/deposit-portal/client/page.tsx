@@ -146,8 +146,8 @@ function ClientDepositContent() {
       <header className="bg-white border-b border-gray-200 shadow-sm shrink-0">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
           <a href="https://www.zellepay.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#6D1ED4] rounded-lg flex items-center justify-center shadow-sm">
-              <span className="text-white font-black text-xl leading-none select-none">Z</span>
+            <div className="w-10 h-10 rounded-lg overflow-hidden shadow-sm">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="text-sm font-bold text-gray-900 leading-none tracking-tight">Zelle Payment</p>
@@ -304,8 +304,8 @@ function ClientDepositContent() {
       <footer className="bg-white border-t border-gray-200 py-6 px-4 shrink-0">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-[#6D1ED4] rounded flex items-center justify-center">
-              <span className="text-white font-black text-xs leading-none select-none">Z</span>
+            <div className="w-5 h-5 rounded overflow-hidden">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <span>&copy; {new Date().getFullYear()} Zelle. All rights reserved.</span>
           </div>

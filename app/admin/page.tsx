@@ -146,8 +146,8 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-4 md:py-5 max-w-7xl">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/30">
-                <span className="text-white font-black text-2xl leading-none">Z</span>
+              <div className="w-11 h-11 rounded-xl overflow-hidden shadow-lg shadow-[#6D1ED4]/30">
+                <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-white">Zelle Admin</h1>

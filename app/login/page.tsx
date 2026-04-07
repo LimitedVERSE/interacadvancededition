@@ -82,8 +82,8 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col h-full px-10 xl:px-12 py-10">
           {/* Logo */}
           <div className="flex items-center gap-3.5 mb-12">
-            <div className="w-11 h-11 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/20">
-              <span className="text-white font-black text-2xl leading-none">Z</span>
+            <div className="w-11 h-11 rounded-xl overflow-hidden shadow-lg shadow-[#6D1ED4]/20">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="text-[15px] font-bold text-white tracking-tight leading-none mb-0.5">Zelle</p>
@@ -144,8 +144,8 @@ export default function LoginPage() {
         <div className="relative z-10 w-full max-w-[400px]">
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-3 mb-10">
-            <div className="w-10 h-10 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/20">
-              <span className="text-white font-black text-xl leading-none">Z</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#6D1ED4]/20">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="text-[14px] font-bold text-white leading-none mb-0.5">Zelle</p>

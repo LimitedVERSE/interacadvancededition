@@ -394,10 +394,10 @@ function Sidebar({ onNav }: { onNav: (href: string) => void }) {
       style={{ background: "rgba(3,5,20,0.92)" }}
       aria-label="Main navigation"
     >
-      {/* Z logo */}
-      <div className="w-10 h-10 bg-[#6D1ED4] rounded-xl flex items-center justify-center mb-4 shrink-0"
+      {/* Zelle logo */}
+      <div className="w-10 h-10 rounded-xl overflow-hidden mb-4 shrink-0"
         style={{ boxShadow: "0 0 16px rgba(109,30,212,0.6)" }}>
-        <span className="text-white font-black text-xl leading-none">Z</span>
+        <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
       </div>
 
       {NAV_ITEMS.map(({ icon: Icon, label, active, href }) => (
@@ -527,9 +527,9 @@ function ZelleLoader({ onComplete }: { onComplete: () => void }) {
         <div className="relative w-24 h-24 flex items-center justify-center">
           <div className="absolute inset-0 rounded-full border border-[#6D1ED4]/20 orbit-ring" />
           <div className="absolute inset-[-12px] rounded-full border border-[#6D1ED4]/10 orbit-ring" style={{ animationDirection: "reverse", animationDuration: "12s" }} />
-          <div className="w-16 h-16 bg-[#6D1ED4] rounded-2xl flex items-center justify-center"
+          <div className="w-16 h-16 rounded-2xl overflow-hidden"
             style={{ boxShadow: "0 0 40px rgba(109,30,212,0.8), inset 0 0 20px rgba(139,74,232,0.3)" }}>
-            <span className="text-white font-black text-3xl leading-none">Z</span>
+            <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
           </div>
         </div>
 
@@ -608,9 +608,9 @@ function DashboardContent() {
 
           {/* Mobile logo */}
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="w-8 h-8 bg-[#6D1ED4] rounded-lg flex items-center justify-center"
+            <div className="w-8 h-8 rounded-lg overflow-hidden"
               style={{ boxShadow: "0 0 12px rgba(109,30,212,0.5)" }}>
-              <span className="text-white font-black text-base leading-none">Z</span>
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <span className="text-[12px] font-bold text-white tracking-wide">Zelle</span>
           </div>

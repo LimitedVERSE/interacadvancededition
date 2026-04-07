@@ -823,8 +823,8 @@ export default function SendTransferPage() {
       <header className="border-b border-white/[0.06] bg-[#080808]/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-3.5 flex items-center justify-between gap-2">
           <Link href="/dashboard" className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-md shadow-[#6D1ED4]/20 shrink-0">
-              <span className="text-white font-black text-lg leading-none">Z</span>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden shadow-md shadow-[#6D1ED4]/20 shrink-0">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0">
               <p className="text-[13px] sm:text-[14px] font-bold text-white leading-none mb-0.5 truncate">Zelle</p>

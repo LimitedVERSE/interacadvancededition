@@ -27,9 +27,9 @@ export default function Header() {
           className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6D1ED4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#111] rounded-lg"
           aria-label="Zelle home"
         >
-          {/* Z icon */}
-          <div className="relative w-9 h-9 bg-[#6D1ED4] rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(109,30,212,0.5)] group-hover:shadow-[0_0_18px_rgba(109,30,212,0.7)] transition-shadow duration-200">
-            <span className="text-white font-black text-xl leading-none select-none">Z</span>
+          {/* Zelle logo icon */}
+          <div className="relative w-9 h-9 rounded-lg overflow-hidden shadow-[0_0_12px_rgba(109,30,212,0.5)] group-hover:shadow-[0_0_18px_rgba(109,30,212,0.7)] transition-shadow duration-200">
+            <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
           </div>
 
           {/* Brand text */}

@@ -87,8 +87,8 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
 
       <header className="border-b border-zinc-800 bg-black">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/30">
-            <span className="text-white font-black text-2xl leading-none">Z</span>
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#6D1ED4]/30">
+            <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-xl font-semibold text-white">{data.bankVisuals.name}</h1>
         </div>

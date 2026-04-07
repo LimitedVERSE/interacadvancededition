@@ -51,8 +51,8 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
             rel="noopener noreferrer"
             className="flex items-center gap-2.5"
           >
-            <div className="w-8 h-8 bg-[#6D1ED4] rounded-md flex items-center justify-center">
-              <span className="text-white font-black text-lg leading-none">Z</span>
+            <div className="w-8 h-8 rounded-md overflow-hidden">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <span className="text-sm font-bold text-gray-900 tracking-tight">Zelle Payment</span>
           </a>

@@ -702,103 +702,164 @@ function DashboardContent() {
           </div>
         </header>
 
-        {/* Main scroll area */}
-        <main className="flex-1 overflow-y-auto relative z-10 pb-24" aria-label="Dashboard content">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 space-y-5">
+        {/* ── Desktop: two-column no-scroll layout / Mobile: scrollable ── */}
+        <main className="flex-1 overflow-hidden relative z-10 flex flex-col" aria-label="Dashboard content">
 
-            {/* Portal header row */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-base font-semibold text-white tracking-tight leading-tight">Overview</h1>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <Building2 className="w-3 h-3 text-zinc-600" />
-                  <span className="text-[10px] font-mono tracking-[0.18em] text-zinc-600 uppercase">
-                    Zelle Payments Portal
-                  </span>
+          {/* ── DESKTOP two-column grid ── */}
+          <div className="hidden lg:grid lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px] h-full gap-0">
+
+            {/* LEFT column */}
+            <div className="flex flex-col gap-0 px-5 py-4 border-r border-white/[0.05] overflow-hidden">
+
+              {/* Portal header row */}
+              <div className="flex items-center justify-between mb-4 shrink-0">
+                <div>
+                  <h1 className="text-[15px] font-semibold text-white tracking-tight leading-tight">Overview</h1>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <Building2 className="w-3 h-3 text-zinc-600" />
+                    <span className="text-[10px] font-mono tracking-[0.18em] text-zinc-600 uppercase">Zelle Payments Portal</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-emerald-500/15 bg-emerald-500/5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 ledger-tick" />
+                    <span className="text-[9px] text-emerald-400 font-mono tracking-widest">NOMINAL</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#00B8D9]/15 bg-[#00B8D9]/5">
+                    <Activity className="w-3 h-3" style={{ color: "#00B8D9" }} />
+                    <span className="text-[9px] font-mono tracking-widest" style={{ color: "#00B8D9" }}>AES-256</span>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/15 bg-emerald-500/5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 ledger-tick" />
-                  <span className="text-[10px] text-emerald-400 font-mono tracking-widest">All Systems Nominal</span>
-                </div>
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#00B8D9]/15 bg-[#00B8D9]/5">
-                  <Activity className="w-3 h-3" style={{ color: "#00B8D9" }} />
-                  <span className="text-[10px] font-mono tracking-widest" style={{ color: "#00B8D9" }}>CREDSEC · AES-256</span>
-                </div>
+
+              {/* Account cards — compact desktop variant */}
+              <div className="shrink-0 mb-4">
+                <AccountBalancePanel />
+              </div>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 mb-3 shrink-0">
+                <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(109,30,212,0.3), transparent)" }} />
+                <span className="text-[9px] font-mono tracking-[0.2em] text-zinc-600 uppercase">Actions</span>
+                <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.3))" }} />
+              </div>
+
+              {/* Action buttons */}
+              <div className="shrink-0">
+                <ActionButtons onNav={handleNav} />
               </div>
             </div>
 
-            {/* Cards + Ledger */}
-            <div className="flex gap-3 items-stretch">
-              {/* Account cards */}
-              <div className="flex-1 min-w-0">
-                <AccountBalancePanel />
+            {/* RIGHT column */}
+            <div className="flex flex-col gap-0 px-4 py-4 overflow-hidden">
+
+              {/* Section header */}
+              <div className="flex items-center gap-3 mb-3 shrink-0">
+                <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(109,30,212,0.3), transparent)" }} />
+                <span className="text-[9px] font-mono tracking-[0.2em] text-zinc-600 uppercase">Quick Access</span>
+                <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.3))" }} />
               </div>
-              {/* Live ledger — desktop */}
-              <div className="hidden xl:flex w-[180px] shrink-0" style={{ minHeight: "240px" }}>
+
+              {/* App grid — fills available space */}
+              <div className="grid grid-cols-2 gap-1.5 shrink-0 mb-3">
+                {GRID_ITEMS.map(({ id, title, desc, icon: Icon, href, color }, i) => (
+                  <button
+                    key={id}
+                    onClick={() => handleNav(href)}
+                    className="group flex items-center gap-2.5 p-2.5 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.05] active:scale-[0.98] transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60 text-left"
+                    style={{
+                      animationDelay: `${0.5 + i * 0.05}s`,
+                      animation: "glowPop 0.4s ease-out forwards",
+                      opacity: 0,
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = `${color}35`
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.05)"
+                    }}
+                  >
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center border shrink-0 transition-all duration-200 group-hover:scale-105"
+                      style={{ background: `${color}10`, borderColor: `${color}22` }}>
+                      <Icon className="w-3.5 h-3.5" style={{ color }} />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-[11px] font-medium text-zinc-300 group-hover:text-white transition-colors leading-tight truncate">
+                        {title}
+                      </span>
+                      <span className="text-[9px] text-zinc-600 font-mono leading-tight mt-0.5 truncate">
+                        {desc}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Live ledger — fills remaining right-column space */}
+              <div className="flex-1 min-h-0">
                 <LiveLedgerPanel />
               </div>
             </div>
+          </div>
 
-            {/* Action buttons */}
-            <div className="pt-1">
-              <ActionButtons onNav={handleNav} />
+          {/* ── MOBILE / TABLET scrollable layout ── */}
+          <div className="lg:hidden flex-1 overflow-y-auto pb-24 px-4 py-4 space-y-4">
+
+            {/* Portal header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-[15px] font-semibold text-white tracking-tight">Overview</h1>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <Building2 className="w-3 h-3 text-zinc-600" />
+                  <span className="text-[10px] font-mono tracking-[0.18em] text-zinc-600 uppercase">Zelle Payments Portal</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-emerald-500/15 bg-emerald-500/5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 ledger-tick" />
+                <span className="text-[9px] text-emerald-400 font-mono tracking-widest">NOMINAL</span>
+              </div>
             </div>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3 py-1">
+            <AccountBalancePanel />
+            <ActionButtons onNav={handleNav} />
+
+            <div className="flex items-center gap-3">
               <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(109,30,212,0.3), transparent)" }} />
               <span className="text-[9px] font-mono tracking-[0.2em] text-zinc-600 uppercase">Quick Access</span>
               <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.3))" }} />
             </div>
 
-            {/* App grid */}
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {GRID_ITEMS.map(({ id, title, desc, icon: Icon, href, color }, i) => (
                 <button
                   key={id}
                   onClick={() => handleNav(href)}
-                  className="group flex items-center gap-3 p-3 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.05] active:scale-[0.98] transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60 text-left"
-                  style={{
-                    animationDelay: `${0.5 + i * 0.05}s`,
-                    animation: "glowPop 0.4s ease-out forwards",
-                    opacity: 0,
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor = `${color}30`
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.05)"
-                  }}
+                  className="group flex items-center gap-2.5 p-3 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.05] active:scale-[0.98] transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60 text-left"
+                  style={{ animationDelay: `${0.5 + i * 0.05}s`, animation: "glowPop 0.4s ease-out forwards", opacity: 0 }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = `${color}35` }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.05)" }}
                 >
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center border shrink-0 transition-all duration-200 group-hover:scale-105"
-                    style={{ background: `${color}10`, borderColor: `${color}22` }}>
-                    <Icon className="w-4 h-4" style={{ color }} />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center border shrink-0" style={{ background: `${color}10`, borderColor: `${color}22` }}>
+                    <Icon className="w-3.5 h-3.5" style={{ color }} />
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[12px] font-medium text-zinc-300 group-hover:text-white transition-colors leading-tight truncate">
-                      {title}
-                    </span>
-                    <span className="text-[10px] text-zinc-600 font-mono leading-tight mt-0.5 truncate hidden sm:block">
-                      {desc}
-                    </span>
+                    <span className="text-[12px] font-medium text-zinc-300 group-hover:text-white transition-colors leading-tight truncate">{title}</span>
+                    <span className="text-[10px] text-zinc-600 font-mono leading-tight mt-0.5 truncate">{desc}</span>
                   </div>
                 </button>
               ))}
             </div>
 
-            {/* Live ledger — mobile/tablet */}
-            <div className="xl:hidden" style={{ height: "130px" }}>
+            <div style={{ height: "140px" }}>
               <LiveLedgerPanel />
             </div>
-
           </div>
+
         </main>
       </div>
 
-      {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 z-20">
+      {/* Footer — mobile only */}
+      <div className="lg:hidden absolute bottom-0 left-0 right-0 z-20">
         <FooterMegaMenu />
       </div>
     </div>

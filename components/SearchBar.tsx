@@ -38,7 +38,7 @@ export default function SearchBar({ onSearch, clientMode = false }: SearchBarPro
         placeholder={t.mainPage.searchPlaceholder}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className={`w-full pl-11 pr-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-transparent transition-all ${
+        className={`w-full pl-11 pr-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:border-transparent transition-all ${
           clientMode
             ? "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 shadow-sm"
             : "border-zinc-700 bg-zinc-900 text-white placeholder:text-zinc-500"

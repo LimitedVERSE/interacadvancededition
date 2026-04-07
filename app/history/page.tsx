@@ -163,7 +163,7 @@ function HistoryContent() {
                       <p className="text-2xl font-bold text-white">
                         {showAmounts ? `$${Number.parseFloat(deposit.amount).toFixed(2)}` : "••••••"}
                       </p>
-                      <p className="text-sm text-zinc-400">CAD</p>
+                      <p className="text-sm text-zinc-400">USD</p>
                     </div>
                   </div>
                 </CardHeader>

@@ -186,7 +186,7 @@ export default function AdminDepositPortal() {
             { label: "Total Deposits", value: stats.total, icon: Users, color: "text-zinc-300" },
             { label: "Pending",        value: stats.pending, icon: Clock, color: "text-amber-400" },
             { label: "Completed",      value: stats.completed, icon: CheckCircle, color: "text-green-400" },
-            { label: "Total Volume",   value: `$${formatAmount(stats.volume)} CAD`, icon: DollarSign, color: "text-[#FDB913]" },
+            { label: "Total Volume",   value: `$${formatAmount(stats.volume)} USD`, icon: DollarSign, color: "text-[#6D1ED4]" },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
@@ -201,8 +201,8 @@ export default function AdminDepositPortal() {
         {/* Custom amount link composer */}
         <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-5">
           <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
-            <div className="w-9 h-9 rounded-xl bg-[#FDB913]/10 flex items-center justify-center">
-              <Link className="w-4 h-4 text-[#FDB913]" />
+            <div className="w-9 h-9 rounded-xl bg-[#6D1ED4]/10 flex items-center justify-center">
+              <Link className="w-4 h-4 text-[#6D1ED4]" />
             </div>
             <div>
               <h2 className="text-sm font-semibold text-white">Generate Client Deposit Link</h2>
@@ -212,7 +212,7 @@ export default function AdminDepositPortal() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-zinc-400">Amount (CAD) *</label>
+              <label className="text-xs font-medium text-zinc-400">Amount (USD) *</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-semibold">$</span>
                 <Input
@@ -259,7 +259,7 @@ export default function AdminDepositPortal() {
           <Button
             onClick={generateLink}
             disabled={!customAmount || parseFloat(customAmount) <= 0}
-            className="bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold h-11 w-full md:w-auto px-8"
+            className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold h-11 w-full md:w-auto px-8"
           >
             <Send className="w-4 h-4 mr-2" />
             Generate Link
@@ -353,7 +353,7 @@ export default function AdminDepositPortal() {
                             : <EyeOff className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300" />
                           }
                         </button>
-                        <span className="text-xs text-zinc-600 block">CAD</span>
+                        <span className="text-xs text-zinc-600 block">USD</span>
                       </div>
                       {expandedId === dep.id
                         ? <ChevronUp className="w-4 h-4 text-zinc-500" />
@@ -368,7 +368,7 @@ export default function AdminDepositPortal() {
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4">
                         <div>
                           <p className="text-xs text-zinc-500 mb-0.5">Amount</p>
-                          <p className="text-sm font-semibold text-white">${formatAmount(dep.amount)} CAD</p>
+                          <p className="text-sm font-semibold text-white">${formatAmount(dep.amount)} USD</p>
                         </div>
                         <div>
                           <p className="text-xs text-zinc-500 mb-0.5">Recipient</p>
@@ -399,7 +399,7 @@ export default function AdminDepositPortal() {
                             onClick={() => updateStatus(dep.id, s)}
                             className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
                               dep.status === s
-                                ? "bg-[#FDB913] text-black"
+                                ? "bg-[#6D1ED4] text-white"
                                 : "bg-zinc-700 text-zinc-400 hover:bg-zinc-600 hover:text-white"
                             }`}
                           >

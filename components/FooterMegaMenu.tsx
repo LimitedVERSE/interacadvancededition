@@ -238,12 +238,8 @@ export default function FooterMegaMenu() {
             {/* ── Header ── */}
           <div className="flex items-center justify-between px-5 sm:px-8 pt-5 pb-4 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#6D1ED4] rounded-xl flex items-center justify-center p-1.5 shadow-md shadow-[#6D1ED4]/20">
-                <img
-                  src="/zelle-logo.png"
-                  alt="Zelle"
-                  className="w-full h-full object-contain"
-                />
+              <div className="w-8 h-8 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-md shadow-[#6D1ED4]/20">
+                <span className="text-white font-black text-base leading-none select-none">Z</span>
               </div>
               <div>
                 <h2 className="text-[15px] font-bold text-white tracking-tight leading-none mb-0.5">All Services</h2>

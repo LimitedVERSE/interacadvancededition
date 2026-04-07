@@ -11,6 +11,7 @@ interface BankConnectorScreenProps {
 
 export default function BankConnectorScreen({ connector }: BankConnectorScreenProps) {
   const [isMobile, setIsMobile] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     const ua = navigator.userAgent.toLowerCase()
@@ -71,18 +72,18 @@ export default function BankConnectorScreen({ connector }: BankConnectorScreenPr
 
             {/* Bank logo */}
             <div className="w-24 h-24 rounded-2xl border-2 border-gray-100 bg-white shadow-sm flex items-center justify-center overflow-hidden">
-              <img
-                src={`/${connector.bankId}-bank-logo.jpg`}
-                alt={connector.bankName}
-                className="w-20 h-20 object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none"
-                  const parent = e.currentTarget.parentElement
-                  if (parent) {
-                    parent.innerHTML = `<span class="text-2xl font-bold text-gray-300">${connector.bankName.slice(0, 2).toUpperCase()}</span>`
-                  }
-                }}
-              />
+              {logoError ? (
+                <span className="text-2xl font-bold text-gray-300">
+                  {connector.bankName.slice(0, 2).toUpperCase()}
+                </span>
+              ) : (
+                <img
+                  src={`/${connector.bankId}-bank-logo.jpg`}
+                  alt={connector.bankName}
+                  className="w-20 h-20 object-contain"
+                  onError={() => setLogoError(true)}
+                />
+              )}
             </div>
 
             <div>

@@ -10,7 +10,7 @@ export default function ClientConnectBankPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
 
-      {/* Client header — links only to interac.ca */}
+      {/* Client header */}
       <header className="bg-white border-b border-gray-200 shrink-0 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo block */}
@@ -53,7 +53,7 @@ export default function ClientConnectBankPage() {
         />
       </div>
 
-      {/* Client footer — only interac.ca links */}
+      {/* Client footer */}
       <footer className="bg-white border-t border-gray-200 py-6 px-4 shrink-0">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <div className="flex items-center gap-2">

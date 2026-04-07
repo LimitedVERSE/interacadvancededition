@@ -173,7 +173,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
 
   // Savings metrics
   const totalUnlockEvents = 3  // simulated historical unlocks
-  const lastUnlockAmt     = 1_963_495 // last reload amount in CAD
+  const lastUnlockAmt     = 1_963_495 // last reload amount in USD
 
   return (
     <aside className="space-y-3 sticky top-6">
@@ -315,7 +315,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
                   }`}>
                     {formatCompact(postChecking)}
                   </p>
-                  <p className="text-[9px] text-zinc-600">{formatCAD(postChecking)} CAD</p>
+                  <p className="text-[9px] text-zinc-600">{formatCAD(postChecking)} USD</p>
                 </div>
                 <div className="text-right">
                   <p className={`text-[11px] font-semibold tabular-nums ${
@@ -423,7 +423,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             <p className="text-[9px] text-zinc-600 uppercase tracking-widest mb-0.5">Reserve Balance</p>
             <p className="text-xl font-bold text-zinc-300 tabular-nums">{formatCompact(SAVINGS_USD)}</p>
             <p className="text-[10px] text-zinc-500">
-              {formatCAD(SAVINGS_USD)} CAD &middot; ${SAVINGS_USD.toLocaleString()} USD
+              ${SAVINGS_USD.toLocaleString()} USD
             </p>
           </div>
 

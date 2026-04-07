@@ -132,7 +132,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
                 placeholder={t.institutionSelect.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border-2 border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913] transition-colors"
+                className="w-full pl-10 pr-4 py-3 border-2 border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-[#6D1ED4] focus:ring-2 focus:ring-[#6D1ED4] transition-colors"
                 aria-label={t.institutionSelect.searchLabel}
               />
             </div>
@@ -151,7 +151,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
               {totalSelections > 0 && (
                 <button
                   onClick={handleContinue}
-                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#1a1a1a] bg-[#FDB913] rounded-md hover:bg-[#e5a811] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 shadow-sm hover:shadow-md animate-in fade-in slide-in-from-right-2 duration-300"
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-[#6D1ED4] rounded-md hover:bg-[#5A18B0] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 shadow-sm hover:shadow-md animate-in fade-in slide-in-from-right-2 duration-300"
                   aria-label={t.institutionSelect.continue}
                 >
                   {t.institutionSelect.continue}
@@ -161,7 +161,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
               {totalSelections > 0 && (
                 <button
                   onClick={clearAll}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground bg-muted rounded-md hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground bg-muted rounded-md hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2"
                   aria-label={t.institutionSelect.clearAll}
                 >
                   <X className="w-4 h-4" />
@@ -195,7 +195,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
                       />
                       <span className="text-base font-semibold text-foreground">{t.categories[group.id]}</span>
                       {hasSelection && (
-                        <span className="flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium bg-[#FDB913] text-[#1a1a1a] rounded-full">
+                        <span className="flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium bg-[#6D1ED4] text-white rounded-full">
                           <Check className="w-3 h-3" strokeWidth={3} />
                           {t.institutionSelect.selected}
                         </span>

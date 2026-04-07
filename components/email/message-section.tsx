@@ -1,3 +1,5 @@
+"use client"
+
 interface MessageSectionProps {
   recipientName: string
   title: string

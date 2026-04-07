@@ -1,5 +1,7 @@
+"use client"
+
 import type React from "react"
-import { InteracHeader } from "./interac-header"
+import InteracHeader from "./interac-header"
 import { InteracFooter } from "./interac-footer"
 
 interface InteracEmailLayoutProps {

@@ -1,3 +1,5 @@
+"use client"
+
 interface ZelleHeaderProps {
   language?: "en" | "fr"
   clientMode?: boolean

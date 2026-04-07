@@ -1,3 +1,5 @@
+"use client"
+
 interface ZelleFooterProps {
   senderName?: string
   institution?: string

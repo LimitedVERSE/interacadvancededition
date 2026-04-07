@@ -1,3 +1,5 @@
+"use client"
+
 interface InteracFooterProps {
   senderName?: string
   institution?: string

@@ -1,3 +1,5 @@
+"use client"
+
 interface InteracHeaderProps {
   logoUrl?: string
   language?: "en" | "fr"

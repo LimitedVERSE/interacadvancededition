@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react"
 import ZelleHeader from "./zelle-header"
 import { ZelleFooter } from "./zelle-footer"

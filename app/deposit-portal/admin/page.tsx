@@ -150,7 +150,7 @@ export default function AdminDepositPortal() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#FDB913]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#6D1ED4]" />
       </div>
     )
   }
@@ -177,7 +177,7 @@ export default function AdminDepositPortal() {
               <p className="text-xs text-zinc-500">Admin view — full access</p>
             </div>
           </div>
-          <span className="px-3 py-1 bg-[#FDB913] text-black text-xs font-bold rounded-lg">ADMIN</span>
+              <span className="px-3 py-1 bg-[#6D1ED4] text-white text-xs font-bold rounded-lg">ADMIN</span>
         </div>
 
         {/* Stats */}

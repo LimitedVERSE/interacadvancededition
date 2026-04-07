@@ -202,10 +202,10 @@ function EmailStudioContent() {
         transferId: previewTransferId,
         senderName: "QuantumYield Treasury",
         institution: "QuantumYield | Treasury & Vault Portal",
-        bankName: "TD Canada Trust",
+        bankName: "Chase Bank",
         limit: "10,000",
         deviceInfo: "Chrome on Windows",
-        location: "Toronto, Canada",
+        location: "New York, NY",
       })
     : ""
 

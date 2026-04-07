@@ -924,7 +924,7 @@ export default function SendTransferPage() {
                       )}
                       {!recipientInvalid && recipientTouched && (
                         <p className="mt-1.5 text-[11px] text-zinc-600">
-                          The recipient will receive an Interac e&#8209;Transfer email at this address.
+                          The recipient will receive a Zelle payment email at this address.
                         </p>
                       )}
                     </div>
@@ -982,7 +982,7 @@ export default function SendTransferPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-bold text-white mb-1">How much are you sending?</h2>
-                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $10,000 CAD.</p>
+                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $10,000 USD.</p>
                   </div>
 
                   {/* Inline balance preview on step 2 — mobile only */}
@@ -1030,7 +1030,7 @@ export default function SendTransferPage() {
                         }}
                       />
                     </div>
-                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Interac fee</p>
+                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Zelle fee</p>
                   </div>
 
                   {/* Quick amounts */}
@@ -1057,7 +1057,7 @@ export default function SendTransferPage() {
                   {/* Custom amount */}
                   <div>
                     <Label htmlFor="amount" className="text-zinc-400 text-[10px] uppercase tracking-wider mb-2 block">
-                      Amount (CAD) <span className="text-red-400">*</span>
+                      Amount (USD) <span className="text-red-400">*</span>
                     </Label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-lg">$</span>
@@ -1230,8 +1230,8 @@ export default function SendTransferPage() {
 
                   <div className="p-4 rounded-xl bg-white/[0.04] border border-white/[0.07]">
                     <p className="text-xs text-zinc-500 leading-relaxed">
-                      By clicking <strong className="text-zinc-300">Send e&#8209;Transfer</strong>, you authorize
-                      Interac to debit your account. Transfers are subject to Interac&apos;s{" "}
+                      By clicking <strong className="text-zinc-300">Send Payment</strong>, you authorize
+                      Zelle to debit your account. Transfers are subject to Zelle&apos;s{" "}
                       <span className="text-[#6D1ED4]">Terms of Service</span>.
                     </p>
                   </div>

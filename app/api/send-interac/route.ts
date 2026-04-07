@@ -146,7 +146,7 @@ export async function POST(request: Request) {
     // Validate the extracted email
     const fromEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailOnly || !fromEmailRegex.test(emailOnly)) {
-      console.error("[send-interac] RESEND_FROM_EMAIL is missing or malformed:", rawFromEnv)
+      console.error("[send-zelle] RESEND_FROM_EMAIL is missing or malformed:", rawFromEnv)
       return NextResponse.json(
         {
           error:
@@ -162,7 +162,7 @@ export async function POST(request: Request) {
 
     if (emailOnly.endsWith("@resend.dev")) {
       console.warn(
-        "[send-interac] Using a @resend.dev sender — Resend only delivers to the verified account owner. " +
+        "[send-zelle] Using a @resend.dev sender — Resend only delivers to the verified account owner. " +
         "Set RESEND_FROM_EMAIL to an address on your verified domain.",
       )
     }
@@ -192,7 +192,7 @@ export async function POST(request: Request) {
         resendResponse.status === 422
           ? ` (422) — The 'from' address "${fromAddress}" was rejected. Ensure RESEND_FROM_EMAIL uses a domain verified in your Resend dashboard.`
           : ""
-      console.error("[send-interac] Resend error:", resendResponse.status, errorMsg, "from:", fromAddress)
+      console.error("[send-zelle] Resend error:", resendResponse.status, errorMsg, "from:", fromAddress)
       return NextResponse.json(
         { error: `Email delivery failed: ${errorMsg}${hint}` },
         { status: 500 },
@@ -206,7 +206,7 @@ export async function POST(request: Request) {
       message: "Zelle payment notification sent successfully",
     })
   } catch (error) {
-    console.error("[v0] Error in send-interac API:", error)
+    console.error("[send-zelle] Error in route handler:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

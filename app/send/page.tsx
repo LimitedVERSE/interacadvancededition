@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -542,6 +542,33 @@ export default function SendTransferPage() {
   const [copiedClient, setCopiedClient]   = useState(false)
   const [countdown, setCountdown]         = useState(5)
   const [stepError, setStepError]         = useState("")
+  const [reviewBanner, setReviewBanner]   = useState<string | null>(null)
+  const prefillDone = useRef(false)
+
+  // ── Handle ?review=transferId — pre-fill form from previously-sent transfer ──
+  useEffect(() => {
+    if (prefillDone.current) return
+    const params = new URLSearchParams(window.location.search)
+    const reviewId = params.get("review")
+    if (!reviewId) return
+    prefillDone.current = true
+
+    fetch(`/api/transfer/${encodeURIComponent(reviewId)}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data?.transfer) return
+        const t = data.transfer
+        setFormData((prev) => ({
+          ...prev,
+          recipient:     t.recipient_email_masked ?? prev.recipient,
+          recipientName: t.recipient_name         ?? prev.recipientName,
+          amount:        String(t.amount)          ?? prev.amount,
+          message:       t.message                ?? prev.message,
+        }))
+        setReviewBanner(t.transfer_id)
+      })
+      .catch(() => {/* non-fatal */})
+  }, [])
 
   // Countdown after success — redirect to CLIENT deposit-portal page
   useEffect(() => {
@@ -827,6 +854,21 @@ export default function SendTransferPage() {
 
           {/* ── Left: multi-step form ── */}
           <div>
+            {/* Review banner — shown when arriving from an email CTA link */}
+            {reviewBanner && (
+              <div className="mb-4 flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-[#6D1ED4]/10 border border-[#6D1ED4]/25">
+                <RefreshCw className="w-4 h-4 text-[#6D1ED4] mt-0.5 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-[13px] text-[#A87EE8] font-semibold leading-snug">
+                    Reviewing transfer <code className="font-mono text-[#6D1ED4]">{reviewBanner}</code>
+                  </p>
+                  <p className="text-[11px] text-zinc-500 mt-0.5">
+                    Form has been pre-filled from the original transfer. Confirm details and resend if needed.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <StepIndicator current={step} />
 
             {/* Step error */}

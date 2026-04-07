@@ -6,6 +6,7 @@ export interface ZelleEmailData {
   message?: string
   transferId: string
   depositLink: string
+  sendLink?: string   // /send?review=transferId — "Review or Resend" CTA in email
   senderName?: string
   institution?: string
 }
@@ -157,10 +158,35 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
               </div>
             </div>
 
-            <!-- Deposit Button -->
+            <!-- Primary CTA: Deposit button -->
             <div style="padding:0 72px;margin-top:32px;text-align:center">
               <a href="${data.depositLink}" style="display:inline-block;background-color:#6D1ED4;color:#ffffff;font-weight:700;padding:16px 32px;font-size:16px;border-radius:8px;text-decoration:none">${copy.depositCta}</a>
             </div>
+
+            <!-- Secondary CTA: Review or Resend Transfer -->
+            ${data.sendLink ? `
+            <div style="padding:0 72px;margin-top:16px;text-align:center">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="text-align:center;padding-bottom:4px;">
+                    <a href="${data.sendLink}"
+                       style="display:inline-block;border:2px solid #6D1ED4;color:#6D1ED4;
+                              padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;
+                              text-decoration:none;background-color:#ffffff;letter-spacing:0.02em;">
+                      Review or Resend Transfer
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:center;">
+                    <span style="font-size:11px;color:#888888;">
+                      Opens the secure transfer portal with this transaction pre-filled.
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            ` : ""}
 
             <!-- How to Deposit -->
             <div style="padding:0 72px;margin-top:32px">

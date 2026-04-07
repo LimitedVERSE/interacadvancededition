@@ -15,6 +15,7 @@ interface BaseEmailData {
   securityQuestion?: string
   securityAnswer?: string
   depositLink?: string
+  sendLink?: string   // /send?review=transferId — links back to send page for review/resend
 }
 
 // Shared email styles
@@ -149,6 +150,39 @@ const getFooter = () => `
   </div>
 `
 
+/**
+ * Renders a secondary "Review or Resend Transfer" button block.
+ * Shown in every transfer-related email so the admin can quickly open
+ * the /send page pre-filled with the original transfer details.
+ */
+function getSendReviewButton(sendLink?: string, transferId?: string): string {
+  if (!sendLink) return ""
+  const label = transferId
+    ? `Review Transfer ${transferId}`
+    : "Review or Resend Transfer"
+  return `
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 0 0;">
+      <tr>
+        <td style="text-align:center;">
+          <a href="${sendLink}"
+             style="display:inline-block;border:2px solid #6D1ED4;color:#6D1ED4;
+                    padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;
+                    text-decoration:none;letter-spacing:0.02em;background-color:#ffffff;">
+            Review or Resend Transfer
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align:center;padding-top:8px;">
+          <span style="font-size:11px;color:#999999;">
+            Opens the /send page with this transfer pre-filled for review or resend.
+          </span>
+        </td>
+      </tr>
+    </table>
+  `
+}
+
 function formatAmount(amount: number): string {
   return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
@@ -201,6 +235,7 @@ export function generateTransferReceived(data: BaseEmailData): string {
           
           <div class="button-section">
             <a href="${link}" class="action-button">Deposit Your Money</a>
+            ${getSendReviewButton(data.sendLink, data.transferId)}
           </div>
           
           <div class="alert-box alert-warning">
@@ -245,6 +280,7 @@ export function generateTransferSent(data: BaseEmailData): string {
             The recipient will receive an email notification with instructions to deposit the funds.
             You will be notified once the transfer has been deposited.
           </p>
+          ${getSendReviewButton(data.sendLink, data.transferId)}
         </div>
         ${getFooter()}
       </div>
@@ -285,8 +321,9 @@ export function generateTransferPending(data: BaseEmailData): string {
           </div>
           
           <p style="color: #666666; font-size: 14px;">
-            The recipient has been notified. If they haven't received the email, you may resend or cancel the transfer.
+            The recipient has been notified. If they haven&apos;t received the email, you may resend or cancel the transfer.
           </p>
+          ${getSendReviewButton(data.sendLink, data.transferId)}
         </div>
         ${getFooter()}
       </div>

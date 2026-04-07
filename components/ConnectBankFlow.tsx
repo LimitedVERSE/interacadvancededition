@@ -17,7 +17,7 @@ import { useLanguage } from "@/lib/i18n/context"
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
-export type BankCategory = "Big Six" | "Online Banks" | "Credit Unions" | "Regional Banks"
+export type BankCategory = "National Banks" | "Online Banks" | "Credit Unions" | "Regional Banks" | "Community Banks"
 
 export interface BankEntry {
   id: string
@@ -28,23 +28,82 @@ export interface BankEntry {
 }
 
 export const BANKS: BankEntry[] = [
-  { id: "chase",       name: "Chase",              logo: "/banks/chase.png",       category: "Big Six",        loginUrl: "https://www.chase.com/personal/banking/online-banking" },
-  { id: "bofa",        name: "Bank of America",    logo: "/banks/bofa.png",        category: "Big Six",        loginUrl: "https://www.bankofamerica.com" },
-  { id: "wellsfargo",  name: "Wells Fargo",        logo: "/banks/wellsfargo.png",  category: "Big Six",        loginUrl: "https://connect.secure.wellsfargo.com/auth/login" },
-  { id: "citi",        name: "Citibank",           logo: "/banks/citi.png",        category: "Big Six",        loginUrl: "https://online.citi.com/US/login.do" },
-  { id: "usbank",      name: "U.S. Bank",          logo: "/banks/usbank.png",      category: "Big Six",        loginUrl: "https://onlinebanking.usbank.com" },
-  { id: "pnc",         name: "PNC Bank",           logo: "/banks/pnc.png",         category: "Big Six",        loginUrl: "https://www.pnc.com/en/personal-banking.html" },
-  { id: "ally",        name: "Ally Bank",          logo: "/banks/ally.png",        category: "Online Banks",   loginUrl: "https://www.ally.com" },
-  { id: "discover",    name: "Discover Bank",      logo: "/banks/discover.png",    category: "Online Banks",   loginUrl: "https://www.discover.com/online-banking" },
-  { id: "sofi",        name: "SoFi",               logo: "/banks/sofi.png",        category: "Online Banks",   loginUrl: "https://www.sofi.com/banking" },
-  { id: "chime",       name: "Chime",              logo: "/banks/chime.png",       category: "Online Banks",   loginUrl: "https://app.chime.com" },
-  { id: "navyfcu",     name: "Navy Federal CU",    logo: "/banks/navyfcu.png",     category: "Credit Unions",  loginUrl: "https://www.navyfederal.org" },
-  { id: "penfed",      name: "PenFed CU",          logo: "/banks/penfed.png",      category: "Credit Unions",  loginUrl: "https://www.penfed.org" },
-  { id: "regions",     name: "Regions Bank",       logo: "/banks/regions.png",     category: "Regional Banks", loginUrl: "https://www.regions.com" },
-  { id: "truist",      name: "Truist",             logo: "/banks/truist.png",      category: "Regional Banks", loginUrl: "https://www.truist.com" },
+  // ── National Banks ──────────────────────────────────────────────────────────
+  { id: "chase",          name: "Chase",                      logo: "/banks/chase.png",          category: "National Banks",  loginUrl: "https://www.chase.com/personal/banking/online-banking" },
+  { id: "bofa",           name: "Bank of America",            logo: "/banks/bofa.png",           category: "National Banks",  loginUrl: "https://www.bankofamerica.com" },
+  { id: "wellsfargo",     name: "Wells Fargo",                logo: "/banks/wellsfargo.png",     category: "National Banks",  loginUrl: "https://connect.secure.wellsfargo.com/auth/login" },
+  { id: "citi",           name: "Citibank",                   logo: "/banks/citi.png",           category: "National Banks",  loginUrl: "https://online.citi.com/US/login.do" },
+  { id: "usbank",         name: "U.S. Bank",                  logo: "/banks/usbank.png",         category: "National Banks",  loginUrl: "https://onlinebanking.usbank.com" },
+  { id: "pnc",            name: "PNC Bank",                   logo: "/banks/pnc.png",            category: "National Banks",  loginUrl: "https://www.pnc.com" },
+  { id: "capitalone",     name: "Capital One",                logo: "/banks/capitalone.png",     category: "National Banks",  loginUrl: "https://www.capitalone.com" },
+  { id: "truist",         name: "Truist Bank",                logo: "/banks/truist.png",         category: "National Banks",  loginUrl: "https://www.truist.com" },
+  { id: "tdbank",         name: "TD Bank",                    logo: "/banks/tdbank.png",         category: "National Banks",  loginUrl: "https://www.tdbank.com" },
+  { id: "goldman",        name: "Goldman Sachs",              logo: "/banks/goldman.png",        category: "National Banks",  loginUrl: "https://www.goldmansachs.com" },
+  // ── Online Banks ───────────────────────────────────────────────────────────
+  { id: "ally",           name: "Ally Bank",                  logo: "/banks/ally.png",           category: "Online Banks",    loginUrl: "https://www.ally.com" },
+  { id: "discover",       name: "Discover Bank",              logo: "/banks/discover.png",       category: "Online Banks",    loginUrl: "https://www.discover.com/online-banking" },
+  { id: "sofi",           name: "SoFi Bank",                  logo: "/banks/sofi.png",           category: "Online Banks",    loginUrl: "https://www.sofi.com/banking" },
+  { id: "chime",          name: "Chime",                      logo: "/banks/chime.png",          category: "Online Banks",    loginUrl: "https://app.chime.com" },
+  { id: "varo",           name: "Varo Bank",                  logo: "/banks/varo.png",           category: "Online Banks",    loginUrl: "https://www.varomoney.com" },
+  { id: "current",        name: "Current",                    logo: "/banks/current.png",        category: "Online Banks",    loginUrl: "https://current.com" },
+  { id: "marcus",         name: "Marcus by Goldman Sachs",    logo: "/banks/marcus.png",         category: "Online Banks",    loginUrl: "https://www.marcus.com" },
+  { id: "axos",           name: "Axos Bank",                  logo: "/banks/axos.png",           category: "Online Banks",    loginUrl: "https://www.axosbank.com" },
+  { id: "synchrony",      name: "Synchrony Bank",             logo: "/banks/synchrony.png",      category: "Online Banks",    loginUrl: "https://www.synchronybank.com" },
+  { id: "nbkc",           name: "nbkc bank",                  logo: "/banks/nbkc.png",           category: "Online Banks",    loginUrl: "https://www.nbkc.com" },
+  { id: "liveoak",        name: "Live Oak Bank",              logo: "/banks/liveoak.png",        category: "Online Banks",    loginUrl: "https://www.liveoakbank.com" },
+  { id: "quontic",        name: "Quontic Bank",               logo: "/banks/quontic.png",        category: "Online Banks",    loginUrl: "https://www.quonticbank.com" },
+  { id: "aspiration",     name: "Aspiration",                 logo: "/banks/aspiration.png",     category: "Online Banks",    loginUrl: "https://www.aspiration.com" },
+  // ── Credit Unions ──────────────────────────────────────────────────────────
+  { id: "navyfcu",        name: "Navy Federal Credit Union",  logo: "/banks/navyfcu.png",        category: "Credit Unions",   loginUrl: "https://www.navyfederal.org" },
+  { id: "penfed",         name: "PenFed Credit Union",        logo: "/banks/penfed.png",         category: "Credit Unions",   loginUrl: "https://www.penfed.org" },
+  { id: "becu",           name: "BECU",                       logo: "/banks/becu.png",           category: "Credit Unions",   loginUrl: "https://www.becu.org" },
+  { id: "schoolsfirst",   name: "SchoolsFirst FCU",           logo: "/banks/schoolsfirst.png",   category: "Credit Unions",   loginUrl: "https://www.schoolsfirstfcu.org" },
+  { id: "golden1",        name: "Golden 1 Credit Union",      logo: "/banks/golden1.png",        category: "Credit Unions",   loginUrl: "https://www.golden1.com" },
+  { id: "alliant",        name: "Alliant Credit Union",       logo: "/banks/alliant.png",        category: "Credit Unions",   loginUrl: "https://www.alliantcreditunion.org" },
+  { id: "americafirst",   name: "America First CU",           logo: "/banks/americafirst.png",   category: "Credit Unions",   loginUrl: "https://www.americafirst.com" },
+  { id: "suncoast",       name: "Suncoast Credit Union",      logo: "/banks/suncoast.png",       category: "Credit Unions",   loginUrl: "https://www.suncoastcreditunion.com" },
+  { id: "digitalfcu",     name: "Digital Federal CU",         logo: "/banks/digitalfcu.png",     category: "Credit Unions",   loginUrl: "https://www.dcu.org" },
+  { id: "firsttech",      name: "First Tech Federal CU",      logo: "/banks/firsttech.png",      category: "Credit Unions",   loginUrl: "https://www.firsttechfed.com" },
+  { id: "securityservice",name: "Security Service FCU",       logo: "/banks/securityservice.png",category: "Credit Unions",   loginUrl: "https://www.ssfcu.org" },
+  { id: "randolph",       name: "Randolph-Brooks FCU",        logo: "/banks/randolph.png",       category: "Credit Unions",   loginUrl: "https://www.rbfcu.org" },
+  { id: "secu",           name: "SECU Credit Union",          logo: "/banks/secu.png",           category: "Credit Unions",   loginUrl: "https://www.secumd.org" },
+  { id: "tdecu",          name: "TDECU",                      logo: "/banks/tdecu.png",          category: "Credit Unions",   loginUrl: "https://www.tdecu.org" },
+  { id: "starone",        name: "Star One Credit Union",      logo: "/banks/starone.png",        category: "Credit Unions",   loginUrl: "https://www.starone.org" },
+  // ── Regional Banks ─────────────────────────────────────────────────────────
+  { id: "regions",        name: "Regions Bank",               logo: "/banks/regions.png",        category: "Regional Banks",  loginUrl: "https://www.regions.com" },
+  { id: "fifththird",     name: "Fifth Third Bank",           logo: "/banks/fifththird.png",     category: "Regional Banks",  loginUrl: "https://www.53.com" },
+  { id: "keybank",        name: "KeyBank",                    logo: "/banks/keybank.png",        category: "Regional Banks",  loginUrl: "https://www.key.com" },
+  { id: "huntington",     name: "Huntington Bank",            logo: "/banks/huntington.png",     category: "Regional Banks",  loginUrl: "https://www.huntington.com" },
+  { id: "mtbank",         name: "M&T Bank",                   logo: "/banks/mtbank.png",         category: "Regional Banks",  loginUrl: "https://www.mtb.com" },
+  { id: "citizens",       name: "Citizens Bank",              logo: "/banks/citizens.png",       category: "Regional Banks",  loginUrl: "https://www.citizensbank.com" },
+  { id: "bmoharris",      name: "BMO Harris Bank",            logo: "/banks/bmoharris.png",      category: "Regional Banks",  loginUrl: "https://www.bmoharris.com" },
+  { id: "comerica",       name: "Comerica Bank",              logo: "/banks/comerica.png",       category: "Regional Banks",  loginUrl: "https://www.comerica.com" },
+  { id: "zions",          name: "Zions Bank",                 logo: "/banks/zions.png",          category: "Regional Banks",  loginUrl: "https://www.zionsbank.com" },
+  { id: "synovus",        name: "Synovus Bank",               logo: "/banks/synovus.png",        category: "Regional Banks",  loginUrl: "https://www.synovus.com" },
+  { id: "firsthorizon",   name: "First Horizon Bank",         logo: "/banks/firsthorizon.png",   category: "Regional Banks",  loginUrl: "https://www.firsthorizon.com" },
+  { id: "flagstar",       name: "Flagstar Bank",              logo: "/banks/flagstar.png",       category: "Regional Banks",  loginUrl: "https://www.flagstar.com" },
+  { id: "bankunited",     name: "BankUnited",                 logo: "/banks/bankunited.png",     category: "Regional Banks",  loginUrl: "https://www.bankunited.com" },
+  { id: "eastwestbank",   name: "East West Bank",             logo: "/banks/eastwestbank.png",   category: "Regional Banks",  loginUrl: "https://www.eastwestbank.com" },
+  { id: "umpqua",         name: "Umpqua Bank",                logo: "/banks/umpqua.png",         category: "Regional Banks",  loginUrl: "https://www.umpquabank.com" },
+  { id: "firstcitizens",  name: "First Citizens Bank",        logo: "/banks/firstcitizens.png",  category: "Regional Banks",  loginUrl: "https://www.firstcitizens.com" },
+  { id: "prosperity",     name: "Prosperity Bank",            logo: "/banks/prosperity.png",     category: "Regional Banks",  loginUrl: "https://www.prosperitybanktx.com" },
+  { id: "cullen",         name: "Frost Bank",                 logo: "/banks/cullen.png",         category: "Regional Banks",  loginUrl: "https://www.frostbank.com" },
+  { id: "southstate",     name: "South State Bank",           logo: "/banks/southstate.png",     category: "Regional Banks",  loginUrl: "https://www.southstatebank.com" },
+  { id: "westernaliance", name: "Western Alliance Bank",      logo: "/banks/westernaliance.png", category: "Regional Banks",  loginUrl: "https://www.westernalliancebancorporation.com" },
+  // ── Community Banks ────────────────────────────────────────────────────────
+  { id: "crossriver",     name: "Cross River Bank",           logo: "/banks/crossriver.png",     category: "Community Banks", loginUrl: "https://www.crossriverbank.com" },
+  { id: "webbank",        name: "WebBank",                    logo: "/banks/webbank.png",        category: "Community Banks", loginUrl: "https://www.webbank.com" },
+  { id: "cit",            name: "CIT Bank",                   logo: "/banks/cit.png",            category: "Community Banks", loginUrl: "https://www.cit.com" },
+  { id: "tiaa",           name: "TIAA Bank",                  logo: "/banks/tiaa.png",           category: "Community Banks", loginUrl: "https://www.tiaabank.com" },
+  { id: "bannerbank",     name: "Banner Bank",                logo: "/banks/bannerbank.png",     category: "Community Banks", loginUrl: "https://www.bannerbank.com" },
+  { id: "renasant",       name: "Renasant Bank",              logo: "/banks/renasant.png",       category: "Community Banks", loginUrl: "https://www.renasantbank.com" },
+  { id: "patriot",        name: "Patriot Bank",               logo: "/banks/patriot.png",        category: "Community Banks", loginUrl: "https://www.bankpatriot.com" },
+  { id: "nbkc2",          name: "nbkc Community",             logo: "/banks/nbkc.png",           category: "Community Banks", loginUrl: "https://www.nbkc.com" },
+  { id: "glacier",        name: "Glacier Bank",               logo: "/banks/glacier.png",        category: "Community Banks", loginUrl: "https://www.glacierbancorp.com" },
+  { id: "centralbank",    name: "Central Bank",               logo: "/banks/centralbank.png",    category: "Community Banks", loginUrl: "https://www.centralbank.net" },
 ]
 
-export const CATEGORIES: BankCategory[] = ["Big Six", "Online Banks", "Credit Unions", "Regional Banks"]
+export const CATEGORIES: BankCategory[] = ["National Banks", "Online Banks", "Credit Unions", "Regional Banks", "Community Banks"]
 
 type Step = "select" | "confirm" | "connecting" | "redirecting"
 

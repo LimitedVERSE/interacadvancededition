@@ -7,6 +7,7 @@ interface EmailData {
   securityQuestion?: string
   transferId: string
   depositLink: string
+  sendLink?: string
   senderName?: string
   institution?: string
 }
@@ -18,6 +19,7 @@ export function renderInteracEmail(data: EmailData): string {
     message: data.message,
     transferId: data.transferId,
     depositLink: data.depositLink,
+    sendLink: data.sendLink,
     senderName: data.senderName,
     institution: data.institution,
   })

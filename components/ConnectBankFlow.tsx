@@ -22,88 +22,155 @@ export type BankCategory = "National Banks" | "Online Banks" | "Credit Unions" |
 export interface BankEntry {
   id: string
   name: string
-  logo: string
+  domain: string        // used for logo.clearbit.com/<domain>
+  color: string         // brand fallback bg color
   category: BankCategory
   loginUrl: string
 }
 
+/** Returns the Clearbit logo URL for a given domain (size=128 for crisp display) */
+export function bankLogoUrl(domain: string): string {
+  return `https://logo.clearbit.com/${domain}?size=128`
+}
+
 export const BANKS: BankEntry[] = [
   // ── National Banks ──────────────────────────────────────────────────────────
-  { id: "chase",          name: "Chase",                      logo: "/banks/chase.png",          category: "National Banks",  loginUrl: "https://www.chase.com/personal/banking/online-banking" },
-  { id: "bofa",           name: "Bank of America",            logo: "/banks/bofa.png",           category: "National Banks",  loginUrl: "https://www.bankofamerica.com" },
-  { id: "wellsfargo",     name: "Wells Fargo",                logo: "/banks/wellsfargo.png",     category: "National Banks",  loginUrl: "https://connect.secure.wellsfargo.com/auth/login" },
-  { id: "citi",           name: "Citibank",                   logo: "/banks/citi.png",           category: "National Banks",  loginUrl: "https://online.citi.com/US/login.do" },
-  { id: "usbank",         name: "U.S. Bank",                  logo: "/banks/usbank.png",         category: "National Banks",  loginUrl: "https://onlinebanking.usbank.com" },
-  { id: "pnc",            name: "PNC Bank",                   logo: "/banks/pnc.png",            category: "National Banks",  loginUrl: "https://www.pnc.com" },
-  { id: "capitalone",     name: "Capital One",                logo: "/banks/capitalone.png",     category: "National Banks",  loginUrl: "https://www.capitalone.com" },
-  { id: "truist",         name: "Truist Bank",                logo: "/banks/truist.png",         category: "National Banks",  loginUrl: "https://www.truist.com" },
-  { id: "tdbank",         name: "TD Bank",                    logo: "/banks/tdbank.png",         category: "National Banks",  loginUrl: "https://www.tdbank.com" },
-  { id: "goldman",        name: "Goldman Sachs",              logo: "/banks/goldman.png",        category: "National Banks",  loginUrl: "https://www.goldmansachs.com" },
+  { id: "chase",           name: "Chase",                      domain: "chase.com",                       color: "#117ACA", category: "National Banks",  loginUrl: "https://www.chase.com" },
+  { id: "bofa",            name: "Bank of America",            domain: "bankofamerica.com",               color: "#E31837", category: "National Banks",  loginUrl: "https://www.bankofamerica.com" },
+  { id: "wellsfargo",      name: "Wells Fargo",                domain: "wellsfargo.com",                  color: "#D71E2B", category: "National Banks",  loginUrl: "https://www.wellsfargo.com" },
+  { id: "citi",            name: "Citibank",                   domain: "citi.com",                        color: "#003B8E", category: "National Banks",  loginUrl: "https://online.citi.com" },
+  { id: "usbank",          name: "U.S. Bank",                  domain: "usbank.com",                      color: "#0660A9", category: "National Banks",  loginUrl: "https://www.usbank.com" },
+  { id: "pnc",             name: "PNC Bank",                   domain: "pnc.com",                         color: "#F58220", category: "National Banks",  loginUrl: "https://www.pnc.com" },
+  { id: "capitalone",      name: "Capital One",                domain: "capitalone.com",                  color: "#D03027", category: "National Banks",  loginUrl: "https://www.capitalone.com" },
+  { id: "truist",          name: "Truist Bank",                domain: "truist.com",                      color: "#4E2A84", category: "National Banks",  loginUrl: "https://www.truist.com" },
+  { id: "tdbank",          name: "TD Bank",                    domain: "tdbank.com",                      color: "#34A853", category: "National Banks",  loginUrl: "https://www.tdbank.com" },
+  { id: "goldman",         name: "Goldman Sachs",              domain: "goldmansachs.com",                color: "#6A6A6A", category: "National Banks",  loginUrl: "https://www.goldmansachs.com" },
   // ── Online Banks ───────────────────────────────────────────────────────────
-  { id: "ally",           name: "Ally Bank",                  logo: "/banks/ally.png",           category: "Online Banks",    loginUrl: "https://www.ally.com" },
-  { id: "discover",       name: "Discover Bank",              logo: "/banks/discover.png",       category: "Online Banks",    loginUrl: "https://www.discover.com/online-banking" },
-  { id: "sofi",           name: "SoFi Bank",                  logo: "/banks/sofi.png",           category: "Online Banks",    loginUrl: "https://www.sofi.com/banking" },
-  { id: "chime",          name: "Chime",                      logo: "/banks/chime.png",          category: "Online Banks",    loginUrl: "https://app.chime.com" },
-  { id: "varo",           name: "Varo Bank",                  logo: "/banks/varo.png",           category: "Online Banks",    loginUrl: "https://www.varomoney.com" },
-  { id: "current",        name: "Current",                    logo: "/banks/current.png",        category: "Online Banks",    loginUrl: "https://current.com" },
-  { id: "marcus",         name: "Marcus by Goldman Sachs",    logo: "/banks/marcus.png",         category: "Online Banks",    loginUrl: "https://www.marcus.com" },
-  { id: "axos",           name: "Axos Bank",                  logo: "/banks/axos.png",           category: "Online Banks",    loginUrl: "https://www.axosbank.com" },
-  { id: "synchrony",      name: "Synchrony Bank",             logo: "/banks/synchrony.png",      category: "Online Banks",    loginUrl: "https://www.synchronybank.com" },
-  { id: "nbkc",           name: "nbkc bank",                  logo: "/banks/nbkc.png",           category: "Online Banks",    loginUrl: "https://www.nbkc.com" },
-  { id: "liveoak",        name: "Live Oak Bank",              logo: "/banks/liveoak.png",        category: "Online Banks",    loginUrl: "https://www.liveoakbank.com" },
-  { id: "quontic",        name: "Quontic Bank",               logo: "/banks/quontic.png",        category: "Online Banks",    loginUrl: "https://www.quonticbank.com" },
-  { id: "aspiration",     name: "Aspiration",                 logo: "/banks/aspiration.png",     category: "Online Banks",    loginUrl: "https://www.aspiration.com" },
+  { id: "ally",            name: "Ally Bank",                  domain: "ally.com",                        color: "#7D2AE8", category: "Online Banks",    loginUrl: "https://www.ally.com" },
+  { id: "discover",        name: "Discover Bank",              domain: "discover.com",                    color: "#F76F20", category: "Online Banks",    loginUrl: "https://www.discover.com" },
+  { id: "sofi",            name: "SoFi Bank",                  domain: "sofi.com",                        color: "#00A59A", category: "Online Banks",    loginUrl: "https://www.sofi.com" },
+  { id: "chime",           name: "Chime",                      domain: "chime.com",                       color: "#1EC677", category: "Online Banks",    loginUrl: "https://www.chime.com" },
+  { id: "varo",            name: "Varo Bank",                  domain: "varomoney.com",                   color: "#3A3BFF", category: "Online Banks",    loginUrl: "https://www.varomoney.com" },
+  { id: "current",         name: "Current",                    domain: "current.com",                     color: "#30D5C8", category: "Online Banks",    loginUrl: "https://current.com" },
+  { id: "marcus",          name: "Marcus",                     domain: "marcus.com",                      color: "#6A6A6A", category: "Online Banks",    loginUrl: "https://www.marcus.com" },
+  { id: "axos",            name: "Axos Bank",                  domain: "axosbank.com",                    color: "#0E6CC0", category: "Online Banks",    loginUrl: "https://www.axosbank.com" },
+  { id: "synchrony",       name: "Synchrony Bank",             domain: "synchronybank.com",               color: "#003087", category: "Online Banks",    loginUrl: "https://www.synchronybank.com" },
+  { id: "nbkc",            name: "nbkc bank",                  domain: "nbkc.com",                        color: "#E8411A", category: "Online Banks",    loginUrl: "https://www.nbkc.com" },
+  { id: "liveoak",         name: "Live Oak Bank",              domain: "liveoakbank.com",                 color: "#1D6F42", category: "Online Banks",    loginUrl: "https://www.liveoakbank.com" },
+  { id: "quontic",         name: "Quontic Bank",               domain: "quonticbank.com",                 color: "#0070C0", category: "Online Banks",    loginUrl: "https://www.quonticbank.com" },
+  { id: "aspiration",      name: "Aspiration",                 domain: "aspiration.com",                  color: "#00B38E", category: "Online Banks",    loginUrl: "https://www.aspiration.com" },
   // ── Credit Unions ──────────────────────────────────────────────────────────
-  { id: "navyfcu",        name: "Navy Federal Credit Union",  logo: "/banks/navyfcu.png",        category: "Credit Unions",   loginUrl: "https://www.navyfederal.org" },
-  { id: "penfed",         name: "PenFed Credit Union",        logo: "/banks/penfed.png",         category: "Credit Unions",   loginUrl: "https://www.penfed.org" },
-  { id: "becu",           name: "BECU",                       logo: "/banks/becu.png",           category: "Credit Unions",   loginUrl: "https://www.becu.org" },
-  { id: "schoolsfirst",   name: "SchoolsFirst FCU",           logo: "/banks/schoolsfirst.png",   category: "Credit Unions",   loginUrl: "https://www.schoolsfirstfcu.org" },
-  { id: "golden1",        name: "Golden 1 Credit Union",      logo: "/banks/golden1.png",        category: "Credit Unions",   loginUrl: "https://www.golden1.com" },
-  { id: "alliant",        name: "Alliant Credit Union",       logo: "/banks/alliant.png",        category: "Credit Unions",   loginUrl: "https://www.alliantcreditunion.org" },
-  { id: "americafirst",   name: "America First CU",           logo: "/banks/americafirst.png",   category: "Credit Unions",   loginUrl: "https://www.americafirst.com" },
-  { id: "suncoast",       name: "Suncoast Credit Union",      logo: "/banks/suncoast.png",       category: "Credit Unions",   loginUrl: "https://www.suncoastcreditunion.com" },
-  { id: "digitalfcu",     name: "Digital Federal CU",         logo: "/banks/digitalfcu.png",     category: "Credit Unions",   loginUrl: "https://www.dcu.org" },
-  { id: "firsttech",      name: "First Tech Federal CU",      logo: "/banks/firsttech.png",      category: "Credit Unions",   loginUrl: "https://www.firsttechfed.com" },
-  { id: "securityservice",name: "Security Service FCU",       logo: "/banks/securityservice.png",category: "Credit Unions",   loginUrl: "https://www.ssfcu.org" },
-  { id: "randolph",       name: "Randolph-Brooks FCU",        logo: "/banks/randolph.png",       category: "Credit Unions",   loginUrl: "https://www.rbfcu.org" },
-  { id: "secu",           name: "SECU Credit Union",          logo: "/banks/secu.png",           category: "Credit Unions",   loginUrl: "https://www.secumd.org" },
-  { id: "tdecu",          name: "TDECU",                      logo: "/banks/tdecu.png",          category: "Credit Unions",   loginUrl: "https://www.tdecu.org" },
-  { id: "starone",        name: "Star One Credit Union",      logo: "/banks/starone.png",        category: "Credit Unions",   loginUrl: "https://www.starone.org" },
+  { id: "navyfcu",         name: "Navy Federal CU",            domain: "navyfederal.org",                 color: "#003087", category: "Credit Unions",   loginUrl: "https://www.navyfederal.org" },
+  { id: "penfed",          name: "PenFed CU",                  domain: "penfed.org",                      color: "#004B8D", category: "Credit Unions",   loginUrl: "https://www.penfed.org" },
+  { id: "becu",            name: "BECU",                       domain: "becu.org",                        color: "#007DC5", category: "Credit Unions",   loginUrl: "https://www.becu.org" },
+  { id: "schoolsfirst",    name: "SchoolsFirst FCU",           domain: "schoolsfirstfcu.org",             color: "#003C71", category: "Credit Unions",   loginUrl: "https://www.schoolsfirstfcu.org" },
+  { id: "golden1",         name: "Golden 1 CU",                domain: "golden1.com",                     color: "#F5A623", category: "Credit Unions",   loginUrl: "https://www.golden1.com" },
+  { id: "alliant",         name: "Alliant CU",                 domain: "alliantcreditunion.org",          color: "#1B4F8A", category: "Credit Unions",   loginUrl: "https://www.alliantcreditunion.org" },
+  { id: "americafirst",    name: "America First CU",           domain: "americafirst.com",                color: "#CC0000", category: "Credit Unions",   loginUrl: "https://www.americafirst.com" },
+  { id: "suncoast",        name: "Suncoast CU",                domain: "suncoastcreditunion.com",         color: "#F7941D", category: "Credit Unions",   loginUrl: "https://www.suncoastcreditunion.com" },
+  { id: "digitalfcu",      name: "Digital FCU",                domain: "dcu.org",                         color: "#0067B1", category: "Credit Unions",   loginUrl: "https://www.dcu.org" },
+  { id: "firsttech",       name: "First Tech FCU",             domain: "firsttechfed.com",                color: "#006837", category: "Credit Unions",   loginUrl: "https://www.firsttechfed.com" },
+  { id: "securityservice", name: "Security Service FCU",       domain: "ssfcu.org",                       color: "#003087", category: "Credit Unions",   loginUrl: "https://www.ssfcu.org" },
+  { id: "randolph",        name: "Randolph-Brooks FCU",        domain: "rbfcu.org",                       color: "#003087", category: "Credit Unions",   loginUrl: "https://www.rbfcu.org" },
+  { id: "secu",            name: "SECU",                       domain: "secumd.org",                      color: "#00529B", category: "Credit Unions",   loginUrl: "https://www.secumd.org" },
+  { id: "tdecu",           name: "TDECU",                      domain: "tdecu.org",                       color: "#005BBB", category: "Credit Unions",   loginUrl: "https://www.tdecu.org" },
+  { id: "starone",         name: "Star One CU",                domain: "starone.org",                     color: "#003087", category: "Credit Unions",   loginUrl: "https://www.starone.org" },
   // ── Regional Banks ─────────────────────────────────────────────────────────
-  { id: "regions",        name: "Regions Bank",               logo: "/banks/regions.png",        category: "Regional Banks",  loginUrl: "https://www.regions.com" },
-  { id: "fifththird",     name: "Fifth Third Bank",           logo: "/banks/fifththird.png",     category: "Regional Banks",  loginUrl: "https://www.53.com" },
-  { id: "keybank",        name: "KeyBank",                    logo: "/banks/keybank.png",        category: "Regional Banks",  loginUrl: "https://www.key.com" },
-  { id: "huntington",     name: "Huntington Bank",            logo: "/banks/huntington.png",     category: "Regional Banks",  loginUrl: "https://www.huntington.com" },
-  { id: "mtbank",         name: "M&T Bank",                   logo: "/banks/mtbank.png",         category: "Regional Banks",  loginUrl: "https://www.mtb.com" },
-  { id: "citizens",       name: "Citizens Bank",              logo: "/banks/citizens.png",       category: "Regional Banks",  loginUrl: "https://www.citizensbank.com" },
-  { id: "bmoharris",      name: "BMO Harris Bank",            logo: "/banks/bmoharris.png",      category: "Regional Banks",  loginUrl: "https://www.bmoharris.com" },
-  { id: "comerica",       name: "Comerica Bank",              logo: "/banks/comerica.png",       category: "Regional Banks",  loginUrl: "https://www.comerica.com" },
-  { id: "zions",          name: "Zions Bank",                 logo: "/banks/zions.png",          category: "Regional Banks",  loginUrl: "https://www.zionsbank.com" },
-  { id: "synovus",        name: "Synovus Bank",               logo: "/banks/synovus.png",        category: "Regional Banks",  loginUrl: "https://www.synovus.com" },
-  { id: "firsthorizon",   name: "First Horizon Bank",         logo: "/banks/firsthorizon.png",   category: "Regional Banks",  loginUrl: "https://www.firsthorizon.com" },
-  { id: "flagstar",       name: "Flagstar Bank",              logo: "/banks/flagstar.png",       category: "Regional Banks",  loginUrl: "https://www.flagstar.com" },
-  { id: "bankunited",     name: "BankUnited",                 logo: "/banks/bankunited.png",     category: "Regional Banks",  loginUrl: "https://www.bankunited.com" },
-  { id: "eastwestbank",   name: "East West Bank",             logo: "/banks/eastwestbank.png",   category: "Regional Banks",  loginUrl: "https://www.eastwestbank.com" },
-  { id: "umpqua",         name: "Umpqua Bank",                logo: "/banks/umpqua.png",         category: "Regional Banks",  loginUrl: "https://www.umpquabank.com" },
-  { id: "firstcitizens",  name: "First Citizens Bank",        logo: "/banks/firstcitizens.png",  category: "Regional Banks",  loginUrl: "https://www.firstcitizens.com" },
-  { id: "prosperity",     name: "Prosperity Bank",            logo: "/banks/prosperity.png",     category: "Regional Banks",  loginUrl: "https://www.prosperitybanktx.com" },
-  { id: "cullen",         name: "Frost Bank",                 logo: "/banks/cullen.png",         category: "Regional Banks",  loginUrl: "https://www.frostbank.com" },
-  { id: "southstate",     name: "South State Bank",           logo: "/banks/southstate.png",     category: "Regional Banks",  loginUrl: "https://www.southstatebank.com" },
-  { id: "westernaliance", name: "Western Alliance Bank",      logo: "/banks/westernaliance.png", category: "Regional Banks",  loginUrl: "https://www.westernalliancebancorporation.com" },
+  { id: "regions",         name: "Regions Bank",               domain: "regions.com",                     color: "#008000", category: "Regional Banks",  loginUrl: "https://www.regions.com" },
+  { id: "fifththird",      name: "Fifth Third Bank",           domain: "53.com",                          color: "#62A800", category: "Regional Banks",  loginUrl: "https://www.53.com" },
+  { id: "keybank",         name: "KeyBank",                    domain: "key.com",                         color: "#CC0000", category: "Regional Banks",  loginUrl: "https://www.key.com" },
+  { id: "huntington",      name: "Huntington Bank",            domain: "huntington.com",                  color: "#006747", category: "Regional Banks",  loginUrl: "https://www.huntington.com" },
+  { id: "mtbank",          name: "M&T Bank",                   domain: "mtb.com",                         color: "#003087", category: "Regional Banks",  loginUrl: "https://www.mtb.com" },
+  { id: "citizens",        name: "Citizens Bank",              domain: "citizensbank.com",                color: "#004B8D", category: "Regional Banks",  loginUrl: "https://www.citizensbank.com" },
+  { id: "bmoharris",       name: "BMO Harris Bank",            domain: "bmoharris.com",                   color: "#0079C1", category: "Regional Banks",  loginUrl: "https://www.bmoharris.com" },
+  { id: "comerica",        name: "Comerica Bank",              domain: "comerica.com",                    color: "#003087", category: "Regional Banks",  loginUrl: "https://www.comerica.com" },
+  { id: "zions",           name: "Zions Bank",                 domain: "zionsbank.com",                   color: "#003C71", category: "Regional Banks",  loginUrl: "https://www.zionsbank.com" },
+  { id: "synovus",         name: "Synovus Bank",               domain: "synovus.com",                     color: "#00529B", category: "Regional Banks",  loginUrl: "https://www.synovus.com" },
+  { id: "firsthorizon",    name: "First Horizon Bank",         domain: "firsthorizon.com",                color: "#003087", category: "Regional Banks",  loginUrl: "https://www.firsthorizon.com" },
+  { id: "flagstar",        name: "Flagstar Bank",              domain: "flagstar.com",                    color: "#0033A0", category: "Regional Banks",  loginUrl: "https://www.flagstar.com" },
+  { id: "bankunited",      name: "BankUnited",                 domain: "bankunited.com",                  color: "#005B8E", category: "Regional Banks",  loginUrl: "https://www.bankunited.com" },
+  { id: "eastwestbank",    name: "East West Bank",             domain: "eastwestbank.com",                color: "#C8102E", category: "Regional Banks",  loginUrl: "https://www.eastwestbank.com" },
+  { id: "umpqua",          name: "Umpqua Bank",                domain: "umpquabank.com",                  color: "#007B5F", category: "Regional Banks",  loginUrl: "https://www.umpquabank.com" },
+  { id: "firstcitizens",   name: "First Citizens Bank",        domain: "firstcitizens.com",               color: "#003087", category: "Regional Banks",  loginUrl: "https://www.firstcitizens.com" },
+  { id: "prosperity",      name: "Prosperity Bank",            domain: "prosperitybanktx.com",            color: "#004B8D", category: "Regional Banks",  loginUrl: "https://www.prosperitybanktx.com" },
+  { id: "cullen",          name: "Frost Bank",                 domain: "frostbank.com",                   color: "#004B8D", category: "Regional Banks",  loginUrl: "https://www.frostbank.com" },
+  { id: "southstate",      name: "South State Bank",           domain: "southstatebank.com",              color: "#003087", category: "Regional Banks",  loginUrl: "https://www.southstatebank.com" },
+  { id: "westernaliance",  name: "Western Alliance Bank",      domain: "westernalliancebancorporation.com",color: "#003C71",category: "Regional Banks",  loginUrl: "https://www.westernalliancebancorporation.com" },
   // ── Community Banks ────────────────────────────────────────────────────────
-  { id: "crossriver",     name: "Cross River Bank",           logo: "/banks/crossriver.png",     category: "Community Banks", loginUrl: "https://www.crossriverbank.com" },
-  { id: "webbank",        name: "WebBank",                    logo: "/banks/webbank.png",        category: "Community Banks", loginUrl: "https://www.webbank.com" },
-  { id: "cit",            name: "CIT Bank",                   logo: "/banks/cit.png",            category: "Community Banks", loginUrl: "https://www.cit.com" },
-  { id: "tiaa",           name: "TIAA Bank",                  logo: "/banks/tiaa.png",           category: "Community Banks", loginUrl: "https://www.tiaabank.com" },
-  { id: "bannerbank",     name: "Banner Bank",                logo: "/banks/bannerbank.png",     category: "Community Banks", loginUrl: "https://www.bannerbank.com" },
-  { id: "renasant",       name: "Renasant Bank",              logo: "/banks/renasant.png",       category: "Community Banks", loginUrl: "https://www.renasantbank.com" },
-  { id: "patriot",        name: "Patriot Bank",               logo: "/banks/patriot.png",        category: "Community Banks", loginUrl: "https://www.bankpatriot.com" },
-  { id: "nbkc2",          name: "nbkc Community",             logo: "/banks/nbkc.png",           category: "Community Banks", loginUrl: "https://www.nbkc.com" },
-  { id: "glacier",        name: "Glacier Bank",               logo: "/banks/glacier.png",        category: "Community Banks", loginUrl: "https://www.glacierbancorp.com" },
-  { id: "centralbank",    name: "Central Bank",               logo: "/banks/centralbank.png",    category: "Community Banks", loginUrl: "https://www.centralbank.net" },
+  { id: "crossriver",      name: "Cross River Bank",           domain: "crossriverbank.com",              color: "#003087", category: "Community Banks", loginUrl: "https://www.crossriverbank.com" },
+  { id: "webbank",         name: "WebBank",                    domain: "webbank.com",                     color: "#003087", category: "Community Banks", loginUrl: "https://www.webbank.com" },
+  { id: "cit",             name: "CIT Bank",                   domain: "cit.com",                         color: "#003087", category: "Community Banks", loginUrl: "https://www.cit.com" },
+  { id: "tiaa",            name: "TIAA Bank",                  domain: "tiaa.org",                        color: "#006747", category: "Community Banks", loginUrl: "https://www.tiaa.org" },
+  { id: "bannerbank",      name: "Banner Bank",                domain: "bannerbank.com",                  color: "#CC0000", category: "Community Banks", loginUrl: "https://www.bannerbank.com" },
+  { id: "renasant",        name: "Renasant Bank",              domain: "renasantbank.com",                color: "#003C71", category: "Community Banks", loginUrl: "https://www.renasantbank.com" },
+  { id: "patriot",         name: "Patriot Bank",               domain: "bankpatriot.com",                 color: "#003087", category: "Community Banks", loginUrl: "https://www.bankpatriot.com" },
+  { id: "glacier",         name: "Glacier Bank",               domain: "glacierbancorp.com",              color: "#0067B1", category: "Community Banks", loginUrl: "https://www.glacierbancorp.com" },
+  { id: "centralbank",     name: "Central Bank",               domain: "centralbank.net",                 color: "#003087", category: "Community Banks", loginUrl: "https://www.centralbank.net" },
 ]
 
 export const CATEGORIES: BankCategory[] = ["National Banks", "Online Banks", "Credit Unions", "Regional Banks", "Community Banks"]
+
+// ─── BankLogo component ───────────────────────────────────────────────────────
+// Loads from Clearbit logo API. On error, renders a brand-colored letter avatar.
+
+interface BankLogoProps {
+  bank: BankEntry
+  size?: "sm" | "md" | "lg"
+  className?: string
+}
+
+function BankLogo({ bank, size = "md", className = "" }: BankLogoProps) {
+  const [failed, setFailed] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+
+  const sizeMap = {
+    sm: { outer: "w-8 h-8",   img: "w-6 h-6",   text: "text-sm"  },
+    md: { outer: "w-12 h-12", img: "w-10 h-10",  text: "text-base" },
+    lg: { outer: "w-16 h-16", img: "w-12 h-12",  text: "text-xl"  },
+  }
+  const s = sizeMap[size]
+
+  const initials = bank.name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+
+  if (failed) {
+    return (
+      <div
+        className={`${s.outer} rounded-xl flex items-center justify-center shrink-0 ${className}`}
+        style={{ backgroundColor: bank.color }}
+        role="img"
+        aria-label={`${bank.name} logo`}
+      >
+        <span className={`text-white font-bold ${s.text} leading-none`}>{initials}</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className={`${s.outer} rounded-xl bg-white border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden ${className}`}
+         role="img" aria-label={`${bank.name} logo`}>
+      {!loaded && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-4 h-4 rounded-full border-2 border-gray-200 border-t-gray-400 animate-spin" />
+        </div>
+      )}
+      <img
+        src={bankLogoUrl(bank.domain)}
+        alt={`${bank.name} logo`}
+        className={`${s.img} object-contain transition-opacity duration-200 ${loaded ? "opacity-100" : "opacity-0"}`}
+        onLoad={() => setLoaded(true)}
+        onError={() => setFailed(true)}
+        crossOrigin="anonymous"
+      />
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 type Step = "select" | "confirm" | "connecting" | "redirecting"
 
@@ -287,14 +354,14 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true, client
   const [selected, setSelected]             = useState<BankEntry | null>(null)
   const [step, setStep]                     = useState<Step>("select")
   const [countdown, setCountdown]           = useState(5)
-  const [brokenLogos, setBrokenLogos]       = useState<Set<string>>(new Set())
 
   const categoryLabels: Record<BankCategory | "all", string> = {
-    all:              c.allCategory,
-    "Big Six":        c.catBigSix,
-    "Online Banks":   c.catOnline,
-    "Credit Unions":  c.catCreditUnions,
-    "Regional Banks": c.catRegional,
+    all:                c.allCategory,
+    "National Banks":   "National",
+    "Online Banks":     "Online",
+    "Credit Unions":    "Credit Unions",
+    "Regional Banks":   "Regional",
+    "Community Banks":  "Community",
   }
 
   const filtered = BANKS.filter((b) => {
@@ -473,27 +540,19 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true, client
                     <h2 className={`text-xs font-semibold tracking-widest ${t.catLabel} uppercase mb-3`}>
                       {categoryLabels[cat]}
                     </h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                       {banks.map((bank) => (
                         <button
                           key={bank.id}
                           onClick={() => handleSelect(bank)}
-                          className={`group relative ${t.bankCard} rounded-2xl p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-all hover:shadow-lg hover:shadow-[#6D1ED4]/10 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2`}
+                          className={`group relative ${t.bankCard} rounded-2xl p-4 flex flex-col items-center gap-3 min-h-[116px] transition-all duration-150 hover:shadow-lg hover:shadow-[#6D1ED4]/12 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2`}
                           aria-label={c.connectTo(bank.name)}
                         >
-                          {!brokenLogos.has(bank.id) ? (
-                            <img
-                              src={bank.logo}
-                              alt={`${bank.name} logo`}
-                              className="w-full h-10 object-contain transition-all group-hover:scale-105"
-                              onError={() => setBrokenLogos((p) => new Set(p).add(bank.id))}
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-xl bg-[#6D1ED4] flex items-center justify-center">
-                              <span className="text-white font-bold text-lg">{bank.name[0]}</span>
-                            </div>
-                          )}
-                          <span className={`text-[11px] font-semibold ${t.bankName} text-center leading-tight transition-colors`}>
+                          {/* Logo container — fixed 48×48 so all tiles align */}
+                          <div className="w-12 h-12 flex items-center justify-center mt-1 transition-transform duration-150 group-hover:scale-105">
+                            <BankLogo bank={bank} size="md" />
+                          </div>
+                          <span className={`text-[11px] font-semibold ${t.bankName} text-center leading-snug transition-colors w-full line-clamp-2`}>
                             {bank.name}
                           </span>
                           <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-300 group-hover:text-[#6D1ED4] opacity-0 group-hover:opacity-100 transition-all" />
@@ -522,23 +581,13 @@ export default function ConnectBankFlow({ onBack, showManualEntry = true, client
 
           {/* Bank card */}
           <div className={`${t.confirmCard} rounded-2xl p-6 mb-6 flex items-center gap-5`}>
-            <div className={`w-16 h-16 ${t.confirmBankBg} rounded-xl border flex items-center justify-center overflow-hidden shrink-0`}>
-              {!brokenLogos.has(selected.id) ? (
-                <img
-                  src={selected.logo}
-                  alt={selected.name}
-                  className="w-full h-full object-contain p-2"
-                  onError={() => setBrokenLogos((p) => new Set(p).add(selected.id))}
-                />
-              ) : (
-                <span className="text-xl font-bold text-white">{selected.name[0]}</span>
-              )}
-            </div>
+            <BankLogo bank={selected} size="lg" />
             <div>
-              <p className={`text-xs ${t.confirmCat} font-medium uppercase tracking-wider mb-0.5`}>
+              <p className={`text-xs ${t.confirmCat} font-medium uppercase tracking-wider mb-1`}>
                 {categoryLabels[selected.category]}
               </p>
               <h2 className={`text-xl font-bold ${t.confirmName}`}>{selected.name}</h2>
+              <p className={`text-xs ${t.confirmCat} mt-0.5`}>{selected.domain}</p>
             </div>
           </div>
 

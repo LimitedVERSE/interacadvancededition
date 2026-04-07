@@ -48,18 +48,23 @@ function formatCompact(n: number) {
 }
 
 // ─── Particle System ─────────────────────────────────────────────────────────
-interface Particle { id: number; x: number; y: number; size: number; delay: number; drift: number; color: string }
+interface Particle { id: number; x: number; y: number; size: number; delay: number; drift: number; duration: number; color: string }
 
 function ParticleField() {
-  const particles: Particle[] = Array.from({ length: 28 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: 20 + Math.random() * 75,
-    size: 1 + Math.random() * 2.5,
-    delay: Math.random() * 8,
-    drift: (Math.random() - 0.5) * 60,
-    color: i % 3 === 0 ? "#6D1ED4" : i % 3 === 1 ? "#00B8D9" : "#8B4AE8",
-  }))
+  const particlesRef = useRef<Particle[]>([])
+  if (particlesRef.current.length === 0) {
+    particlesRef.current = Array.from({ length: 28 }, (_, i) => ({
+      id: i,
+      x: (i * 37.3) % 100,
+      y: 20 + (i * 29.7) % 75,
+      size: 1 + (i * 0.09) % 2.5,
+      delay: (i * 0.31) % 8,
+      drift: ((i % 2 === 0 ? 1 : -1) * (i * 2.3)) % 60,
+      duration: 5 + (i * 0.41) % 6,
+      color: i % 3 === 0 ? "#6D1ED4" : i % 3 === 1 ? "#00B8D9" : "#8B4AE8",
+    }))
+  }
+  const particles = particlesRef.current
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
       {particles.map(p => (
@@ -73,7 +78,7 @@ function ParticleField() {
             height: p.size,
             background: p.color,
             boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
-            animation: `floatParticle ${5 + Math.random() * 6}s ease-in-out ${p.delay}s infinite`,
+            animation: `floatParticle ${p.duration}s ease-in-out ${p.delay}s infinite`,
             ["--drift" as string]: `${p.drift}px`,
           }}
         />

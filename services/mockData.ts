@@ -101,8 +101,8 @@ export const mockBanks: Bank[] = [
 
 export const mockDeposit: DepositInfo = {
   amount: "25,000.00",
-  currency: "CAD",
-  sender: "INTERAC Partner Network | QuantumYield",
+  currency: "USD",
+  sender: "Zelle Network | QuantumYield",
   expiryDate: "December 29th, 2025",
   notice: "The deposit will appear on your next statement.",
 }

@@ -27,7 +27,7 @@ interface TransferData {
 
 export function buildInteracMock(bankId?: string, bankName?: string, categoryId?: string, transferData?: TransferData | null): InteracMockPayload {
   // Use provided bank info or fall back to environment variables
-  const finalBankName = bankName || getEnv("MOCK_SENDER_NAME", "Royal Bank of Canada")
+  const finalBankName = bankName || getEnv("MOCK_SENDER_NAME", "Chase Bank")
   const bankLogo = bankId ? getBankLogoPath(bankId) : getEnv("MOCK_BANK_LOGO_URL", "/assets/banks/td.svg")
 
   // Use transfer data if provided, otherwise fall back to environment variables
@@ -35,14 +35,14 @@ export function buildInteracMock(bankId?: string, bankName?: string, categoryId?
   const reference = transferData?.transferId || getEnv("MOCK_DEPOSIT_REFERENCE", "REF-MOCK-2025-001")
   const payeeName = transferData?.recipientName || getEnv("MOCK_PAYEE_NAME", "John Doe")
   const payeeEmail = transferData?.recipient || getEnv("MOCK_PAYEE_EMAIL", "john.doe@example.com")
-  const memo = transferData?.message || getEnv("MOCK_DEPOSIT_MEMO", "Interac e-Transfer Deposit")
+  const memo = transferData?.message || getEnv("MOCK_DEPOSIT_MEMO", "Zelle Payment Deposit")
   const timestamp = transferData?.timestamp || getEnv("MOCK_TRANSACTION_TIMESTAMP", new Date().toISOString())
   const senderBankName = transferData?.senderBank || finalBankName
 
   return {
     meta: {
       id: reference,
-      type: getEnv("MOCK_TRANSACTION_TYPE", "INTERAC_DEPOSIT"),
+      type: getEnv("MOCK_TRANSACTION_TYPE", "ZELLE_DEPOSIT"),
       status: "PENDING" as any,
       timestamp: timestamp,
     },
@@ -62,7 +62,7 @@ export function buildInteracMock(bankId?: string, bankName?: string, categoryId?
 
     deposit: {
       amount: amount,
-      currency: getEnv("MOCK_DEPOSIT_CURRENCY", "CAD"),
+      currency: getEnv("MOCK_DEPOSIT_CURRENCY", "USD"),
       reference: reference,
       memo: memo,
     },
@@ -76,7 +76,7 @@ export function buildInteracMock(bankId?: string, bankName?: string, categoryId?
     bankVisuals: {
       name: finalBankName,
       logo: bankLogo || "/assets/banks/td.svg",
-      login: getEnv("MOCK_BANK_LOGIN_URL", "https://easyweb.td.com"),
+      login: getEnv("MOCK_BANK_LOGIN_URL", "https://www.chase.com/digital/login"),
     },
 
     system: {

@@ -33,6 +33,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
   const [currentIndex, setCurrentIndex] = useState(0)
   const [flowState, setFlowState] = useState<ConnectionFlowState>("confirmation")
   const [countdown, setCountdown] = useState(5)
+  const [logoError, setLogoError] = useState(false)
 
   const currentInstitution = selectedInstitutions[currentIndex]
   const hasMore = currentIndex < selectedInstitutions.length - 1
@@ -132,21 +133,15 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
               {/* Institution Card */}
               <div className="bg-muted rounded-lg p-6 border-2 border-border">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center border border-border overflow-hidden relative">
-                    {logoPath ? (
+                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center border border-border overflow-hidden">
+                    {logoPath && !logoError ? (
                       <Image
-                        src={logoPath || "/placeholder.svg"}
+                        src={logoPath}
                         alt={`${currentInstitution.name} logo`}
                         width={64}
                         height={64}
                         className="object-contain p-2 w-full h-full"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none"
-                          const target = e.currentTarget.parentElement
-                          if (target) {
-                            target.innerHTML = `<span class="text-2xl font-bold text-foreground">${currentInstitution.name.charAt(0)}</span>`
-                          }
-                        }}
+                        onError={() => setLogoError(true)}
                       />
                     ) : (
                       <span className="text-2xl font-bold text-foreground">{currentInstitution.name.charAt(0)}</span>

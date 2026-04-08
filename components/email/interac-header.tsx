@@ -19,7 +19,7 @@ export default function InteracHeader({
             <div className="w-10 h-10 bg-[#6D1ED4] rounded-lg flex items-center justify-center p-1.5 shadow-sm flex-shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                src="https://zelle.quantumyield.digital/zelle-logo.webp"
                 alt="Zelle"
                 width={26}
                 height={26}
@@ -80,17 +80,15 @@ export default function InteracHeader({
           {/* EN / FR toggle */}
           <div className="flex items-center gap-1.5 mr-3">
             <span
-              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${
-                language === "en" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
-              }`}
+              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${language === "en" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
+                }`}
             >
               EN
             </span>
             <span className="text-white/25 text-xs">|</span>
             <span
-              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${
-                language === "fr" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
-              }`}
+              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${language === "fr" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
+                }`}
             >
               FR
             </span>

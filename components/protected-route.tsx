@@ -6,15 +6,37 @@ import { useAuth } from "@/lib/auth/context"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth()
+interface ProtectedRouteProps {
+  children: React.ReactNode
+  requireAdmin?: boolean
+}
+
+export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
+  const { user, isLoading, isAdmin, getAccessSource } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login")
+    if (!isLoading) {
+      if (!user) {
+        router.push("/login")
+        return
+      }
+
+      // If this route requires admin and user is not admin
+      if (requireAdmin && !isAdmin) {
+        // Non-admin users attempting to access admin features are redirected
+        router.push("/deposit-portal/client")
+        return
+      }
+
+      // Prevent client portal users from accessing admin/send/dashboard routes via browser history
+      const source = getAccessSource()
+      if (source === "client" && (requireAdmin || window.location.pathname.includes("/send") || window.location.pathname.includes("/dashboard"))) {
+        router.push("/deposit-portal/client")
+        return
+      }
     }
-  }, [user, isLoading, router])
+  }, [user, isLoading, isAdmin, requireAdmin, getAccessSource, router])
 
   if (isLoading) {
     return (
@@ -27,7 +49,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     )
   }
 
-  if (!user) {
+  if (!user || (requireAdmin && !isAdmin)) {
     return null
   }
 

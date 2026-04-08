@@ -836,7 +836,7 @@ function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requireAdmin={true}>
       <DashboardContent />
     </ProtectedRoute>
   )

@@ -308,11 +308,11 @@ export function generateInteracEmailHtml(data: EmailData): string {
         <div class="topbar-left">
         <table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;">
           <tr>
-            <td width="40" height="40" style="background:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
-              <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+            <td width="40" height="40" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+              <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
                    alt="Zelle"
-                   width="24" height="24"
-                   style="display:block;margin:8px auto;width:24px;height:24px;border:0;"
+                   width="40" height="40"
+                   style="display:block;width:40px;height:40px;border-radius:8px;border:0;object-fit:cover;"
               />
             </td>
           </tr>

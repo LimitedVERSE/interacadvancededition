@@ -57,11 +57,11 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
                     <td valign="middle">
                       <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
-                            <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                          <td width="44" height="44" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
                                  alt="Zelle"
-                                 width="26" height="26"
-                                 style="display:block;margin:9px auto;width:26px;height:26px;border:0;"
+                                 width="44" height="44"
+                                 style="display:block;width:44px;height:44px;border-radius:8px;border:0;object-fit:cover;"
                             />
                           </td>
                         </tr>
@@ -237,11 +237,11 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
                 <td valign="top" width="50%">
                   <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td width="48" height="48" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
-                        <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                      <td width="48" height="48" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
                              alt="Zelle"
-                             width="28" height="28"
-                             style="display:block;margin:10px auto;width:28px;height:28px;border:0;"
+                             width="48" height="48"
+                             style="display:block;width:48px;height:48px;border-radius:8px;border:0;object-fit:cover;"
                         />
                       </td>
                     </tr>

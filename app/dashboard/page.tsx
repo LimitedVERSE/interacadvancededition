@@ -258,25 +258,25 @@ function AccountBalancePanel() {
             : "linear-gradient(90deg, transparent, #6D1ED4, transparent)",
         }} />
 
-        <div className="p-4 sm:p-5">
+        <div className="p-3.5">
           {/* Title row */}
-          <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center justify-between mb-2.5">
             <div>
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-300">Checking</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-300">Checking</span>
                 {isLow && (
                   <span className="text-[8px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded uppercase tracking-wide">
                     Low
                   </span>
                 )}
               </div>
-              <span className="text-[10px] text-zinc-500 tracking-wider">Zelle Network · Active</span>
+              <span className="text-[9px] text-zinc-600 tracking-wider font-mono">Zelle Network · Active</span>
             </div>
             <div className="flex items-center gap-1.5">
-              {reloadPulse && <RefreshCw className="w-3.5 h-3.5 text-[#6D1ED4] animate-spin" />}
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center border"
+              {reloadPulse && <RefreshCw className="w-3 h-3 text-[#6D1ED4] animate-spin" />}
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center border"
                 style={{ background: "rgba(109,30,212,0.12)", borderColor: "rgba(109,30,212,0.25)" }}>
-                <Zap className="w-3.5 h-3.5 text-[#8B4AE8]" />
+                <Zap className="w-3 h-3 text-[#8B4AE8]" />
               </div>
             </div>
           </div>
@@ -287,37 +287,37 @@ function AccountBalancePanel() {
             className="text-left mb-0.5 focus:outline-none group w-full"
             aria-label={revealed ? "Hide balance" : "Reveal balance"}
           >
-            <span className={`font-mono font-bold tracking-tight tabular-nums transition-all duration-300 ${
-              revealed ? "text-2xl sm:text-[26px] text-white" : "text-2xl sm:text-[26px] text-zinc-600 group-hover:text-zinc-500"
+            <span className={`font-mono font-bold tracking-tight tabular-nums transition-all duration-300 text-xl ${
+              revealed ? "text-white" : "text-zinc-600 group-hover:text-zinc-500"
             }`}>
               {revealed ? (
                 <span style={{ textShadow: "0 0 20px rgba(109,30,212,0.6)" }}>{formatUSD(checkingLive)}</span>
-              ) : "$\u00a0••••••••••••"}
+              ) : "$\u00a0••••••••••"}
             </span>
           </button>
-          <p className="text-[10px] text-zinc-500 mb-4 font-mono tracking-widest">USD · FDIC INSURED</p>
+          <p className="text-[9px] text-zinc-600 mb-3 font-mono tracking-widest">USD · FDIC INSURED</p>
 
           {/* Progress bar */}
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[9px] text-zinc-500 tracking-widest uppercase">Balance level</span>
-              <span className={`text-[9px] font-mono font-bold tabular-nums ${isLow ? "text-amber-400" : "text-[#8B4AE8]"}`}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[8px] text-zinc-600 tracking-widest uppercase">Balance</span>
+              <span className={`text-[8px] font-mono font-bold tabular-nums ${isLow ? "text-amber-400" : "text-[#8B4AE8]"}`}>
                 {checkingPct.toFixed(1)}%
               </span>
             </div>
-            <div className="h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+            <div className="h-[2px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
               <div
                 className="h-full rounded-full transition-all duration-1000"
                 style={{
                   width: `${Math.max(checkingPct, 1)}%`,
                   background: isLow ? "#f59e0b" : "linear-gradient(90deg, #6D1ED4, #00B8D9)",
-                  boxShadow: isLow ? "0 0 8px #f59e0b" : "0 0 8px #6D1ED4",
+                  boxShadow: isLow ? "0 0 6px #f59e0b" : "0 0 6px #6D1ED4",
                 }}
               />
             </div>
-            <div className="relative h-4 mt-0.5">
-              <div className="absolute top-0 w-px h-2 bg-zinc-600" style={{ left: "20%" }} />
-              <span className="absolute text-[8px] text-zinc-600 font-mono -translate-x-1/2" style={{ left: "20%", top: "9px" }}>20%</span>
+            <div className="relative h-3.5 mt-0.5">
+              <div className="absolute top-0 w-px h-1.5 bg-zinc-600" style={{ left: "20%" }} />
+              <span className="absolute text-[7px] text-zinc-700 font-mono -translate-x-1/2" style={{ left: "20%", top: "8px" }}>20%</span>
             </div>
           </div>
         </div>
@@ -329,47 +329,45 @@ function AccountBalancePanel() {
         <CornerBrackets color="#00B8D9" size={12} />
         <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, #00B8D9, transparent)" }} />
 
-        <div className="p-4 sm:p-5">
-          <div className="flex items-start justify-between mb-3">
+        <div className="p-3.5">
+          <div className="flex items-center justify-between mb-2.5">
             <div>
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-300">Savings</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-300">Savings</span>
                 <span className="text-[8px] font-bold bg-white/[0.06] text-zinc-400 border border-white/[0.10] px-1.5 py-0.5 rounded uppercase tracking-wide">
                   Reserve
                 </span>
               </div>
-              <span className="text-[10px] text-zinc-500 tracking-wider">Zelle Network · Reserve</span>
+              <span className="text-[9px] text-zinc-600 tracking-wider font-mono">Zelle Network · Reserve</span>
             </div>
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center border"
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center border"
               style={{ background: "rgba(0,180,217,0.08)", borderColor: "rgba(0,180,217,0.2)" }}>
-              <Lock className="w-3.5 h-3.5" style={{ color: "#00B8D9" }} />
+              <Lock className="w-3 h-3" style={{ color: "#00B8D9" }} />
             </div>
           </div>
 
           <div className="mb-0.5">
-            <span className={`font-mono font-bold tracking-tight tabular-nums transition-all duration-300 text-2xl sm:text-[26px] ${
+            <span className={`font-mono font-bold tracking-tight tabular-nums transition-all duration-300 text-xl ${
               revealed ? "text-zinc-200" : "text-zinc-600"
             }`}>
               {revealed ? (
                 <span style={{ textShadow: "0 0 20px rgba(0,180,217,0.4)" }}>{formatUSD(SAVINGS_USD)}</span>
-              ) : "$\u00a0••••••••••••"}
+              ) : "$\u00a0••••••••"}
             </span>
           </div>
-          <p className="text-[10px] text-zinc-500 mb-4 font-mono tracking-widest">USD · FDIC INSURED</p>
+          <p className="text-[9px] text-zinc-600 mb-3 font-mono tracking-widest">USD · FDIC INSURED</p>
 
-          <div className="flex items-start gap-2 p-2.5 rounded-lg border"
+          <div className="flex items-center gap-2 p-2 rounded-lg border"
             style={{ background: "rgba(0,180,217,0.05)", borderColor: "rgba(0,180,217,0.12)" }}>
-            <RefreshCw className="w-3 h-3 mt-0.5 shrink-0" style={{ color: "#00B8D9" }} />
+            <RefreshCw className="w-3 h-3 shrink-0" style={{ color: "#00B8D9" }} />
             <p className="text-[9px] text-zinc-400 leading-relaxed font-mono">
-              Auto-reloads Checking below{" "}
-              <span className="text-zinc-200 font-bold">{formatUSD(CHECKING_USD * RELOAD_THRESHOLD)}</span>
-              {" "}(20% threshold)
+              Auto-reload below <span className="text-zinc-200 font-bold">{formatCompact(CHECKING_USD * RELOAD_THRESHOLD)}</span>
             </p>
           </div>
 
-          <div className="mt-2.5 flex items-center gap-1.5">
-            <TrendingUp className="w-3 h-3 text-zinc-500" />
-            <span className="text-[9px] text-zinc-500 font-mono tracking-wider">Funds securely held · FDIC insured</span>
+          <div className="mt-2 flex items-center gap-1.5">
+            <TrendingUp className="w-3 h-3 text-zinc-600" />
+            <span className="text-[8px] text-zinc-600 font-mono tracking-wider">FDIC insured · Secure hold</span>
           </div>
         </div>
       </div>
@@ -476,7 +474,7 @@ function ActionButtons({ onNav }: { onNav: (href: string) => void }) {
         <button
           key={label}
           onClick={() => onNav(href)}
-          className="group flex items-center gap-3 px-4 py-3.5 rounded-xl border text-left transition-all duration-200 glow-pop focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+          className="group flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-left transition-all duration-200 glow-pop focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
           style={{
             borderColor: `${color}30`,
             background: `${color}08`,
@@ -495,15 +493,15 @@ function ActionButtons({ onNav }: { onNav: (href: string) => void }) {
             el.style.borderColor = `${color}30`
           }}
         >
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200"
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200"
             style={{ background: `${color}15`, border: `1px solid ${color}25` }}>
-            <Icon className="w-4 h-4" style={{ color }} />
+            <Icon className="w-3.5 h-3.5" style={{ color }} />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[13px] font-semibold text-zinc-200 leading-tight">{label}</span>
-            <span className="text-[10px] text-zinc-600 leading-tight mt-0.5 hidden sm:block truncate">{desc}</span>
+            <span className="text-[12px] font-semibold text-zinc-200 leading-tight">{label}</span>
+            <span className="text-[9px] text-zinc-600 leading-tight mt-0.5 hidden sm:block truncate">{desc}</span>
           </div>
-          <ChevronRight className="w-3.5 h-3.5 text-zinc-700 group-hover:text-zinc-400 transition-colors ml-auto shrink-0" />
+          <ChevronRight className="w-3 h-3 text-zinc-700 group-hover:text-zinc-400 transition-colors ml-auto shrink-0" />
         </button>
       ))}
     </div>
@@ -702,85 +700,94 @@ function DashboardContent() {
           </div>
         </header>
 
-        {/* Main scroll area */}
-        <main className="flex-1 overflow-y-auto relative z-10 pb-24" aria-label="Dashboard content">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 space-y-5">
+        {/* ── Main content: two-column, no scroll ── */}
+        <main className="flex-1 min-h-0 flex flex-col lg:flex-row gap-0 relative z-10 overflow-hidden" aria-label="Dashboard content">
 
-            {/* Portal header row */}
-            <div className="flex items-center justify-between">
+          {/* ── LEFT COLUMN ── */}
+          <div className="flex-1 min-w-0 min-h-0 flex flex-col gap-3 px-4 lg:px-5 py-4 overflow-y-auto lg:overflow-hidden">
+
+            {/* Section label */}
+            <div className="flex items-center justify-between shrink-0">
               <div>
-                <h1 className="text-base font-semibold text-white tracking-tight leading-tight">Overview</h1>
-                <div className="flex items-center gap-1.5 mt-0.5">
+                <h1 className="text-[13px] font-semibold text-white tracking-tight leading-none">Overview</h1>
+                <div className="flex items-center gap-1.5 mt-1">
                   <Building2 className="w-3 h-3 text-zinc-600" />
-                  <span className="text-[10px] font-mono tracking-[0.18em] text-zinc-600 uppercase">
-                    Zelle Payments Portal
-                  </span>
+                  <span className="text-[10px] font-mono tracking-[0.18em] text-zinc-600 uppercase">Zelle Payments Portal</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/15 bg-emerald-500/5">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 ledger-tick" />
-                  <span className="text-[10px] text-emerald-400 font-mono tracking-widest">All Systems Nominal</span>
+                  <span className="text-[9px] font-mono text-emerald-400 tracking-widest">NOMINAL</span>
                 </div>
-                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#00B8D9]/15 bg-[#00B8D9]/5">
+                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#00B8D9]/20 bg-[#00B8D9]/5">
                   <Activity className="w-3 h-3" style={{ color: "#00B8D9" }} />
-                  <span className="text-[10px] font-mono tracking-widest" style={{ color: "#00B8D9" }}>CREDSEC · AES-256</span>
+                  <span className="text-[9px] font-mono tracking-widest" style={{ color: "#00B8D9" }}>AES-256</span>
                 </div>
               </div>
             </div>
 
-            {/* Cards + Ledger */}
-            <div className="flex gap-3 items-stretch">
-              {/* Account cards */}
-              <div className="flex-1 min-w-0">
-                <AccountBalancePanel />
-              </div>
-              {/* Live ledger — desktop */}
-              <div className="hidden xl:flex w-[180px] shrink-0" style={{ minHeight: "240px" }}>
-                <LiveLedgerPanel />
-              </div>
+            {/* Account balance cards — flex row, equal heights */}
+            <div className="shrink-0">
+              <AccountBalancePanel />
             </div>
 
             {/* Action buttons */}
-            <div className="pt-1">
+            <div className="shrink-0">
               <ActionButtons onNav={handleNav} />
             </div>
 
-            {/* Divider */}
-            <div className="flex items-center gap-3 py-1">
-              <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(109,30,212,0.3), transparent)" }} />
-              <span className="text-[9px] font-mono tracking-[0.2em] text-zinc-600 uppercase">Quick Access</span>
-              <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.3))" }} />
+            {/* Live ledger — only on mobile/tablet (shown below grid on small screens) */}
+            <div className="lg:hidden flex-1 min-h-0" style={{ minHeight: "120px", maxHeight: "160px" }}>
+              <LiveLedgerPanel />
+            </div>
+          </div>
+
+          {/* ── DIVIDER (desktop vertical line) ── */}
+          <div className="hidden lg:block w-px shrink-0 bg-white/[0.05]" />
+
+          {/* ── RIGHT COLUMN ── */}
+          <div className="hidden lg:flex flex-col gap-3 px-4 lg:px-5 py-4 w-[320px] xl:w-[360px] shrink-0 min-h-0">
+
+            {/* Quick access label */}
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(109,30,212,0.35), transparent)" }} />
+              <span className="text-[9px] font-mono tracking-[0.2em] text-zinc-600 uppercase shrink-0">Quick Access</span>
+              <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(109,30,212,0.35))" }} />
             </div>
 
-            {/* App grid */}
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+            {/* App grid — 3 columns, fills vertical space */}
+            <div className="flex-1 min-h-0 grid grid-cols-3 gap-2 content-start">
               {GRID_ITEMS.map(({ id, title, desc, icon: Icon, href, color }, i) => (
                 <button
                   key={id}
                   onClick={() => handleNav(href)}
-                  className="group flex items-center gap-3 p-3 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.05] active:scale-[0.98] transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60 text-left"
+                  className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-white/[0.05] bg-white/[0.015] hover:bg-white/[0.05] active:scale-[0.97] transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#6D1ED4]/60 text-center"
                   style={{
                     animationDelay: `${0.5 + i * 0.05}s`,
                     animation: "glowPop 0.4s ease-out forwards",
                     opacity: 0,
                   }}
                   onMouseEnter={e => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor = `${color}30`
+                    const el = e.currentTarget as HTMLButtonElement
+                    el.style.borderColor = `${color}35`
+                    el.style.boxShadow   = `0 0 12px ${color}18`
                   }}
                   onMouseLeave={e => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.05)"
+                    const el = e.currentTarget as HTMLButtonElement
+                    el.style.borderColor = "rgba(255,255,255,0.05)"
+                    el.style.boxShadow   = "none"
                   }}
                 >
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center border shrink-0 transition-all duration-200 group-hover:scale-105"
-                    style={{ background: `${color}10`, borderColor: `${color}22` }}>
-                    <Icon className="w-4 h-4" style={{ color }} />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110"
+                    style={{ background: `${color}12`, borderColor: `${color}25` }}>
+                    <Icon className="w-4.5 h-4.5" style={{ color, width: 18, height: 18 }} />
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[12px] font-medium text-zinc-300 group-hover:text-white transition-colors leading-tight truncate">
+                  <div className="flex flex-col items-center min-w-0 w-full">
+                    <span className="text-[11px] font-medium text-zinc-300 group-hover:text-white transition-colors leading-tight truncate w-full text-center">
                       {title}
                     </span>
-                    <span className="text-[10px] text-zinc-600 font-mono leading-tight mt-0.5 truncate hidden sm:block">
+                    <span className="text-[9px] text-zinc-600 font-mono leading-tight mt-0.5 truncate w-full text-center">
                       {desc}
                     </span>
                   </div>
@@ -788,17 +795,37 @@ function DashboardContent() {
               ))}
             </div>
 
-            {/* Live ledger — mobile/tablet */}
-            <div className="xl:hidden" style={{ height: "130px" }}>
+            {/* Live ledger — desktop, fills remaining space */}
+            <div className="shrink-0" style={{ height: "148px" }}>
               <LiveLedgerPanel />
             </div>
-
           </div>
+
         </main>
+
+        {/* ── Status bar (replaces FooterMegaMenu on desktop) ── */}
+        <footer className="shrink-0 hidden lg:flex items-center justify-between px-5 py-1.5 border-t border-white/[0.05] z-20"
+          style={{ background: "rgba(3,5,20,0.9)", backdropFilter: "blur(10px)" }}>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-1 h-1 rounded-full bg-emerald-400" />
+              <span className="text-[9px] font-mono text-zinc-600 tracking-widest">LINQNET OGS · RE-KNOW</span>
+            </div>
+            <div className="w-px h-3 bg-white/[0.06]" />
+            <span className="text-[9px] font-mono text-zinc-700 tracking-widest">ZELLE DISBURSEMENT v4.1.0</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-[9px] font-mono text-zinc-700 tracking-widest">© 2026 EARLY WARNING SERVICES</span>
+            <div className="flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3 text-zinc-700" />
+              <span className="text-[9px] font-mono text-zinc-700">FDIC INSURED</span>
+            </div>
+          </div>
+        </footer>
       </div>
 
-      {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 z-20">
+      {/* Footer — mobile only */}
+      <div className="lg:hidden absolute bottom-0 left-0 right-0 z-20">
         <FooterMegaMenu />
       </div>
     </div>

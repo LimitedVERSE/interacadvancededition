@@ -3,6 +3,7 @@
 import { useAuth } from "@/lib/auth/context"
 import { useRouter } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
+import { useUserBalance } from "@/hooks/useUserBalance"
 import {
   SendIcon,
   DollarSign,
@@ -610,6 +611,7 @@ function ZelleLoader({ onComplete }: { onComplete: () => void }) {
 function DashboardContent() {
   const { user, logout } = useAuth()
   const router           = useRouter()
+  const { balance, dailyLimit, isLoading: balanceLoading, deductTransaction } = useUserBalance(user?.id)
   const [isLoading, setIsLoading]     = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [revealed, ]                  = useState(false)

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
 import { generateEmailByTemplateId } from "@/lib/email-template-generators"
 import {
   generateTransferId,
@@ -7,9 +7,19 @@ import {
   buildSendReviewLink,
   saveTransfer,
 } from "@/services/transferService"
+import { verifyAdminAuth } from "@/lib/auth/server"
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // 1. Verify authentication and authorization
+    const authUser = verifyAdminAuth(request)
+    if (!authUser) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin authentication required." },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
     const {
       recipientEmail,

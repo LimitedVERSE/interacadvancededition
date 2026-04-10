@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
+import { useAuth } from "@/lib/auth/context"
 import { Send, DollarSign, Mail, User, ArrowRight, CheckCircle, AlertCircle, Clock, Eye } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
   const [previewTransfer, setPreviewTransfer] = useState<TransferStatus | null>(null)
   const [showPendingTransfers, setShowPendingTransfers] = useState(false)
   const router = useRouter()
+  const { getAuthHeaders } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,6 +61,7 @@ export default function AdminDashboard() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...getAuthHeaders(),
         },
         body: JSON.stringify({
           ...formData,

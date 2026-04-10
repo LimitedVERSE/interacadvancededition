@@ -15,6 +15,7 @@ interface AuthContextType {
   logout: () => void
   isAdmin: boolean
   getAccessSource: () => "admin" | "client"
+  getAuthHeaders: () => Record<string, string>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -68,7 +69,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return "client"
   }
 
-  return <AuthContext.Provider value={{ user, isLoading, login, logout, isAdmin, getAccessSource }}>{children}</AuthContext.Provider>
+  const getAuthHeaders = () => {
+    if (!user) {
+      return {}
+    }
+    // Encode user object as Base64 to send in Authorization header
+    const userWithAdmin = {
+      ...user,
+      isAdmin: isAdmin,
+    }
+    const token = Buffer.from(JSON.stringify(userWithAdmin)).toString("base64")
+    return {
+      Authorization: `Bearer ${token}`,
+    }
+  }
+
+  return <AuthContext.Provider value={{ user, isLoading, login, logout, isAdmin, getAccessSource, getAuthHeaders }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect, useMemo, useRef } from "react"
+import { useAuth } from "@/lib/auth/context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -522,6 +523,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
 // ─── Main Page ───────────────────────────���────────────────────────────────────
 export default function SendTransferPage() {
   const router = useRouter()
+  const { user, getAuthHeaders } = useAuth()
   const [step, setStep]           = useState(1)
   const [showAnswer, setShowAnswer] = useState(false)
   const [formData, setFormData]   = useState<FormData>({
@@ -633,12 +635,19 @@ export default function SendTransferPage() {
 
   const handleSubmit = async () => {
     if (!validateStep()) return
+    if (!user) {
+      setError("Not authenticated. Please log in first.")
+      return
+    }
     setIsLoading(true)
     setError("")
     try {
       const response = await fetch("/api/send-zelle", {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
         body:    JSON.stringify({
           recipientEmail:   formData.recipient,
           recipientName:    formData.recipientName || formData.recipient,

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
+import { useAuth } from "@/lib/auth/context"
 import { emailTemplates, templateCategories, getTemplatesByCategory } from "@/lib/email-templates-collection"
 import { generateEmailByTemplateId } from "@/lib/email-template-generators"
 import { Button } from "@/components/ui/button"
@@ -138,6 +139,7 @@ function ZelleLoader({ onComplete }: { onComplete: () => void }) {
 
 function EmailStudioContent() {
   const router = useRouter()
+  const { getAuthHeaders } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [activeCategory, setActiveCategory] = useState("all")
@@ -222,7 +224,10 @@ function EmailStudioContent() {
     try {
       const response = await fetch("/api/send-zelle", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
         body: JSON.stringify({
           recipientEmail:   formData.recipientEmail,
           recipientName:    formData.recipientName,

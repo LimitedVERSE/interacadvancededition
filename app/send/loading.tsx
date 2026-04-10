@@ -73,7 +73,7 @@ export default function SendLoading() {
 
               {/* CTA */}
               <div className="flex justify-end mt-8">
-                <div className="w-28 h-10 rounded-lg bg-[#FDB913]/20 animate-pulse" />
+                <div className="w-28 h-10 rounded-lg bg-[#6D1ED4]/20 animate-pulse" />
               </div>
             </div>
           </div>

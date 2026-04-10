@@ -26,6 +26,35 @@ interface InstitutionMultiSelectProps {
   transferData?: TransferData | null
 }
 
+function LogoCell({ logoPath, name, isSelected }: { logoPath: string; name: string; isSelected: boolean }) {
+  const [broken, setBroken] = useState(false)
+  if (broken) {
+    return (
+      <div
+        className={cn(
+          "flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200",
+          isSelected ? "bg-[#6D1ED4] border-[#6D1ED4]" : "bg-background border-muted-foreground",
+        )}
+        aria-hidden="true"
+      >
+        {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
+      </div>
+    )
+  }
+  return (
+    <div className="flex-shrink-0 w-10 h-10 bg-white rounded-md flex items-center justify-center border border-border overflow-hidden">
+      <Image
+        src={logoPath}
+        alt={`${name} logo`}
+        width={40}
+        height={40}
+        className="object-contain p-1 w-full h-full"
+        onError={() => setBroken(true)}
+      />
+    </div>
+  )
+}
+
 export default function InstitutionMultiSelect({ onSelectionChange, onContinue, transferData }: InstitutionMultiSelectProps) {
   const { t } = useLanguage()
 
@@ -132,7 +161,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
                 placeholder={t.institutionSelect.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border-2 border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913] transition-colors"
+                className="w-full pl-10 pr-4 py-3 border-2 border-input rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:border-[#6D1ED4] focus:ring-2 focus:ring-[#6D1ED4] transition-colors"
                 aria-label={t.institutionSelect.searchLabel}
               />
             </div>
@@ -151,7 +180,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
               {totalSelections > 0 && (
                 <button
                   onClick={handleContinue}
-                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#1a1a1a] bg-[#FDB913] rounded-md hover:bg-[#e5a811] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 shadow-sm hover:shadow-md animate-in fade-in slide-in-from-right-2 duration-300"
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-[#6D1ED4] rounded-md hover:bg-[#5A18B0] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 shadow-sm hover:shadow-md animate-in fade-in slide-in-from-right-2 duration-300"
                   aria-label={t.institutionSelect.continue}
                 >
                   {t.institutionSelect.continue}
@@ -161,7 +190,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
               {totalSelections > 0 && (
                 <button
                   onClick={clearAll}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground bg-muted rounded-md hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground bg-muted rounded-md hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2"
                   aria-label={t.institutionSelect.clearAll}
                 >
                   <X className="w-4 h-4" />
@@ -195,7 +224,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
                       />
                       <span className="text-base font-semibold text-foreground">{t.categories[group.id]}</span>
                       {hasSelection && (
-                        <span className="flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium bg-[#FDB913] text-[#1a1a1a] rounded-full">
+                        <span className="flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium bg-[#6D1ED4] text-white rounded-full">
                           <Check className="w-3 h-3" strokeWidth={3} />
                           {t.institutionSelect.selected}
                         </span>
@@ -225,9 +254,9 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
                               onClick={() => selectInstitution(institution, group.id)}
                               className={cn(
                                 "flex items-center gap-3 px-4 py-3 rounded-md text-left transition-all duration-200",
-                                "focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2",
+                                "focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2",
                                 isSelected &&
-                                  "bg-[#FDB913] text-[#1a1a1a] border-2 border-[#FDB913] shadow-md font-medium scale-[1.02]",
+                                  "bg-[#6D1ED4] text-white border-2 border-[#6D1ED4] shadow-md font-medium scale-[1.02]",
                                 !isSelected && "bg-card border-2 border-border hover:border-input hover:shadow-sm",
                               )}
                               role="radio"
@@ -235,37 +264,18 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
                               aria-label={`${isSelected ? "Deselect" : "Select"} ${institution.name}`}
                             >
                               {logoPath ? (
-                                <div className="flex-shrink-0 w-10 h-10 bg-white rounded-md flex items-center justify-center border border-border overflow-hidden relative">
-                                  <Image
-                                    src={logoPath || "/placeholder.svg"}
-                                    alt={`${institution.name} logo`}
-                                    width={40}
-                                    height={40}
-                                    className="object-contain p-1 w-full h-full"
-                                    onError={(e) => {
-                                      e.currentTarget.style.display = "none"
-                                      const target = e.currentTarget.parentElement
-                                      if (target) {
-                                        target.innerHTML = `<div class="flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                                          isSelected
-                                            ? "bg-[#1a1a1a] border-[#1a1a1a]"
-                                            : "bg-background border-muted-foreground"
-                                        }"><div class="${isSelected ? "w-2.5 h-2.5 rounded-full bg-[#FDB913]" : ""}"></div></div>`
-                                      }
-                                    }}
-                                  />
-                                </div>
+                                <LogoCell logoPath={logoPath} name={institution.name} isSelected={isSelected} />
                               ) : (
                                 <div
                                   className={cn(
                                     "flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200",
                                     isSelected
-                                      ? "bg-[#1a1a1a] border-[#1a1a1a]"
+                                      ? "bg-[#6D1ED4] border-[#6D1ED4]"
                                       : "bg-background border-muted-foreground",
                                   )}
                                   aria-hidden="true"
                                 >
-                                  {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#FDB913]" />}
+                                  {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
                                 </div>
                               )}
                               <span className={cn("text-sm flex-1", isSelected ? "text-[#1a1a1a]" : "text-foreground")}>
@@ -298,7 +308,7 @@ export default function InstitutionMultiSelect({ onSelectionChange, onContinue, 
                   <button
                     key={inst.id}
                     onClick={() => removeInstitution(inst.categoryId)}
-                    className="group inline-flex items-center gap-2 px-3 py-2 bg-[#FDB913] text-[#1a1a1a] rounded-full text-sm font-medium hover:bg-[#e5a811] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 animate-in zoom-in duration-200"
+                    className="group inline-flex items-center gap-2 px-3 py-2 bg-[#6D1ED4] text-white rounded-full text-sm font-medium hover:bg-[#5A18B0] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 animate-in zoom-in duration-200"
                     aria-label={t.institutionSelect.removeLabel(inst.name, t.categories[inst.categoryId])}
                   >
                     <span className="flex items-center gap-1.5">

@@ -84,7 +84,7 @@ function SecurityContent() {
                 className="bg-zinc-800 border-zinc-700 text-white"
               />
             </div>
-            <Button onClick={handlePasswordChange} className="bg-[#FDB913] text-black hover:bg-[#e5a811]">
+            <Button onClick={handlePasswordChange} className="bg-[#6D1ED4] text-white hover:bg-[#5A18B0]">
               Update Password
             </Button>
           </CardContent>
@@ -105,7 +105,7 @@ function SecurityContent() {
           <CardContent>
             <div className="text-center py-8 text-zinc-500">
               <p>Two-factor authentication coming soon</p>
-              <Button className="mt-4 bg-[#FDB913] text-black hover:bg-[#e5a811]" disabled>
+              <Button className="mt-4 bg-[#6D1ED4] text-white hover:bg-[#5A18B0] opacity-50" disabled>
                 Enable 2FA
               </Button>
             </div>

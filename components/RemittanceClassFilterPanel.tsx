@@ -274,7 +274,7 @@ function FilterSection({ title, description, options, value, onChange }: FilterS
               className={cn(
                 "transition-all",
                 isActive
-                  ? "bg-[#FDB913] text-[#1a1a1a] hover:bg-[#FDB913]/90 border-[#FDB913]"
+                  ? "bg-[#6D1ED4] text-white hover:bg-[#5A18B0] border-[#6D1ED4]"
                   : "bg-background hover:bg-muted border-border text-foreground",
               )}
               title={option.description}

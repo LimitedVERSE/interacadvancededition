@@ -199,7 +199,7 @@ export const REMITTANCE_CLASSES: RemittanceClass[] = [
     direction: "outbound",
     valueTier: "micro",
     purpose: "settlement",
-    description: "Card-based instant transfers like Interac e-Transfer",
+    description: "Card-based instant transfers like Zelle",
   },
   {
     id: "international_personal_instant_card_outbound",

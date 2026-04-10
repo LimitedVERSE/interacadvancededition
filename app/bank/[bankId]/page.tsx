@@ -16,7 +16,7 @@ export default async function BankConnectorPage({ params }: BankConnectorPagePro
 
 export function generateMetadata({ params }: { params: Promise<{ bankId: string }> }) {
   return {
-    title: "Redirecting to Bank - Interac Money Transfer",
+    title: "Redirecting to Bank - Zelle Payment",
     description: "Securely connecting to your financial institution",
   }
 }

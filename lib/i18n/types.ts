@@ -80,28 +80,24 @@ export interface Translations {
     continueNow: string
   }
 
-  // Provinces
-  provinces: {
-    AB: string
-    BC: string
-    MB: string
-    NB: string
-    NL: string
-    NT: string
-    NS: string
-    NU: string
-    ON: string
-    PE: string
-    QC: string
-    SK: string
-    YT: string
+  // US States
+  states: {
+    AL: string; AK: string; AZ: string; AR: string; CA: string; CO: string
+    CT: string; DE: string; FL: string; GA: string; HI: string; ID: string
+    IL: string; IN: string; IA: string; KS: string; KY: string; LA: string
+    ME: string; MD: string; MA: string; MI: string; MN: string; MS: string
+    MO: string; MT: string; NE: string; NV: string; NH: string; NJ: string
+    NM: string; NY: string; NC: string; ND: string; OH: string; OK: string
+    OR: string; PA: string; RI: string; SC: string; SD: string; TN: string
+    TX: string; UT: string; VT: string; VA: string; WA: string; WV: string
+    WI: string; WY: string; DC: string
   }
 
   // Institution Categories
   categories: {
-    "big-6": string
+    "major-national": string
     "online-only": string
-    "schedule-i-ii": string
+    "regional": string
     "credit-unions": string
     "digital-hybrid": string
   }

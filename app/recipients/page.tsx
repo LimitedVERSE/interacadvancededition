@@ -88,7 +88,7 @@ function RecipientsContent() {
               className="pl-10 bg-zinc-900 border-zinc-800 text-white"
             />
           </div>
-          <Button onClick={() => setShowAddForm(!showAddForm)} className="bg-[#FDB913] text-black hover:bg-[#e5a811]">
+          <Button onClick={() => setShowAddForm(!showAddForm)} className="bg-[#6D1ED4] text-white hover:bg-[#5A18B0]">
             <Plus className="w-4 h-4 mr-2" />
             Add Recipient
           </Button>
@@ -126,7 +126,7 @@ function RecipientsContent() {
                 />
               </div>
               <div className="flex gap-2">
-                <Button onClick={addRecipient} className="bg-[#FDB913] text-black hover:bg-[#e5a811]">
+                <Button onClick={addRecipient} className="bg-[#6D1ED4] text-white hover:bg-[#5A18B0]">
                   Add Recipient
                 </Button>
                 <Button variant="outline" onClick={() => setShowAddForm(false)}>
@@ -143,8 +143,8 @@ function RecipientsContent() {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-[#FDB913]/20 rounded-full flex items-center justify-center">
-                      <User className="w-6 h-6 text-[#FDB913]" />
+                <div className="w-12 h-12 bg-[#6D1ED4]/20 rounded-full flex items-center justify-center">
+                <User className="w-6 h-6 text-[#6D1ED4]" />
                     </div>
                     <div>
                       <CardTitle className="text-white text-lg">{recipient.name}</CardTitle>

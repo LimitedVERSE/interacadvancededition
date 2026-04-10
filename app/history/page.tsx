@@ -70,12 +70,8 @@ function HistoryContent() {
               Back
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#FDB913] rounded-lg flex items-center justify-center p-2">
-                <img
-                  src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                  alt="Interac Logo"
-                  className="w-full h-full object-contain"
-                />
+              <div className="w-10 h-10 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-lg shadow-[#6D1ED4]/30">
+                <span className="text-white font-black text-2xl leading-none">Z</span>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">Depository History</h1>
@@ -96,7 +92,7 @@ function HistoryContent() {
                 placeholder="Search by ID, name, or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-zinc-900 border border-zinc-800 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-[#FDB913] focus:ring-2 focus:ring-[#FDB913]/20"
+                className="w-full pl-10 pr-4 py-3 bg-zinc-900 border border-zinc-800 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-[#6D1ED4] focus:ring-2 focus:ring-[#6D1ED4]/20"
               />
             </div>
             <div className="flex gap-2">
@@ -118,7 +114,7 @@ function HistoryContent() {
                 onClick={() => setFilter(status as any)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === status
-                    ? "bg-[#FDB913] text-black"
+                    ? "bg-[#6D1ED4] text-white"
                     : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 border border-zinc-800"
                 }`}
               >
@@ -142,7 +138,7 @@ function HistoryContent() {
             {filteredDeposits.map((deposit) => (
               <Card
                 key={deposit.id}
-                className="border-2 border-zinc-800 hover:border-[#FDB913] transition-colors bg-zinc-900/50 backdrop-blur-sm cursor-pointer"
+                className="border-2 border-zinc-800 hover:border-[#6D1ED4] transition-colors bg-zinc-900/50 backdrop-blur-sm cursor-pointer"
                 onClick={() =>
                   router.push(
                     `/deposit-portal?transferId=${deposit.transferId}&amount=${deposit.amount}&recipient=${deposit.recipient}&recipientName=${encodeURIComponent(deposit.recipientName)}&bankName=${encodeURIComponent(deposit.bankName)}&message=${encodeURIComponent(deposit.message)}&timestamp=${deposit.timestamp}`,
@@ -167,7 +163,7 @@ function HistoryContent() {
                       <p className="text-2xl font-bold text-white">
                         {showAmounts ? `$${Number.parseFloat(deposit.amount).toFixed(2)}` : "••••••"}
                       </p>
-                      <p className="text-sm text-zinc-400">CAD</p>
+                      <p className="text-sm text-zinc-400">USD</p>
                     </div>
                   </div>
                 </CardHeader>

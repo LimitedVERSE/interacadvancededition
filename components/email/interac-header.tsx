@@ -80,17 +80,15 @@ export default function InteracHeader({
           {/* EN / FR toggle */}
           <div className="flex items-center gap-1.5 mr-3">
             <span
-              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${
-                language === "en" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
-              }`}
+              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${language === "en" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
+                }`}
             >
               EN
             </span>
             <span className="text-white/25 text-xs">|</span>
             <span
-              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${
-                language === "fr" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
-              }`}
+              className={`text-xs font-semibold tracking-wide cursor-pointer transition-opacity ${language === "fr" ? "text-white opacity-100" : "text-white/50 hover:text-white/75"
+                }`}
             >
               FR
             </span>

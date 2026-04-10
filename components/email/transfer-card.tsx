@@ -78,12 +78,12 @@ export function TransferCard({
       )}
 
       <div className="px-[72px] space-y-8">
-        <div className="mt-6 p-4 bg-[#FDB913] rounded-lg">
-          <p className="text-lg font-semibold">Amount: ${safeAmount.toFixed(2)} CAD</p>
+        <div className="mt-6 p-4 bg-[#6D1ED4] rounded-lg">
+          <p className="text-lg font-semibold text-white">Amount: ${safeAmount.toFixed(2)} USD</p>
         </div>
 
         {message && (
-          <div className="bg-gray-50 border-l-4 border-[#FDB913] p-4 rounded">
+            <div className="bg-gray-50 border-l-4 border-[#6D1ED4] p-4 rounded">
             <p className="text-sm font-semibold text-gray-700 mb-2">Message (Optional):</p>
             <p className="text-base text-gray-900">{message}</p>
           </div>
@@ -117,14 +117,14 @@ export function TransferCard({
               </div>
               <div>
                 <p className="text-sm text-[#404040] mb-1">Amount:</p>
-                <p className="text-base break-all">${safeAmount.toFixed(2)} CAD</p>
+                <p className="text-base break-all">${safeAmount.toFixed(2)} USD</p>
               </div>
             </div>
           )}
         </div>
 
         {securityQuestion && (
-          <div className="bg-yellow-50 border-2 border-[#FDB913] rounded-lg p-5">
+          <div className="bg-purple-50 border-2 border-[#6D1ED4] rounded-lg p-5">
             <h4 className="font-bold text-base mb-3 flex items-center gap-2">🔒 Security Question</h4>
             <div className="space-y-3">
               <p className="text-sm text-gray-700">{securityQuestion}</p>
@@ -162,7 +162,7 @@ export function TransferCard({
         <div className="text-center">
           <button
             onClick={() => setShowIframe(true)}
-            className="inline-flex items-center justify-center gap-2 bg-[#FDB913] text-black hover:bg-[#e5a811] font-bold px-8 py-4 text-base rounded-lg transition-colors cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 bg-[#6D1ED4] text-white hover:bg-[#5A18B0] font-bold px-8 py-4 text-base rounded-lg transition-colors cursor-pointer"
           >
             Deposit Your Money
           </button>

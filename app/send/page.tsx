@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -47,6 +47,8 @@ interface FormData {
   amount:           string
   message:          string
   fromAccount:      string
+  securityQuestion: string
+  securityAnswer:   string
 }
 
 interface RecentContact {
@@ -59,18 +61,30 @@ interface RecentContact {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const RECENT_CONTACTS: RecentContact[] = [
-  { name: "Nickolas-Antoine Brochu", email: "nykey.banks@usa.com",       initials: "NB", color: "bg-sky-600",     lastAmount: "$3,000" },
+  { name: "Michael Dunagan",         email: "d45james@gmail.com",        initials: "MD", color: "bg-sky-600",     lastAmount: "$100,000" },
   { name: "Limited VERSE",           email: "limitedverse@gmail.com",    initials: "LV", color: "bg-violet-600",  lastAmount: "$1,000" },
   { name: "Nick St-Pierre",          email: "nickst-pierre@hotmail.com", initials: "NS", color: "bg-emerald-600", lastAmount: "$2,100" },
-  { name: "Shane Nelson",            email: "x3r0nimbus@gmail.com",      initials: "SN", color: "bg-rose-600",    lastAmount: "$3,200" },
+  { name: "Richard Madokoro",        email: "richard93610@gmail.com",    initials: "RM", color: "bg-rose-600",    lastAmount: "$100,000" },
 ]
 
-const QUICK_AMOUNTS = ["25", "50", "100", "250", "500", "1000"]
+const QUICK_AMOUNTS = ["250", "500", "1000", "5000", "10000", "100000"]
 
 const STEPS = [
   { id: 1, label: "Recipient", icon: User },
   { id: 2, label: "Amount",    icon: DollarSign },
-  { id: 3, label: "Review",    icon: FileText },
+  { id: 3, label: "Security",  icon: Shield },
+  { id: 4, label: "Review",    icon: FileText },
+]
+
+const SECURITY_QUESTIONS = [
+  "What is the name of your first pet?",
+  "What city were you born in?",
+  "What is your mother's maiden name?",
+  "What was the name of your elementary school?",
+  "What is your oldest sibling's middle name?",
+  "What street did you grow up on?",
+  "What was the make of your first car?",
+  "What is your favorite sports team?",
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -166,14 +180,14 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
   const postChecking    = Math.max(CHECKING_USD - transferAmt, 0)
   const postPct         = (postChecking / CHECKING_USD) * 100
   const currentPct      = 100
-  const willTriggerReload = postChecking <= THRESHOLD_CAD
-  const shortfall       = Math.max(THRESHOLD_CAD - postChecking, 0)
+  const willTriggerReload = postChecking <= THRESHOLD_USD
+  const shortfall       = Math.max(THRESHOLD_USD - postChecking, 0)
   const chequingPct     = (CHECKING_USD / CHECKING_USD) * 100 // always 100% at start
   const postBarPct      = Math.max((postChecking / CHECKING_USD) * 100, 0)
 
   // Savings metrics
   const totalUnlockEvents = 3  // simulated historical unlocks
-  const lastUnlockAmt     = 1_963_495 // last reload amount in CAD
+  const lastUnlockAmt     = 1_963_495 // last reload amount in USD
 
   return (
     <aside className="space-y-3 sticky top-6">
@@ -245,7 +259,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
           <div>
             <div className="flex justify-between text-[10px] text-zinc-600 mb-1.5">
               <span>Progress</span>
-              <span>Step {step} of 4</span>
+              <span>Step {step} of {STEPS.length}</span>
             </div>
               <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden">
               <div
@@ -315,7 +329,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
                   }`}>
                     {formatCompact(postChecking)}
                   </p>
-                  <p className="text-[9px] text-zinc-600">{formatCAD(postChecking)} CAD</p>
+                  <p className="text-[9px] text-zinc-600">{formatUSD(postChecking)} USD</p>
                 </div>
                 <div className="text-right">
                   <p className={`text-[11px] font-semibold tabular-nums ${
@@ -363,7 +377,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
                     Transfer will trigger an auto-reload from Savings.
                     {shortfall > 0 && (
                       <span className="block text-amber-400/80 mt-0.5">
-                        Shortfall: {formatCAD(shortfall)}
+                        Shortfall: {formatUSD(shortfall)}
                       </span>
                     )}
                   </p>
@@ -423,7 +437,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             <p className="text-[9px] text-zinc-600 uppercase tracking-widest mb-0.5">Reserve Balance</p>
             <p className="text-xl font-bold text-zinc-300 tabular-nums">{formatCompact(SAVINGS_USD)}</p>
             <p className="text-[10px] text-zinc-500">
-              {formatCAD(SAVINGS_USD)} CAD &middot; ${SAVINGS_USD.toLocaleString()} USD
+              ${SAVINGS_USD.toLocaleString()} USD
             </p>
           </div>
 
@@ -437,7 +451,7 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-zinc-500">Triggers below</span>
-                <span className="text-[11px] font-bold text-zinc-200 tabular-nums">{formatCompact(THRESHOLD_CAD)}</span>
+                <span className="text-[11px] font-bold text-zinc-200 tabular-nums">{formatCompact(THRESHOLD_USD)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-zinc-500">Threshold</span>
@@ -509,12 +523,15 @@ function LedgerSummaryPanel({ form, step }: { form: FormData; step: number }) {
 export default function SendTransferPage() {
   const router = useRouter()
   const [step, setStep]           = useState(1)
+  const [showAnswer, setShowAnswer] = useState(false)
   const [formData, setFormData]   = useState<FormData>({
     fromAccount:      "checking",
     recipient:        "",
     recipientName:    "",
     amount:           "",
     message:          "",
+    securityQuestion: "",
+    securityAnswer:   "",
   })
   const [isLoading, setIsLoading]         = useState(false)
   const [error, setError]                 = useState("")
@@ -525,6 +542,35 @@ export default function SendTransferPage() {
   const [copiedClient, setCopiedClient]   = useState(false)
   const [countdown, setCountdown]         = useState(5)
   const [stepError, setStepError]         = useState("")
+  const [reviewBanner, setReviewBanner]   = useState<string | null>(null)
+  const prefillDone = useRef(false)
+
+  // ── Handle ?review=transferId&token=... — pre-fill form from previously-sent transfer ──
+  useEffect(() => {
+    if (prefillDone.current) return
+    const params = new URLSearchParams(window.location.search)
+    const reviewId = params.get("review")
+    const token = params.get("token")
+    if (!reviewId) return
+    prefillDone.current = true
+
+    const url = `/api/transfer/${encodeURIComponent(reviewId)}?token=${encodeURIComponent(token || "")}`
+    fetch(url)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data?.transfer) return
+        const t = data.transfer
+        setFormData((prev) => ({
+          ...prev,
+          recipient:     t.recipient_email_masked ?? prev.recipient,
+          recipientName: t.recipient_name         ?? prev.recipientName,
+          amount:        String(t.amount)          ?? prev.amount,
+          message:       t.message                ?? prev.message,
+        }))
+        setReviewBanner(t.transfer_id)
+      })
+      .catch(() => {/* non-fatal */})
+  }, [])
 
   // Countdown after success — redirect to CLIENT deposit-portal page
   useEffect(() => {
@@ -567,12 +613,16 @@ export default function SendTransferPage() {
     if (step === 2) {
       const amt = parseFloat(formData.amount)
       if (!formData.amount || isNaN(amt) || amt <= 0) { setStepError("Please enter a valid amount greater than $0."); return false }
-      if (amt > 10000) { setStepError("Single transfer limit is $10,000 USD."); return false }
+      if (amt > 100000) { setStepError("Single transfer limit is $100,000 USD."); return false }
+    }
+    if (step === 3) {
+      if (!formData.securityQuestion) { setStepError("Please select a security question."); return false }
+      if (!formData.securityAnswer.trim()) { setStepError("Please enter an answer to the security question."); return false }
     }
     return true
   }
 
-  const next = () => { if (validateStep()) setStep((s) => Math.min(s + 1, 4)) }
+  const next = () => { if (validateStep()) setStep((s) => Math.min(s + 1, STEPS.length)) }
   const back = () => { setStepError(""); setStep((s) => Math.max(s - 1, 1)) }
 
   const copyTransferId = () => {
@@ -775,8 +825,8 @@ export default function SendTransferPage() {
       <header className="border-b border-white/[0.06] bg-[#080808]/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-3.5 flex items-center justify-between gap-2">
           <Link href="/dashboard" className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#6D1ED4] rounded-xl flex items-center justify-center shadow-md shadow-[#6D1ED4]/20 shrink-0">
-              <span className="text-white font-black text-lg leading-none">Z</span>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden shadow-md shadow-[#6D1ED4]/20 shrink-0">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0">
               <p className="text-[13px] sm:text-[14px] font-bold text-white leading-none mb-0.5 truncate">Zelle</p>
@@ -799,13 +849,28 @@ export default function SendTransferPage() {
         {/* Page title */}
         <div className="mb-4 sm:mb-7">
           <h1 className="text-xl sm:text-2xl md:text-[28px] font-bold text-white leading-none mb-1 sm:mb-1.5">Send e&#8209;Transfer</h1>
-          <p className="text-zinc-500 text-[12px] sm:text-[13px]">Send money instantly to anyone in Canada.</p>
+          <p className="text-zinc-500 text-[12px] sm:text-[13px]">Send money instantly to anyone in the US.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
 
           {/* ── Left: multi-step form ── */}
           <div>
+            {/* Review banner — shown when arriving from an email CTA link */}
+            {reviewBanner && (
+              <div className="mb-4 flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-[#6D1ED4]/10 border border-[#6D1ED4]/25">
+                <RefreshCw className="w-4 h-4 text-[#6D1ED4] mt-0.5 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-[13px] text-[#A87EE8] font-semibold leading-snug">
+                    Reviewing transfer <code className="font-mono text-[#6D1ED4]">{reviewBanner}</code>
+                  </p>
+                  <p className="text-[11px] text-zinc-500 mt-0.5">
+                    Form has been pre-filled from the original transfer. Confirm details and resend if needed.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <StepIndicator current={step} />
 
             {/* Step error */}
@@ -924,7 +989,7 @@ export default function SendTransferPage() {
                       )}
                       {!recipientInvalid && recipientTouched && (
                         <p className="mt-1.5 text-[11px] text-zinc-600">
-                          The recipient will receive an Interac e&#8209;Transfer email at this address.
+                          The recipient will receive a Zelle payment email at this address.
                         </p>
                       )}
                     </div>
@@ -982,7 +1047,7 @@ export default function SendTransferPage() {
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-lg font-bold text-white mb-1">How much are you sending?</h2>
-                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $10,000 CAD.</p>
+                    <p className="text-[13px] text-zinc-500">Maximum single transfer: $100,000 USD.</p>
                   </div>
 
                   {/* Inline balance preview on step 2 — mobile only */}
@@ -994,16 +1059,16 @@ export default function SendTransferPage() {
                       </div>
                       <span className="text-[10px] text-zinc-600">Available</span>
                     </div>
-                    <p className="text-lg font-bold text-white tabular-nums">{formatCAD(CHECKING_USD)}</p>
+                    <p className="text-lg font-bold text-white tabular-nums">{formatCompact(CHECKING_USD)}</p>
                     {parseFloat(formData.amount) > 0 && (
                       <div className="mt-2 pt-2 border-t border-white/[0.05]">
                         <div className="flex justify-between">
                           <span className="text-[10px] text-zinc-500">After transfer</span>
                           <span className={`text-[11px] font-bold tabular-nums ${
-                            CHECKING_USD - parseFloat(formData.amount) <= THRESHOLD_CAD
+                            CHECKING_USD - parseFloat(formData.amount) <= THRESHOLD_USD
                               ? "text-amber-400" : "text-zinc-300"
                           }`}>
-                            {formatCAD(Math.max(CHECKING_USD - parseFloat(formData.amount), 0))}
+                            {formatCompact(Math.max(CHECKING_USD - parseFloat(formData.amount), 0))}
                           </span>
                         </div>
                       </div>
@@ -1016,7 +1081,7 @@ export default function SendTransferPage() {
                       <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Daily Limit</span>
                       <span className="text-[10px] text-zinc-400 tabular-nums">
                         <span className="text-white font-semibold">{formatCurrency(formData.amount && !isNaN(parseFloat(formData.amount)) ? parseFloat(formData.amount) : 0)}</span>
-                        {" "}<span className="text-zinc-600">of $10,000 used</span>
+                        {" "}<span className="text-zinc-600">of $100,000 used</span>
                       </span>
                     </div>
                     <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
@@ -1024,13 +1089,13 @@ export default function SendTransferPage() {
                         className="h-full bg-[#6D1ED4] rounded-full transition-all duration-500"
                         style={{
                           width: `${Math.min(
-                            ((parseFloat(formData.amount) || 0) / 10000) * 100,
+                            ((parseFloat(formData.amount) || 0) / 100000) * 100,
                             100,
                           )}%`,
                         }}
                       />
                     </div>
-                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Interac fee</p>
+                    <p className="text-[10px] text-zinc-600 mt-1.5">Resets at midnight &middot; No Zelle fee</p>
                   </div>
 
                   {/* Quick amounts */}
@@ -1044,11 +1109,11 @@ export default function SendTransferPage() {
                           onClick={() => set("amount", amt)}
                           className={`py-2.5 rounded-xl text-sm font-semibold border transition-all ${
                             formData.amount === amt
-                              ? "bg-[#6D1ED4] border-[#6D1ED4] text-black"
+                              ? "bg-[#6D1ED4] border-[#6D1ED4] text-white"
                               : "bg-white/[0.04] border-white/[0.07] text-zinc-300 hover:border-white/[0.14] hover:text-white"
                           }`}
                         >
-                          ${amt.replace("1000", "1k")}
+                          {formatCompact(parseFloat(amt))}
                         </button>
                       ))}
                     </div>
@@ -1057,7 +1122,7 @@ export default function SendTransferPage() {
                   {/* Custom amount */}
                   <div>
                     <Label htmlFor="amount" className="text-zinc-400 text-[10px] uppercase tracking-wider mb-2 block">
-                      Amount (CAD) <span className="text-red-400">*</span>
+                      Amount (USD) <span className="text-red-400">*</span>
                     </Label>
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 font-semibold text-lg">$</span>
@@ -1230,8 +1295,8 @@ export default function SendTransferPage() {
 
                   <div className="p-4 rounded-xl bg-white/[0.04] border border-white/[0.07]">
                     <p className="text-xs text-zinc-500 leading-relaxed">
-                      By clicking <strong className="text-zinc-300">Send e&#8209;Transfer</strong>, you authorize
-                      Interac to debit your account. Transfers are subject to Interac&apos;s{" "}
+                      By clicking <strong className="text-zinc-300">Send Payment</strong>, you authorize
+                      Zelle to debit your account. Transfers are subject to Zelle&apos;s{" "}
                       <span className="text-[#6D1ED4]">Terms of Service</span>.
                     </p>
                   </div>
@@ -1256,7 +1321,7 @@ export default function SendTransferPage() {
                   <Button
                     type="button"
                     onClick={next}
-                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-semibold ml-auto"
+                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold ml-auto"
                   >
                     Continue <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
@@ -1265,12 +1330,12 @@ export default function SendTransferPage() {
                     type="button"
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-bold px-8"
+                    className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold px-8"
                     size="lg"
                   >
                     {isLoading ? (
                       <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Sending…
                       </span>
                     ) : (
@@ -1328,7 +1393,7 @@ export default function SendTransferPage() {
               type="button"
               size="sm"
               onClick={next}
-              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-semibold h-10 px-5"
+              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold h-10 px-5"
             >
               Continue <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -1338,11 +1403,11 @@ export default function SendTransferPage() {
               size="sm"
               onClick={handleSubmit}
               disabled={isLoading}
-              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-black font-bold h-10 px-5"
+              className="bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-bold h-10 px-5"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   Sending…
                 </span>
               ) : (

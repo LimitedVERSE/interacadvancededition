@@ -41,8 +41,8 @@ const SERVICES: {
 }[] = [
   {
     id: "send",
-    title: "Send e-Transfer",
-    description: "Send funds to any recipient instantly via Interac",
+    title: "Send Payment",
+    description: "Send funds to any recipient instantly via Zelle",
     icon: SendIcon,
     href: "/send",
     category: "Payments",
@@ -53,7 +53,7 @@ const SERVICES: {
   {
     id: "deposit",
     title: "Receive Funds",
-    description: "Accept and deposit incoming Interac e-Transfer payments",
+    description: "Accept and deposit incoming Zelle payments",
     icon: DollarSign,
     href: "/deposit-portal",
     category: "Payments",
@@ -64,7 +64,7 @@ const SERVICES: {
   {
     id: "bank-connect",
     title: "Link Bank Account",
-    description: "Connect a Canadian financial institution for transfers",
+    description: "Connect a US financial institution for Zelle transfers",
     icon: CreditCard,
     href: "/connect-bank",
     category: "Accounts",
@@ -84,7 +84,7 @@ const SERVICES: {
   {
     id: "recipients",
     title: "Contacts & Recipients",
-    description: "Manage saved contacts for quick e-Transfer sending",
+    description: "Manage saved contacts for quick Zelle payments",
     icon: Users,
     href: "/recipients",
     category: "Accounts",
@@ -134,7 +134,7 @@ const SERVICES: {
   {
     id: "email-studio",
     title: "Communication Centre",
-    description: "Draft and send Interac branded e-Transfer notifications",
+    description: "Draft and send Zelle-branded payment notifications",
     icon: Mail,
     href: "/email-studio",
     category: "Tools",
@@ -230,7 +230,7 @@ export default function FooterMegaMenu() {
         />
 
         {/* Top accent bar */}
-        <div className="relative z-10 h-0.5 w-full bg-gradient-to-r from-transparent via-[#FDB913] to-transparent" />
+        <div className="relative z-10 h-0.5 w-full bg-gradient-to-r from-transparent via-[#6D1ED4] to-transparent" />
 
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full overflow-hidden">
@@ -238,12 +238,8 @@ export default function FooterMegaMenu() {
             {/* ── Header ── */}
           <div className="flex items-center justify-between px-5 sm:px-8 pt-5 pb-4 border-b border-white/[0.06]">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#FDB913] rounded-xl flex items-center justify-center p-1.5 shadow-md shadow-[#FDB913]/20">
-                <img
-                  src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                  alt="Interac"
-                  className="w-full h-full object-contain"
-                />
+              <div className="w-8 h-8 rounded-xl overflow-hidden shadow-md shadow-[#6D1ED4]/20">
+                <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h2 className="text-[15px] font-bold text-white tracking-tight leading-none mb-0.5">All Services</h2>
@@ -253,7 +249,7 @@ export default function FooterMegaMenu() {
 
             <button
               onClick={() => setOpen(false)}
-              className="w-8 h-8 rounded-xl bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.09] flex items-center justify-center transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40"
+              className="w-8 h-8 rounded-xl bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.09] flex items-center justify-center transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[#6D1ED4]/40"
               aria-label="Close menu"
             >
               <X className="w-4 h-4 text-zinc-400 group-hover:text-white group-hover:rotate-90 transition-all duration-300" />
@@ -271,7 +267,7 @@ export default function FooterMegaMenu() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search services..."
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.04] text-[14px] text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40 focus:border-[#FDB913]/30 transition-all"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.04] text-[14px] text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#6D1ED4]/40 focus:border-[#6D1ED4]/30 transition-all"
                 style={{ fontSize: "16px" }}
               />
             </div>
@@ -284,7 +280,7 @@ export default function FooterMegaMenu() {
                   onClick={() => setCategory(cat)}
                   className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all duration-150 ${
                     activeCategory === cat
-                      ? "bg-[#FDB913] text-[#111] shadow-sm"
+                      ? "bg-[#6D1ED4] text-white shadow-sm"
                       : "bg-white/[0.04] border border-white/[0.07] text-zinc-500 hover:border-white/[0.14] hover:text-zinc-300"
                   }`}
                 >
@@ -309,14 +305,14 @@ export default function FooterMegaMenu() {
                     <button
                       key={service.id}
                       onClick={() => navigate(service.href)}
-                      className="group relative flex flex-col items-start gap-3 p-3.5 sm:p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/[0.12] active:scale-[0.98] transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40"
+                      className="group relative flex flex-col items-start gap-3 p-3.5 sm:p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/[0.12] active:scale-[0.98] transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-[#6D1ED4]/40"
                       style={{
                         animation: open ? `megaFadeUp 0.32s ease-out ${i * 24}ms both` : "none",
                       }}
                     >
                       {/* Popular badge */}
                       {service.featured && (
-                        <span className="absolute top-2.5 right-2.5 text-[9px] font-bold tracking-widest text-[#FDB913]/70 uppercase">
+                        <span className="absolute top-2.5 right-2.5 text-[9px] font-bold tracking-widest text-[#6D1ED4]/70 uppercase">
                           Popular
                         </span>
                       )}
@@ -350,10 +346,10 @@ export default function FooterMegaMenu() {
 
           {/* ── Mini footer inside overlay ── */}
           <div className="relative z-10 border-t border-white/[0.05] px-5 sm:px-8 py-3 flex items-center justify-between">
-            <p className="text-[10px] text-zinc-500">Interac e&#8209;Transfer &middot; Secure Payment Services</p>
+            <p className="text-[10px] text-zinc-500">Zelle &middot; Secure Payment Services</p>
             <button
               onClick={() => setOpen(false)}
-              className="text-[12px] font-semibold text-zinc-600 hover:text-[#FDB913] transition-colors flex items-center gap-1.5 focus:outline-none"
+              className="text-[12px] font-semibold text-zinc-600 hover:text-[#6D1ED4] transition-colors flex items-center gap-1.5 focus:outline-none"
             >
               <ChevronUp className="w-3.5 h-3.5" />
               Dismiss
@@ -370,8 +366,8 @@ export default function FooterMegaMenu() {
       >
         <div className="mx-3 sm:mx-auto sm:max-w-md mb-3 sm:mb-5">
           <div className="relative rounded-2xl border border-white/[0.08] bg-[#111]/95 backdrop-blur-2xl shadow-2xl shadow-black/60 overflow-hidden">
-            {/* Yellow hairline */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-[#FDB913]/30" />
+            {/* Purple hairline */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-[#6D1ED4]/30" />
 
             <div className="flex items-center px-2 py-1.5 gap-0.5">
               {/* Dock items */}
@@ -397,12 +393,12 @@ export default function FooterMegaMenu() {
               {/* Mega-menu trigger — prominent gold pill */}
               <button
                 onClick={() => setOpen(true)}
-                className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 mx-1 rounded-xl bg-[#FDB913]/10 hover:bg-[#FDB913]/20 border border-[#FDB913]/30 hover:border-[#FDB913]/50 active:scale-95 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[#FDB913]/40"
+                className="flex-1 flex flex-col items-center justify-center gap-1 py-2.5 mx-1 rounded-xl bg-[#6D1ED4]/10 hover:bg-[#6D1ED4]/20 border border-[#6D1ED4]/30 hover:border-[#6D1ED4]/50 active:scale-95 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[#6D1ED4]/40"
                 aria-label="Open service menu"
                 aria-expanded={open}
               >
-                <Grid3x3 className="w-[18px] h-[18px] text-[#FDB913] group-hover:scale-105 transition-transform duration-200" />
-                <span className="text-[10px] font-bold text-[#FDB913]/80 group-hover:text-[#FDB913] transition-colors leading-none">
+                <Grid3x3 className="w-[18px] h-[18px] text-[#6D1ED4] group-hover:scale-105 transition-transform duration-200" />
+                <span className="text-[10px] font-bold text-[#6D1ED4]/80 group-hover:text-[#6D1ED4] transition-colors leading-none">
                   Services
                 </span>
               </button>

@@ -174,7 +174,7 @@ export default function DepositPanel({ transferAmount, transferSender }: Deposit
               <span className="font-semibold text-foreground min-w-[100px]">{t.depositPanel.expires}</span>
               <div className="flex flex-col gap-1">
                 <span className="text-foreground">
-                  {expiryDate.toLocaleDateString(language === "fr" ? "fr-CA" : "en-CA", {
+                  {expiryDate.toLocaleDateString(language === "fr" ? "fr-CA" : "en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",

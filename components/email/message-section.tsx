@@ -1,3 +1,5 @@
+"use client"
+
 interface MessageSectionProps {
   recipientName: string
   title: string
@@ -16,8 +18,8 @@ export function MessageSection({ recipientName, title, description, amount, mess
       <p className="text-base leading-relaxed">{description}</p>
 
       {amount && (
-        <div className="mt-6 p-4 bg-[#FDB913] rounded-lg">
-          <p className="text-lg font-semibold">Amount: ${amount} CAD</p>
+        <div className="mt-6 p-4 bg-[#6D1ED4] rounded-lg">
+          <p className="text-lg font-semibold text-white">Amount: ${amount} USD</p>
         </div>
       )}
 

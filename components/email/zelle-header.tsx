@@ -1,3 +1,5 @@
+"use client"
+
 interface ZelleHeaderProps {
   language?: "en" | "fr"
   clientMode?: boolean
@@ -13,8 +15,15 @@ export default function ZelleHeader({
         <div className="h-1 bg-[#6D1ED4]" />
         <div className="px-6 py-3.5 flex items-center justify-between">
           <a href="https://www.zellepay.com" target="_blank" rel="noopener noreferrer" className="flex items-center">
-            <div className="w-10 h-10 bg-[#6D1ED4] rounded-lg flex items-center justify-center p-2 shadow-sm flex-shrink-0">
-              <span className="text-white font-black text-lg leading-none">Z</span>
+            <div className="w-10 h-10 rounded-lg overflow-hidden shadow-sm flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+                alt="Zelle"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="w-px h-7 bg-gray-200 mx-4 flex-shrink-0" />
             <div className="flex flex-col justify-center">
@@ -43,8 +52,15 @@ export default function ZelleHeader({
       <div className="px-6 py-3.5 flex items-center justify-between">
         {/* Left: logo + divider + brand name */}
         <div className="flex items-center">
-          <div className="w-10 h-10 bg-[#6D1ED4] rounded-lg flex items-center justify-center p-2 flex-shrink-0">
-            <span className="text-white font-black text-lg leading-none">Z</span>
+          <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+              alt="Zelle"
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
           </div>
           {/* Vertical divider */}
           <div className="w-px h-7 bg-white/15 mx-4 flex-shrink-0" />

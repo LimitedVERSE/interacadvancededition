@@ -1,3 +1,5 @@
+"use client"
+
 interface ZelleFooterProps {
   senderName?: string
   institution?: string
@@ -7,8 +9,8 @@ export function ZelleFooter({ senderName = "Sender", institution = "Financial In
   return (
     <div className="px-8 py-8 border-t">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-16 h-16 bg-[#6D1ED4] rounded-lg flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-black text-3xl leading-none">Z</span>
+        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+          <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
         </div>
         <div className="text-right text-sm">
           <p>2000 - 2025 Zelle.</p>

@@ -1,3 +1,5 @@
+"use client"
+
 interface InteracFooterProps {
   senderName?: string
   institution?: string
@@ -7,25 +9,19 @@ export function InteracFooter({ senderName = "Sender", institution = "Financial 
   return (
     <div className="px-8 py-8 border-t">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-16 h-16 bg-[#FDB913] rounded-lg flex items-center justify-center p-2.5 flex-shrink-0">
-          <img
-            src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-            alt="INTERAC e-Transfer"
-            className="w-full h-full object-contain"
-          />
+        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+          <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
         </div>
         <div className="text-right text-sm">
-          <p>2000 - 2025 Interac Corp.</p>
+          <p>&copy; {new Date().getFullYear()} Zelle.</p>
           <p>All rights reserved.</p>
           <a
-            href="https://www.interac.ca/en/interac-e-transfer-terms-of-use/"
-            className="text-blue-600 hover:underline"
+            href="https://www.zellepay.com/terms-of-use"
+            className="text-[#6D1ED4] hover:underline"
           >
             Terms of Use
           </a>
-          <p className="mt-1">Trade-Mark of Interac Corp.</p>
-          <p>Interac Corp.</p>
-          <p>P.O. Box 45, Toronto, Ontario M5J 2J1</p>
+          <p className="mt-1">Zelle and the Zelle related marks are property of Early Warning Services, LLC.</p>
         </div>
       </div>
 
@@ -35,7 +31,7 @@ export function InteracFooter({ senderName = "Sender", institution = "Financial 
           existing payment networks.
           <br />
           <br />
-          This email was sent to you by Interac Corp., the owner of the Interac e-Transfer service, on behalf of{" "}
+          This email was sent to you by Zelle on behalf of{" "}
           <strong>{senderName}</strong> at <strong>{institution}</strong>.
         </p>
       </div>

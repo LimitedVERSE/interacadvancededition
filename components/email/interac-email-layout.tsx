@@ -1,5 +1,7 @@
+"use client"
+
 import type React from "react"
-import { InteracHeader } from "./interac-header"
+import InteracHeader from "./interac-header"
 import { InteracFooter } from "./interac-footer"
 
 interface InteracEmailLayoutProps {
@@ -21,33 +23,26 @@ export function InteracEmailLayout({ children, senderName, institution }: Intera
             <div className="text-center space-y-4">
               <div className="flex items-center justify-center gap-2 text-xs">
                 <a
-                  href="https://www.interac.ca/en/interac-etransfer/etransfer-faq"
-                  className="text-blue-600 hover:underline"
+                  href="https://www.zellepay.com/faq"
+                  className="text-[#6D1ED4] hover:underline"
                 >
                   FAQ
                 </a>
                 <span className="text-[#c5b9ac]">|</span>
                 <span className="italic text-[#404040]">This is a secure transaction.</span>
-                <img
-                  src="https://etransfer-notification.interac.ca/images/new/lock.png"
-                  width="11"
-                  height="14"
-                  alt="Lock"
-                  className="inline-block"
-                />
               </div>
 
               <p className="text-xs text-[#666666] italic">
                 For your security, please do not forward this email as it contains confidential information meant only
-                for you. Interac will never request access to this email notification from you.
+                for you. Zelle will never request access to this email notification from you.
               </p>
 
               <p className="text-xs text-[#666666]">
                 Click here to{" "}
-                <a href="#" className="text-blue-600 underline">
+                <a href="#" className="text-[#6D1ED4] underline">
                   manage notification preferences
                 </a>{" "}
-                from this contact. You will still be able to receive Interac e-Transfer transactions and notifications.
+                from this contact. You will still be able to receive Zelle payment notifications.
               </p>
             </div>
           </div>

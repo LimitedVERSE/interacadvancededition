@@ -13,6 +13,8 @@ interface AuthContextType {
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => void
+  isAdmin: boolean
+  getAccessSource: () => "admin" | "client"
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -57,7 +59,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("interac-user")
   }
 
-  return <AuthContext.Provider value={{ user, isLoading, login, logout }}>{children}</AuthContext.Provider>
+  const isAdmin = user?.email === "admin@quantumyield.exchange" || false
+
+  const getAccessSource = () => {
+    if (user?.email === "admin@quantumyield.exchange") {
+      return "admin"
+    }
+    return "client"
+  }
+
+  return <AuthContext.Provider value={{ user, isLoading, login, logout, isAdmin, getAccessSource }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

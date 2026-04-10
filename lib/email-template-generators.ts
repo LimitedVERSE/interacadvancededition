@@ -77,7 +77,7 @@ const getEmailStyles = () => `
 `
 
 // Absolute logo URL used in all email templates
-const ZELLE_LOGO_URL = "https://vm-un4t6xmgiq5zzbad9uvgcv.vusercontent.net/zelle-logo.webp"
+const ZELLE_LOGO_URL = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
 
 const getHeader = () => {
   const logoSrc = ZELLE_LOGO_URL
@@ -219,10 +219,10 @@ function formatAmount(amount: number): string {
 }
 
 function formatDate(): string {
-  return new Date().toLocaleDateString("en-US", { 
-    weekday: "long", 
-    year: "numeric", 
-    month: "long", 
+  return new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit"

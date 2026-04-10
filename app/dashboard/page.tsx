@@ -3,7 +3,6 @@
 import { useAuth } from "@/lib/auth/context"
 import { useRouter } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
-import { useUserBalance } from "@/hooks/useUserBalance"
 import {
   SendIcon,
   DollarSign,

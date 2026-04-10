@@ -24,8 +24,9 @@ export const metadata: Metadata = {
     "Secure Zelle payment disbursement portal. Select your U.S. financial institution to receive your Zelle transfer.",
   generator: "v0.app",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: "/zelle-logo.webp",
+    shortcut: "/zelle-logo.webp",
+    apple: "/zelle-logo.webp",
   },
 }
 

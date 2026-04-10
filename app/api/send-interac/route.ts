@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
       senderName: "QuantumYield Treasury",
       institution: "QuantumYield | Treasury & Vault Portal",
       bankName: "QuantumYield",
+      appUrl: appOrigin,
     })
 
     if (!emailHtml) {

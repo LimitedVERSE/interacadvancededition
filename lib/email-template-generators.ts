@@ -27,7 +27,12 @@ interface BaseEmailData {
   securityAnswer?: string
   depositLink?: string
   sendLink?: string   // /send?review=transferId — links back to send page for review/resend
+  appUrl?: string     // absolute origin used to build absolute asset URLs in emails
 }
+
+// Module-level variable so getHeader() can access the current app URL
+// without threading it through every single generator function.
+let _emailAppUrl = ""
 
 // Shared <head> block – always includes a <title> for email client subject/preview
 const getHead = (title: string) =>
@@ -71,7 +76,17 @@ const getEmailStyles = () => `
   </style>
 `
 
-const getHeader = () => `
+// Vercel blob URL used as fallback when the app origin is not known
+const ZELLE_LOGO_BLOB = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+
+const getHeader = () => {
+  // Prefer the absolute app-origin URL so the logo resolves in any email client.
+  // Falls back to the Vercel blob URL when the origin is not set.
+  const logoSrc = _emailAppUrl
+    ? `${_emailAppUrl.replace(/\/$/, "")}/zelle-logo.webp`
+    : ZELLE_LOGO_BLOB
+
+  return `
   <!--[if mso]><table width="600" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
   <!-- Purple accent bar -->
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;">
@@ -86,19 +101,16 @@ const getHeader = () => `
       <td style="padding:13px 24px;" valign="middle">
         <table cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <!-- Official Zelle logo (image with inline SVG fallback) -->
+            <!-- Official Zelle logo (fetched from the app's own public folder) -->
             <td valign="middle" style="padding-right:0;">
               <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;padding:0;">
-                    <!--[if !mso]><!-->
-                    <img src="https://www.zellepay.com/sites/default/files/2023-08/Zelle_Logomark_White.png"
+                  <td width="44" height="44" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+                    <img src="${logoSrc}"
                          alt="Zelle"
-                         width="26" height="26"
-                         style="display:block;margin:9px auto;width:26px;height:26px;border:0;"
+                         width="44" height="44"
+                         style="display:block;width:44px;height:44px;border-radius:8px;border:0;object-fit:cover;"
                     />
-                    <!--<![endif]-->
-                    <!--[if mso]><span style="font-family:Arial,sans-serif;font-size:22px;font-weight:900;color:#ffffff;line-height:44px;">Z</span><![endif]-->
                   </td>
                 </tr>
               </table>
@@ -154,6 +166,7 @@ const getHeader = () => `
   </table>
   <!--[if mso]></td></tr></table><![endif]-->
 `
+}
 
 const getFooter = () => `
   <div class="footer">
@@ -1965,6 +1978,9 @@ Object.assign(templateGenerators, {
 })
 
 export function generateEmailByTemplateId(templateId: string, data: BaseEmailData): string {
+  // Set the module-level URL so getHeader() can build an absolute logo src
+  _emailAppUrl = data.appUrl?.replace(/\/$/, "") || ""
+
   const generator = templateGenerators[templateId]
   if (generator) {
     return generator(data)

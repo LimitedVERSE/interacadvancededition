@@ -53,12 +53,16 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
               <td style="padding:13px 24px;" valign="middle">
                 <table cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <!-- Zelle Z in purple square -->
+                    <!-- Zelle logo -->
                     <td valign="middle">
                       <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
-                          <td width="44" height="44" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;">
-                            <span style="font-family:Arial,sans-serif;font-size:24px;font-weight:900;color:#ffffff;line-height:44px;">Z</span>
+                          <td width="44" height="44" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+                                 alt="Zelle"
+                                 width="44" height="44"
+                                 style="display:block;width:44px;height:44px;border-radius:8px;border:0;object-fit:cover;"
+                            />
                           </td>
                         </tr>
                       </table>
@@ -220,8 +224,12 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
                 <td valign="top" width="50%">
                   <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td width="40" height="40" style="background-color:#6D1ED4;border-radius:8px;text-align:center;vertical-align:middle;">
-                        <span style="font-family:Arial,sans-serif;font-size:22px;font-weight:900;color:#ffffff;line-height:40px;">Z</span>
+                      <td width="48" height="48" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
+                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+                             alt="Zelle"
+                             width="48" height="48"
+                             style="display:block;width:48px;height:48px;border-radius:8px;border:0;object-fit:cover;"
+                        />
                       </td>
                     </tr>
                   </table>

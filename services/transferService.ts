@@ -19,6 +19,7 @@ import { createClient } from "@/lib/supabase/server"
 export interface TransferRecord {
   id?:             string
   transfer_id:     string   // e.g. ZELLE-123456-ABCDEF7
+  access_token:    string   // Security token for unauthenticated access verification
   recipient_email: string
   recipient_name:  string
   amount:          number
@@ -28,8 +29,8 @@ export interface TransferRecord {
   bank_name?:      string
   template_id:     string
   language:        string
-  deposit_link:    string   // /deposit-portal/client?transferId=...
-  send_link:       string   // /send?review=transferId (for email CTA)
+  deposit_link:    string   // /deposit-portal/client?transferId=...&token=...
+  send_link:       string   // /send?review=transferId&token=... (for email CTA)
   email_id?:       string   // Resend delivery ID
   status:          "sent" | "delivered" | "failed" | "pending"
   created_at?:     string
@@ -93,6 +94,20 @@ export function generateTransferId(): string {
 }
 
 /**
+ * Generate a secure access token for transfer verification.
+ * Used to authorize access to transfer details without authentication.
+ */
+export function generateAccessToken(): string {
+  // Generate 32 characters of cryptographically random base64-safe characters
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+  let token = ""
+  for (let i = 0; i < 32; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return token
+}
+
+/**
  * Build the deposit-portal URL for a given transfer.
  */
 export function buildDepositLink(
@@ -105,6 +120,7 @@ export function buildDepositLink(
     bankName:      string
     message:       string
     timestamp:     string
+    accessToken:   string
   }
 ): string {
   const qs = new URLSearchParams({
@@ -115,6 +131,7 @@ export function buildDepositLink(
     bankName:      params.bankName,
     message:       params.message,
     timestamp:     params.timestamp,
+    token:         params.accessToken,
   })
   return `${origin}/deposit-portal/client?${qs.toString()}`
 }
@@ -122,8 +139,12 @@ export function buildDepositLink(
 /**
  * Build the /send review URL so the email CTA can link back to the transfer.
  */
-export function buildSendReviewLink(origin: string, transferId: string): string {
-  return `${origin}/send?review=${encodeURIComponent(transferId)}`
+export function buildSendReviewLink(origin: string, transferId: string, accessToken: string): string {
+  const params = new URLSearchParams({
+    review: transferId,
+    token: accessToken,
+  })
+  return `${origin}/send?${params.toString()}`
 }
 
 /**
@@ -143,6 +164,7 @@ export async function saveTransfer(record: TransferRecord): Promise<TransferReco
       .upsert(
         {
           transfer_id:     record.transfer_id,
+          access_token:    record.access_token,
           recipient_email: record.recipient_email,
           recipient_name:  record.recipient_name,
           amount:          record.amount,
@@ -177,12 +199,20 @@ export async function saveTransfer(record: TransferRecord): Promise<TransferReco
 }
 
 /**
- * Retrieve a transfer by ID. Checks in-memory cache first, then Supabase.
+ * Retrieve a transfer by ID with optional token verification.
+ * Checks in-memory cache first, then Supabase.
+ * If accessToken is provided, verifies it matches before returning.
  */
-export async function getTransfer(transferId: string): Promise<TransferRecord | null> {
+export async function getTransfer(transferId: string, accessToken?: string): Promise<TransferRecord | null> {
   // 1. Cache hit
   const cached = cacheGet(transferId)
-  if (cached) return cached
+  if (cached) {
+    // If token provided, verify it matches
+    if (accessToken && cached.access_token !== accessToken) {
+      return null
+    }
+    return cached
+  }
 
   // 2. Supabase lookup
   try {
@@ -196,6 +226,12 @@ export async function getTransfer(transferId: string): Promise<TransferRecord | 
     if (error || !data) return null
 
     const record = data as TransferRecord
+    
+    // If token provided, verify it matches
+    if (accessToken && record.access_token !== accessToken) {
+      return null
+    }
+    
     cacheSet(transferId, record)
     return record
   } catch {

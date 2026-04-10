@@ -545,15 +545,17 @@ export default function SendTransferPage() {
   const [reviewBanner, setReviewBanner]   = useState<string | null>(null)
   const prefillDone = useRef(false)
 
-  // ── Handle ?review=transferId — pre-fill form from previously-sent transfer ──
+  // ── Handle ?review=transferId&token=... — pre-fill form from previously-sent transfer ──
   useEffect(() => {
     if (prefillDone.current) return
     const params = new URLSearchParams(window.location.search)
     const reviewId = params.get("review")
+    const token = params.get("token")
     if (!reviewId) return
     prefillDone.current = true
 
-    fetch(`/api/transfer/${encodeURIComponent(reviewId)}`)
+    const url = `/api/transfer/${encodeURIComponent(reviewId)}?token=${encodeURIComponent(token || "")}`
+    fetch(url)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (!data?.transfer) return

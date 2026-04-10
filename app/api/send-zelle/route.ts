@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { generateEmailByTemplateId } from "@/lib/email-template-generators"
 import {
   generateTransferId,
+  generateAccessToken,
   buildDepositLink,
   buildSendReviewLink,
   saveTransfer,
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
     }
 
     const transferId = generateTransferId()
+    const accessToken = generateAccessToken()
     const timestamp  = new Date().toISOString()
 
     // Resolve app origin
@@ -66,10 +68,11 @@ export async function POST(request: Request) {
       bankName:      "Zelle Network",
       message:       message || "",
       timestamp,
+      accessToken,
     })
 
     // Build /send review link (injected into email as the "Review Transfer" CTA)
-    const sendLink = buildSendReviewLink(appOrigin, transferId)
+    const sendLink = buildSendReviewLink(appOrigin, transferId, accessToken)
 
     // Resolve template ID
     const resolvedBase = templateId || "transfer-received"
@@ -205,6 +208,7 @@ export async function POST(request: Request) {
     // Persist transfer record to Supabase + warm in-memory cache
     await saveTransfer({
       transfer_id:     transferId,
+      access_token:    accessToken,
       recipient_email: recipientEmail,
       recipient_name:  recipientName,
       amount:          amountNum,

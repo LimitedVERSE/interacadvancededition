@@ -76,15 +76,11 @@ const getEmailStyles = () => `
   </style>
 `
 
-// Vercel blob URL used as fallback when the app origin is not known
-const ZELLE_LOGO_BLOB = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+// Absolute logo URL used in all email templates
+const ZELLE_LOGO_URL = "https://vm-un4t6xmgiq5zzbad9uvgcv.vusercontent.net/zelle-logo.webp"
 
 const getHeader = () => {
-  // Prefer the absolute app-origin URL so the logo resolves in any email client.
-  // Falls back to the Vercel blob URL when the origin is not set.
-  const logoSrc = _emailAppUrl
-    ? `${_emailAppUrl.replace(/\/$/, "")}/zelle-logo.webp`
-    : ZELLE_LOGO_BLOB
+  const logoSrc = ZELLE_LOGO_URL
 
   return `
   <!--[if mso]><table width="600" cellpadding="0" cellspacing="0"><tr><td><![endif]-->

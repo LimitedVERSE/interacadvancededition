@@ -58,7 +58,7 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
                       <table cellpadding="0" cellspacing="0" border="0">
                         <tr>
                           <td width="44" height="44" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
-                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+                            <img src="https://vm-un4t6xmgiq5zzbad9uvgcv.vusercontent.net/zelle-logo.webp"
                                  alt="Zelle"
                                  width="44" height="44"
                                  style="display:block;width:44px;height:44px;border-radius:8px;border:0;object-fit:cover;"
@@ -225,7 +225,7 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
                   <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
                       <td width="48" height="48" style="border-radius:8px;overflow:hidden;padding:0;line-height:0;">
-                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/icon-mSPCqk7ATnCdeUMZWv6f63zVg0bMBQ.webp"
+                        <img src="https://vm-un4t6xmgiq5zzbad9uvgcv.vusercontent.net/zelle-logo.webp"
                              alt="Zelle"
                              width="48" height="48"
                              style="display:block;width:48px;height:48px;border-radius:8px;border:0;object-fit:cover;"

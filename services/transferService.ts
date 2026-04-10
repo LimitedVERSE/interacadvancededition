@@ -67,6 +67,7 @@ async function ensureSchema() {
   if (schemaEnsured) return
   try {
     const supabase = await createClient()
+    if (!supabase) { schemaEnsured = true; return }
     // Attempt a lightweight read — if the table doesn't exist Supabase returns
     // an error code 42P01 and we create the table via raw SQL through rpc.
     const { error } = await supabase.from("transfers").select("id").limit(1)
@@ -158,6 +159,7 @@ export async function saveTransfer(record: TransferRecord): Promise<TransferReco
   try {
     await ensureSchema()
     const supabase = await createClient()
+    if (!supabase) return record
 
     const { data, error } = await supabase
       .from("transfers")
@@ -217,6 +219,7 @@ export async function getTransfer(transferId: string, accessToken?: string): Pro
   // 2. Supabase lookup
   try {
     const supabase = await createClient()
+    if (!supabase) return null
     const { data, error } = await supabase
       .from("transfers")
       .select("*")
@@ -253,6 +256,7 @@ export async function updateTransferStatus(
 
   try {
     const supabase = await createClient()
+    if (!supabase) return
     await supabase
       .from("transfers")
       .update({ status, ...(emailId ? { email_id: emailId } : {}) })
@@ -268,6 +272,7 @@ export async function updateTransferStatus(
 export async function listTransfers(limit = 50): Promise<TransferRecord[]> {
   try {
     const supabase = await createClient()
+    if (!supabase) return []
     const { data, error } = await supabase
       .from("transfers")
       .select("*")

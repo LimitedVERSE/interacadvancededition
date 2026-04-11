@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ...user,
       isAdmin: isAdmin,
     }
-    const token = Buffer.from(JSON.stringify(userWithAdmin)).toString("base64")
+    const token = btoa(unescape(encodeURIComponent(JSON.stringify(userWithAdmin))))
     return {
       Authorization: `Bearer ${token}`,
     }

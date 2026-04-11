@@ -610,7 +610,6 @@ function ZelleLoader({ onComplete }: { onComplete: () => void }) {
 function DashboardContent() {
   const { user, logout } = useAuth()
   const router           = useRouter()
-  const { balance, dailyLimit, isLoading: balanceLoading, deductTransaction } = useUserBalance(user?.id)
   const [isLoading, setIsLoading]     = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [revealed, ]                  = useState(false)

@@ -99,6 +99,7 @@ export async function POST(request: NextRequest) {
       senderName:  "Zelle Network",
       institution: "Zelle | Secure Disbursement Portal",
       bankName:    "Zelle",
+      appUrl:      appOrigin,
     })
 
     if (!emailHtml) {

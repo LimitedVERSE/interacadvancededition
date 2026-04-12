@@ -206,8 +206,7 @@ export function generateTransferReceived(data: BaseEmailData): string {
           ${data.securityQuestion ? `
           <div class="security-section">
             <h4 class="security-title">Security Question</h4>
-            <p style="color:#555555;font-size:14px;margin-bottom:10px;">${data.securityQuestion}</p>
-            ${data.securityAnswer ? `<p style="font-size:14px;font-weight:700;color:#000000;letter-spacing:2px;">${data.securityAnswer}</p>` : ""}
+            <p style="color:#555555;font-size:14px;margin-bottom:0;">${data.securityQuestion}</p>
           </div>` : ""}
           
           <div class="button-section">
@@ -1325,7 +1324,7 @@ export function generateTwoFactorCodeFr(data: BaseEmailData): string {
       <div class="detail-row"><span class="detail-label">Expire dans :</span><span class="detail-value">10 minutes</span></div>
       <div class="detail-row"><span class="detail-label">Heure :</span><span class="detail-value">${formatDate()}</span></div>
     </div>
-    <div class="alert-box alert-danger"><strong>Avis de sécurité :</strong> Ne partagez jamais ce code avec qui que ce soit. QuantumYield et Interac ne vous demanderont jamais ce code par téléphone ou par courriel.</div>
+    <div class="alert-box alert-danger"><strong>Avis de sécurité :</strong> Ne partagez jamais ce code avec qui que ce soit. QuantumYield et Interac ne vous demanderont jamais ce code par t��léphone ou par courriel.</div>
   </div>${getFooter()}</div></body></html>`
 }
 

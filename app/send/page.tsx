@@ -1223,7 +1223,6 @@ export default function SendTransferPage() {
                       { label: "Amount",            value: formatCurrency(formData.amount), highlight: true },
                       { label: "Fee",               value: "Free", fee: true },
                       { label: "Security Q.",       value: formData.securityQuestion },
-                      { label: "Answer",            value: formData.securityAnswer, masked: true },
                       ...(formData.message ? [{ label: "Message", value: formData.message }] : []),
                     ].map(({ label, value, highlight, fee, masked }: { label: string; value: string; highlight?: boolean; fee?: boolean; masked?: boolean }) => (
                       <div

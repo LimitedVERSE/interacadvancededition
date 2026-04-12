@@ -98,12 +98,14 @@ function ClientDepositContent() {
     const timestamp     = searchParams.get("timestamp")
 
     if (transferId && amount) {
+      // Also accept "senderBank" (set by BankSelectorGrid) as an alias for "bankName"
+      const resolvedBankName = bankName || searchParams.get("senderBank") || "QuantumYield"
       const data: TransferData = {
         transferId,
         amount:        amount || "0",
         recipient:     recipient || "",
         recipientName: recipientName || "",
-        bankName:      bankName || "QuantumYield",
+        bankName:      resolvedBankName,
         message:       message || "",
         timestamp:     timestamp || new Date().toISOString(),
       }

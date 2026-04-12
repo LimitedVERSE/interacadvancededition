@@ -56,9 +56,7 @@ export default function BankSelectorGrid({ searchTerm = "", transferData, client
       params.set("message", transferData.message)
       params.set("timestamp", transferData.timestamp)
     }
-    window.location.href = clientMode
-      ? `https://www.interac.ca/en/consumers/etransfer/?${params.toString()}`
-      : `https://interac.quantumyield.digital/countdown?${params.toString()}`
+    window.location.href = `/countdown?${params.toString()}`
   }
 
   const containerCls = clientMode

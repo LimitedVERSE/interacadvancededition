@@ -204,7 +204,7 @@ function EmailStudioContent() {
         message: formData.message || undefined,
         securityQuestion: formData.securityQuestion || undefined,
         securityAnswer: formData.securityAnswer || undefined,
-        depositLink: "https://et.quantumyield.digital/deposit-portal",
+        depositLink: "https://vm-mk5rz1yzhxnqjobaqm84py.vusercontent.net/deposit-portal/client",
         transferId: previewTransferId,
         senderName: "QuantumYield Treasury",
         institution: "QuantumYield | Treasury & Vault Portal",

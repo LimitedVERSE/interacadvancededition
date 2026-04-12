@@ -84,33 +84,88 @@ export function TransferCard({
           <h3 className="font-bold text-base mb-4">Transfer Details</h3>
 
           {details ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-              {details.map((detail, index) => (
-                <div key={index}>
-                  <p className="text-sm text-[#404040] mb-1">{detail.label}:</p>
-                  <p className="text-base break-all">{detail.value}</p>
-                </div>
-              ))}
-            </div>
+            <table width="100%" cellPadding={0} cellSpacing={0} style={{ borderCollapse: "collapse" }}>
+              <tbody>
+                {Array.from({ length: Math.ceil(details.length / 2) }).map((_, rowIdx) => {
+                  const left = details[rowIdx * 2]
+                  const right = details[rowIdx * 2 + 1]
+                  const isLast = rowIdx === Math.ceil(details.length / 2) - 1
+                  return (
+                    <tr key={rowIdx}>
+                      <td
+                        valign="top"
+                        width="50%"
+                        style={{
+                          padding: "10px 12px 10px 0",
+                          borderBottom: isLast ? "none" : "1px solid #e9ecef",
+                          verticalAlign: "top",
+                        }}
+                      >
+                        <p className="text-sm text-[#404040] mb-1">{left.label}:</p>
+                        <p className="text-base break-all">{left.value}</p>
+                      </td>
+                      {right ? (
+                        <td
+                          valign="top"
+                          width="50%"
+                          style={{
+                            padding: "10px 0 10px 12px",
+                            borderBottom: isLast ? "none" : "1px solid #e9ecef",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          <p className="text-sm text-[#404040] mb-1">{right.label}:</p>
+                          <p className="text-base break-all">{right.value}</p>
+                        </td>
+                      ) : (
+                        <td width="50%" />
+                      )}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-              <div>
-                <p className="text-sm text-[#404040] mb-1">Date:</p>
-                <p className="text-base break-all">{date}</p>
-              </div>
-              <div>
-                <p className="text-sm text-[#404040] mb-1">Reference Number:</p>
-                <p className="text-base break-all">{transferId || "N/A"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-[#404040] mb-1">From:</p>
-                <p className="text-base break-all">{senderName}</p>
-              </div>
-              <div>
-                <p className="text-sm text-[#404040] mb-1">Amount:</p>
-                <p className="text-base break-all">${safeAmount.toFixed(2)} CAD</p>
-              </div>
-            </div>
+            <table width="100%" cellPadding={0} cellSpacing={0} style={{ borderCollapse: "collapse" }}>
+              <tbody>
+                <tr>
+                  <td
+                    valign="top"
+                    width="50%"
+                    style={{ padding: "10px 12px 10px 0", borderBottom: "1px solid #e9ecef", verticalAlign: "top" }}
+                  >
+                    <p className="text-sm text-[#404040] mb-1">Date:</p>
+                    <p className="text-base break-all">{date}</p>
+                  </td>
+                  <td
+                    valign="top"
+                    width="50%"
+                    style={{ padding: "10px 0 10px 12px", borderBottom: "1px solid #e9ecef", verticalAlign: "top" }}
+                  >
+                    <p className="text-sm text-[#404040] mb-1">Reference Number:</p>
+                    <p className="text-base break-all">{transferId || "N/A"}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    valign="top"
+                    width="50%"
+                    style={{ padding: "10px 12px 0 0", verticalAlign: "top" }}
+                  >
+                    <p className="text-sm text-[#404040] mb-1">From:</p>
+                    <p className="text-base break-all">{senderName}</p>
+                  </td>
+                  <td
+                    valign="top"
+                    width="50%"
+                    style={{ padding: "10px 0 0 12px", verticalAlign: "top" }}
+                  >
+                    <p className="text-sm text-[#404040] mb-1">Amount:</p>
+                    <p className="text-base break-all">${safeAmount.toFixed(2)} CAD</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           )}
         </div>
 

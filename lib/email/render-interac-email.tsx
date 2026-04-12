@@ -132,26 +132,29 @@ export function renderInteracEmail(data: EmailData, mode: EmailLangMode = "en"):
             <!-- Transfer Details Card -->
             <div style="padding:0 72px;margin-top:32px">
               <div style="background-color:#fff;border:1px solid #dfdfdf;border-radius:8px;padding:20px">
-                <h3 style="font-weight:700;font-size:16px;margin:0 0 16px 0">${copy.transferDetailsHeading}</h3>
-                <table width="100%" cellpadding="8" cellspacing="0">
+                <h3 style="font-weight:700;font-size:16px;margin:0 0 16px 0;font-family:Arial,sans-serif">${copy.transferDetailsHeading}</h3>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
                   <tr>
-                    <td valign="top" width="50%">
-                      <p style="font-size:14px;color:#404040;margin:0 0 4px 0">${copy.dateLabel}</p>
-                      <p style="font-size:16px;margin:0;word-break:break-all">${date}</p>
+                    <td style="font-size:0;line-height:0;" height="1" colspan="2"><div style="height:1px;background-color:#e9ecef;font-size:0;line-height:0;">&nbsp;</div></td>
+                  </tr>
+                  <tr>
+                    <td valign="top" width="50%" style="padding:10px 12px 10px 0;border-bottom:1px solid #e9ecef;">
+                      <p style="font-size:13px;color:#666666;margin:0 0 4px 0;font-family:Arial,sans-serif;">${copy.dateLabel}</p>
+                      <p style="font-size:14px;color:#000000;font-weight:500;margin:0;word-break:break-all;font-family:Arial,sans-serif;">${date}</p>
                     </td>
-                    <td valign="top" width="50%">
-                      <p style="font-size:14px;color:#404040;margin:0 0 4px 0">${copy.referenceNumberLabel}</p>
-                      <p style="font-size:16px;margin:0;word-break:break-all">${data.transferId}</p>
+                    <td valign="top" width="50%" style="padding:10px 0 10px 12px;border-bottom:1px solid #e9ecef;">
+                      <p style="font-size:13px;color:#666666;margin:0 0 4px 0;font-family:Arial,sans-serif;">${copy.referenceNumberLabel}</p>
+                      <p style="font-size:14px;color:#000000;font-weight:500;margin:0;word-break:break-all;font-family:Arial,sans-serif;">${data.transferId}</p>
                     </td>
                   </tr>
                   <tr>
-                    <td valign="top" width="50%">
-                      <p style="font-size:14px;color:#404040;margin:0 0 4px 0">${copy.fromLabel}</p>
-                      <p style="font-size:16px;margin:0;word-break:break-all">${data.senderName || "Banking System"}</p>
+                    <td valign="top" width="50%" style="padding:10px 12px 0 0;">
+                      <p style="font-size:13px;color:#666666;margin:0 0 4px 0;font-family:Arial,sans-serif;">${copy.fromLabel}</p>
+                      <p style="font-size:14px;color:#000000;font-weight:500;margin:0;word-break:break-all;font-family:Arial,sans-serif;">${data.senderName || "Banking System"}</p>
                     </td>
-                    <td valign="top" width="50%">
-                      <p style="font-size:14px;color:#404040;margin:0 0 4px 0">${copy.amountDetailLabel}</p>
-                      <p style="font-size:16px;margin:0;word-break:break-all">${amount}</p>
+                    <td valign="top" width="50%" style="padding:10px 0 0 12px;">
+                      <p style="font-size:13px;color:#666666;margin:0 0 4px 0;font-family:Arial,sans-serif;">${copy.amountDetailLabel}</p>
+                      <p style="font-size:14px;color:#000000;font-weight:500;margin:0;word-break:break-all;font-family:Arial,sans-serif;">${amount}</p>
                     </td>
                   </tr>
                 </table>

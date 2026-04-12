@@ -21,30 +21,31 @@ interface BaseEmailData {
 const getEmailStyles = () => `
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; }
+    body { font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; background-color: #f5f5f5; }
     .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
     .content { padding: 32px 24px; }
     .greeting { font-size: 24px; font-weight: 700; color: #000000; margin-bottom: 8px; }
     .subtitle { font-size: 16px; color: #666666; margin-bottom: 24px; }
-    .amount-box { background: linear-gradient(135deg, #FDB913 0%, #e5a811 100%); color: #000000; padding: 20px; border-radius: 12px; text-align: center; margin: 24px 0; }
+    .amount-box { background-color: #FDB913; color: #000000; padding: 20px; border-radius: 8px; text-align: center; margin: 24px 0; }
     .amount-value { font-size: 32px; font-weight: 700; }
-    .amount-label { font-size: 14px; opacity: 0.8; margin-top: 4px; }
-    .details-card { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin: 24px 0; }
+    .amount-label { font-size: 14px; color: #333333; margin-top: 4px; }
+    .details-card { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin: 24px 0; }
     .details-title { font-size: 16px; font-weight: 600; color: #000000; margin-bottom: 16px; }
-    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
+    /* detail-row: use display:table for broad email client support */
+    .detail-row { display: table; width: 100%; padding: 10px 0; border-bottom: 1px solid #e9ecef; border-collapse: collapse; }
     .detail-row:last-child { border-bottom: none; }
-    .detail-label { color: #666666; font-size: 14px; }
-    .detail-value { color: #000000; font-size: 14px; font-weight: 500; }
+    .detail-label { display: table-cell; width: 45%; color: #666666; font-size: 14px; vertical-align: top; padding-right: 12px; }
+    .detail-value { display: table-cell; width: 55%; color: #000000; font-size: 14px; font-weight: 500; vertical-align: top; text-align: right; }
     .button-section { text-align: center; margin: 32px 0; }
-    .action-button { display: inline-block; background-color: #FDB913; color: #000000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; }
-    .action-button:hover { background-color: #e5a811; }
+    .action-button { display: inline-block; background-color: #FDB913; color: #000000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px; }
     .alert-box { padding: 16px; border-radius: 8px; margin: 24px 0; }
     .alert-success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
     .alert-warning { background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
     .alert-danger { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
     .alert-info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
-    .security-section { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin: 24px 0; }
-    .security-title { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; color: #000000; margin-bottom: 12px; }
+    .security-section { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin: 24px 0; }
+    /* security-title: avoid flexbox — use inline-block spacing instead */
+    .security-title { font-size: 16px; font-weight: 600; color: #000000; margin-bottom: 12px; }
     .instructions { margin: 24px 0; }
     .instructions ol { padding-left: 20px; color: #333333; }
     .instructions li { padding: 8px 0; line-height: 1.6; }
@@ -139,20 +140,24 @@ const getHeader = () => `
 `
 
 const getFooter = () => `
-  <div class="footer">
-    <p class="footer-text">
-      This is an automated message from Interac e-Transfer. Please do not reply to this email.<br>
-      For assistance, visit <a href="https://www.interac.ca" style="color: #FDB913;">interac.ca</a>
-    </p>
-    <div class="footer-links">
-      <a href="https://www.interac.ca/en/consumers/products/interac-e-transfer/" class="footer-link">Learn More</a>
-      <a href="https://www.interac.ca/en/contact-us/" class="footer-link">Contact Us</a>
-      <a href="https://www.interac.ca/en/privacy/" class="footer-link">Privacy Policy</a>
-    </div>
-    <p class="footer-text" style="margin-top: 16px;">
-      &copy; ${new Date().getFullYear()} Interac Corp. All rights reserved.
-    </p>
-  </div>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8f9fa;border-top:1px solid #e9ecef;">
+    <tr>
+      <td style="padding:24px;text-align:center;">
+        <p style="font-size:12px;color:#666666;line-height:1.6;margin:0 0 12px 0;font-family:Arial,sans-serif;">
+          This is an automated message from Interac e-Transfer. Please do not reply to this email.<br>
+          For assistance, visit <a href="https://www.interac.ca" style="color:#FDB913;text-decoration:none;">interac.ca</a>
+        </p>
+        <p style="font-size:12px;color:#666666;margin:0 0 12px 0;font-family:Arial,sans-serif;">
+          <a href="https://www.interac.ca/en/consumers/products/interac-e-transfer/" style="color:#FDB913;text-decoration:none;margin:0 8px;">Learn More</a>
+          <a href="https://www.interac.ca/en/contact-us/" style="color:#FDB913;text-decoration:none;margin:0 8px;">Contact Us</a>
+          <a href="https://www.interac.ca/en/privacy/" style="color:#FDB913;text-decoration:none;margin:0 8px;">Privacy Policy</a>
+        </p>
+        <p style="font-size:12px;color:#666666;margin:0;font-family:Arial,sans-serif;">
+          &copy; ${new Date().getFullYear()} Interac Corp. All rights reserved.
+        </p>
+      </td>
+    </tr>
+  </table>
 `
 
 function formatAmount(amount: number): string {

